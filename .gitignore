@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Lean
+*.olean
+.lake/
+lake-manifest.json
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Project specific
+data/
+cache/
+results/
+*.prof.json
+*.trace.xml
+
+# Secrets
+.env
+config/secrets.yaml
