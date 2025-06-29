@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from simpulse.monitoring.performance_monitor import (
+# from simpulse.monitoring.performance_monitor import (
     AlertSeverity,
     PerformanceAlert,
     PerformanceMonitor,

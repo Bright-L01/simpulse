@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pytest
 
-from simpulse.deployment.github_action import GitHubActionRunner
+# from simpulse.deployment.github_action import GitHubActionRunner
 from simpulse.evolution.mutation_applicator import MutationApplicator
 from simpulse.evolution.rule_extractor import RuleExtractor
 from simpulse.profiling.lean_runner import LeanRunner

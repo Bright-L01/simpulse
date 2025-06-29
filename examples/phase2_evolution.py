@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from simpulse.config import load_config
 from simpulse.evolution import RuleExtractor
 from simpulse.evolution.evolution_engine import EvolutionEngine
-from simpulse.evolution.models_v2 import EvolutionConfig
+from simpulse.evolution.models import EvolutionConfig
 
 
 async def create_sample_lean_project():

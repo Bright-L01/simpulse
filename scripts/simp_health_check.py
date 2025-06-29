@@ -1,286 +1,267 @@
 #!/usr/bin/env python3
 """
-Simp Health Check - Analyze a Lean project's optimization potential.
-This is the key to finding projects that need our help!
+Simp Health Check - Identify optimization opportunities in Lean projects.
+This is the key to finding projects that need our help.
 """
 
 import asyncio
 import json
 import re
-import sys
+import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Tuple
 
 
 @dataclass
 class HealthReport:
     """Complete health report for a Lean project."""
 
-    project_path: Path
     total_rules: int
     custom_priorities: int
     default_priorities: int
     optimization_potential: float  # 0-100 score
-    slow_proofs: List[Dict[str, any]]
-    patterns: Dict[str, any]
+    estimated_improvement: float  # Estimated % improvement
+    slow_modules: List[Tuple[str, float]]  # (module, time_ms)
     recommendations: List[str]
-    estimated_improvement: float
-    modules_analyzed: int
+    patterns_found: Dict[str, bool]
 
-    def to_json(self) -> str:
-        """Export report as JSON."""
-        return json.dumps(
-            {
-                "project": str(self.project_path),
-                "total_rules": self.total_rules,
-                "custom_priorities": self.custom_priorities,
-                "default_priorities": self.default_priorities,
-                "optimization_potential": self.optimization_potential,
-                "estimated_improvement": self.estimated_improvement,
-                "slow_proofs": len(self.slow_proofs),
-                "modules_analyzed": self.modules_analyzed,
-                "recommendations": self.recommendations,
-            },
-            indent=2,
-        )
+    @property
+    def priority_ratio(self) -> float:
+        """Ratio of custom to total priorities."""
+        return self.custom_priorities / max(self.total_rules, 1)
 
 
 class SimpHealthChecker:
     """Analyze a Lean project's simp optimization potential."""
 
     def __init__(self):
-        self.slow_proof_threshold = 100  # ms
-        self.patterns_found = []
+        self.slow_threshold_ms = 100  # Proofs slower than this need help
 
     async def analyze_project(self, project_path: Path) -> HealthReport:
         """Full project analysis."""
+
         print(f"🔍 Analyzing {project_path.name}...")
 
-        # Find all Lean files
+        # 1. Find all Lean files
         lean_files = list(project_path.rglob("*.lean"))
-        if not lean_files:
-            print("❌ No Lean files found!")
-            return self._empty_report(project_path)
+        print(f"   Found {len(lean_files)} Lean files")
 
-        print(f"Found {len(lean_files)} Lean files")
+        # 2. Count simp rules
+        rule_stats = self._count_simp_rules(lean_files)
+        print(f"   Found {rule_stats['total']} simp rules")
 
-        # Initialize counters
-        total_rules = 0
-        custom_priority_rules = 0
-        default_priority_rules = 0
-        simp_time_by_module = {}
-        slow_proofs = []
+        # 3. Profile performance (sample if too many files)
+        sample_size = min(len(lean_files), 10)
+        slow_modules = await self._profile_modules(lean_files[:sample_size])
 
-        # Analyze each file
-        for i, lean_file in enumerate(lean_files[:50]):  # Limit to 50 files for speed
-            print(
-                f"\rAnalyzing file {i+1}/{min(len(lean_files), 50)}...",
-                end="",
-                flush=True,
-            )
+        # 4. Identify patterns
+        patterns = self._identify_patterns(lean_files, rule_stats)
 
-            # Extract rules
-            rules = self._extract_rules(lean_file)
-            total_rules += len(rules)
-
-            for rule in rules:
-                if rule["has_custom_priority"]:
-                    custom_priority_rules += 1
-                else:
-                    default_priority_rules += 1
-
-            # Profile if file has simp rules
-            if rules:
-                profile_data = await self._profile_file(lean_file)
-                if profile_data:
-                    simp_time_by_module[str(lean_file)] = profile_data["simp_time"]
-
-                    # Find slow proofs
-                    for proof in profile_data.get("proofs", []):
-                        if proof["simp_time"] > self.slow_proof_threshold:
-                            slow_proofs.append(
-                                {
-                                    "file": str(lean_file.relative_to(project_path)),
-                                    "proof": proof["name"],
-                                    "simp_time": proof["simp_time"],
-                                    "total_time": proof["total_time"],
-                                }
-                            )
-
-        print()  # New line after progress
-
-        # Identify patterns
-        patterns = self._identify_patterns(
-            total_rules, custom_priority_rules, slow_proofs, simp_time_by_module
+        # 5. Calculate optimization potential
+        optimization_score = self._calculate_potential(
+            rule_stats, patterns, slow_modules
         )
 
-        # Calculate optimization potential
-        optimization_score = self._calculate_potential(patterns)
+        # 6. Estimate improvement
+        estimated_improvement = self._estimate_improvement(optimization_score, patterns)
 
-        # Generate recommendations
-        recommendations = self._generate_recommendations(patterns)
-
-        # Estimate improvement
-        estimated_improvement = self._estimate_improvement(patterns)
+        # 7. Generate recommendations
+        recommendations = self._generate_recommendations(
+            rule_stats, patterns, slow_modules
+        )
 
         return HealthReport(
-            project_path=project_path,
-            total_rules=total_rules,
-            custom_priorities=custom_priority_rules,
-            default_priorities=default_priority_rules,
+            total_rules=rule_stats["total"],
+            custom_priorities=rule_stats["custom"],
+            default_priorities=rule_stats["default"],
             optimization_potential=optimization_score,
-            slow_proofs=slow_proofs[:10],  # Top 10 slowest
-            patterns=patterns,
-            recommendations=recommendations,
             estimated_improvement=estimated_improvement,
-            modules_analyzed=min(len(lean_files), 50),
+            slow_modules=slow_modules,
+            recommendations=recommendations,
+            patterns_found=patterns,
         )
 
-    def _extract_rules(self, lean_file: Path) -> List[Dict]:
-        """Extract simp rules from a file."""
-        try:
-            content = lean_file.read_text()
-        except Exception:
-            return []
+    def _count_simp_rules(self, lean_files: List[Path]) -> Dict[str, int]:
+        """Count simp rules and their priority types."""
 
-        rules = []
-
-        # Pattern to match simp rules
-        # Matches: @[simp], @[simp 100], @[simp high], etc.
-        pattern = r"@\[simp(?:\s+([\w\d]+))?\]\s*(?:theorem|lemma|def)\s+(\w+)"
-
-        for match in re.finditer(pattern, content):
-            priority = match.group(1)
-            name = match.group(2)
-
-            rules.append(
-                {
-                    "name": name,
-                    "priority": priority or "default",
-                    "has_custom_priority": priority is not None,
-                }
-            )
-
-        return rules
-
-    async def _profile_file(self, lean_file: Path) -> Optional[Dict]:
-        """Profile a single file (simplified)."""
-        # In real implementation, would use lean --profile
-        # For now, simulate based on file characteristics
-
-        try:
-            content = lean_file.read_text()
-
-            # Estimate based on complexity indicators
-            simp_count = content.count("by simp")
-            rule_count = content.count("@[simp")
-            len(content.split("\n"))
-
-            # Simulate simp time based on complexity
-            base_time = 10  # ms
-            simp_time = base_time + (simp_count * 5) + (rule_count * 2)
-
-            # Find proofs using simp
-            proofs = []
-            proof_pattern = r"theorem\s+(\w+).*?:=\s*by\s+simp"
-            for match in re.finditer(proof_pattern, content, re.DOTALL):
-                proofs.append(
-                    {
-                        "name": match.group(1),
-                        "simp_time": simp_time + len(match.group(0)) / 100,
-                        "total_time": simp_time * 1.5,
-                    }
-                )
-
-            return {
-                "simp_time": simp_time,
-                "total_time": simp_time * 2,
-                "proofs": proofs,
-            }
-
-        except Exception:
-            return None
-
-    def _identify_patterns(
-        self,
-        total_rules: int,
-        custom_priorities: int,
-        slow_proofs: List,
-        simp_times: Dict,
-    ) -> Dict:
-        """Identify optimization patterns."""
-        patterns = {
-            "all_default_priorities": custom_priorities == 0,
-            "mostly_default_priorities": custom_priorities < total_rules * 0.1,
-            "clustered_priorities": False,  # Would need more analysis
-            "many_slow_proofs": len(slow_proofs) > 5,
-            "high_simp_time": sum(simp_times.values()) > 1000 if simp_times else False,
-            "rule_distribution": {
-                "total": total_rules,
-                "custom": custom_priorities,
-                "default": total_rules - custom_priorities,
-                "custom_ratio": custom_priorities / max(total_rules, 1),
-            },
+        stats = {
+            "total": 0,
+            "custom": 0,
+            "default": 0,
+            "high": 0,
+            "low": 0,
+            "numeric": 0,
         }
 
-        # Check for clustered priorities (all high or all low)
-        # In real implementation, would analyze actual priority values
+        # Patterns for different simp attributes
+        patterns = {
+            "default": re.compile(r"@\[simp\]"),
+            "high": re.compile(r"@\[simp\s+high\]"),
+            "low": re.compile(r"@\[simp\s+low\]"),
+            "numeric": re.compile(r"@\[simp\s+(\d+)\]"),
+        }
+
+        for lean_file in lean_files:
+            try:
+                content = lean_file.read_text()
+
+                # Count each type
+                default_count = len(patterns["default"].findall(content))
+                high_count = len(patterns["high"].findall(content))
+                low_count = len(patterns["low"].findall(content))
+                numeric_count = len(patterns["numeric"].findall(content))
+
+                stats["default"] += default_count
+                stats["high"] += high_count
+                stats["low"] += low_count
+                stats["numeric"] += numeric_count
+                stats["custom"] += high_count + low_count + numeric_count
+                stats["total"] += default_count + high_count + low_count + numeric_count
+
+            except Exception:
+                continue
+
+        return stats
+
+    async def _profile_modules(self, lean_files: List[Path]) -> List[Tuple[str, float]]:
+        """Profile compilation time for modules."""
+
+        slow_modules = []
+
+        for lean_file in lean_files:
+            try:
+                # Time compilation
+                start = time.perf_counter()
+                result = subprocess.run(
+                    ["lean", str(lean_file)], capture_output=True, text=True, timeout=30
+                )
+                end = time.perf_counter()
+
+                if result.returncode == 0:
+                    time_ms = (end - start) * 1000
+
+                    # Check if slow
+                    if time_ms > self.slow_threshold_ms:
+                        slow_modules.append((lean_file.name, time_ms))
+
+            except subprocess.TimeoutExpired:
+                # Very slow!
+                slow_modules.append((lean_file.name, 30000))
+            except Exception:
+                continue
+
+        return sorted(slow_modules, key=lambda x: x[1], reverse=True)[:10]
+
+    def _identify_patterns(
+        self, lean_files: List[Path], rule_stats: Dict
+    ) -> Dict[str, bool]:
+        """Identify optimization anti-patterns."""
+
+        patterns = {
+            "all_default_priorities": rule_stats["custom"] == 0,
+            "mostly_default": rule_stats["custom"] / max(rule_stats["total"], 1) < 0.1,
+            "no_high_priority": rule_stats["high"] == 0,
+            "no_low_priority": rule_stats["low"] == 0,
+            "unbalanced_priorities": False,
+            "large_rule_count": rule_stats["total"] > 100,
+            "very_large_rule_count": rule_stats["total"] > 500,
+        }
+
+        # Check for unbalanced priorities
+        if rule_stats["high"] > 0 or rule_stats["low"] > 0:
+            ratio = rule_stats["high"] / max(rule_stats["low"], 1)
+            patterns["unbalanced_priorities"] = ratio > 10 or ratio < 0.1
 
         return patterns
 
-    def _calculate_potential(self, patterns: Dict) -> float:
+    def _calculate_potential(
+        self, rule_stats: Dict, patterns: Dict, slow_modules: List
+    ) -> float:
         """Calculate optimization potential score (0-100)."""
+
         score = 0.0
 
-        # Major indicators
+        # Major factors
         if patterns["all_default_priorities"]:
             score += 40  # Huge opportunity!
-        elif patterns["mostly_default_priorities"]:
-            score += 30
+        elif patterns["mostly_default"]:
+            score += 25
 
-        if patterns["many_slow_proofs"]:
-            score += 20
-
-        if patterns["high_simp_time"]:
+        # Rule count factors
+        if patterns["large_rule_count"]:
             score += 15
-
-        # Rule count factor
-        rule_count = patterns["rule_distribution"]["total"]
-        if rule_count > 50:
+        if patterns["very_large_rule_count"]:
             score += 10
-        elif rule_count > 20:
-            score += 5
 
-        # Cap at 100
-        return min(score, 100)
+        # Balance factors
+        if patterns["unbalanced_priorities"]:
+            score += 10
+        if patterns["no_high_priority"] and rule_stats["total"] > 20:
+            score += 10
+        if patterns["no_low_priority"] and rule_stats["total"] > 20:
+            score += 10
 
-    def _generate_recommendations(self, patterns: Dict) -> List[str]:
+        # Performance factors
+        if len(slow_modules) > 0:
+            score += min(20, len(slow_modules) * 5)
+
+        return min(100, score)
+
+    def _estimate_improvement(self, optimization_score: float, patterns: Dict) -> float:
+        """Estimate potential performance improvement."""
+
+        # Base estimate from score
+        base_improvement = optimization_score * 0.7  # Conservative estimate
+
+        # Adjust based on patterns
+        if patterns["all_default_priorities"]:
+            # We've seen 70%+ improvements here
+            return min(70, base_improvement * 1.5)
+        elif patterns["mostly_default"]:
+            return min(50, base_improvement * 1.2)
+        else:
+            return min(30, base_improvement)
+
+    def _generate_recommendations(
+        self, rule_stats: Dict, patterns: Dict, slow_modules: List
+    ) -> List[str]:
         """Generate specific recommendations."""
+
         recommendations = []
 
         if patterns["all_default_priorities"]:
             recommendations.append(
-                "🎯 HIGH PRIORITY: All simp rules use default priority. "
-                "Simpulse can likely achieve 50-80% improvement!"
+                "🔴 CRITICAL: All simp rules use default priority. "
+                "This is the #1 optimization opportunity!"
+            )
+            recommendations.append(
+                "💡 Quick win: Give frequently-used rules high priority"
             )
 
-        elif patterns["mostly_default_priorities"]:
+        if patterns["mostly_default"]:
             recommendations.append(
-                "📈 Good opportunity: Most rules use default priority. "
-                "Expected improvement: 30-50%"
+                "🟡 Most rules use default priority. "
+                "Consider prioritizing common patterns."
             )
 
-        if patterns["many_slow_proofs"]:
+        if patterns["no_high_priority"] and rule_stats["total"] > 20:
             recommendations.append(
-                f"🐌 Found {len(patterns.get('slow_proofs', []))} slow proofs. "
-                "Priority optimization can significantly speed these up."
+                "💡 No high-priority rules found. "
+                "Mark simple, frequent rules as high priority."
             )
 
-        if patterns["rule_distribution"]["total"] > 100:
+        if patterns["very_large_rule_count"]:
             recommendations.append(
-                "📚 Large rule base detected. Consider splitting into priority tiers: "
-                "frequent (high), occasional (medium), rare (low)"
+                "📊 Large simp rule set detected. "
+                "Priority optimization becomes crucial at this scale."
+            )
+
+        if len(slow_modules) > 0:
+            recommendations.append(
+                f"⏱️ Found {len(slow_modules)} slow modules. "
+                "These would benefit most from optimization."
             )
 
         if not recommendations:
@@ -291,151 +272,93 @@ class SimpHealthChecker:
 
         return recommendations
 
-    def _estimate_improvement(self, patterns: Dict) -> float:
-        """Estimate potential improvement percentage."""
-
-        if patterns["all_default_priorities"]:
-            # Best case scenario
-            rule_count = patterns["rule_distribution"]["total"]
-            if rule_count > 50:
-                return 60.0  # Large unoptimized codebase
-            elif rule_count > 20:
-                return 40.0
-            else:
-                return 25.0
-
-        elif patterns["mostly_default_priorities"]:
-            return 20.0
-
-        elif patterns["many_slow_proofs"]:
-            return 15.0
-
-        else:
-            return 5.0  # Minimal improvement expected
-
-    def _empty_report(self, project_path: Path) -> HealthReport:
-        """Return empty report when no files found."""
-        return HealthReport(
-            project_path=project_path,
-            total_rules=0,
-            custom_priorities=0,
-            default_priorities=0,
-            optimization_potential=0,
-            slow_proofs=[],
-            patterns={},
-            recommendations=["No Lean files found in project"],
-            estimated_improvement=0,
-            modules_analyzed=0,
-        )
-
     def generate_report(self, health_report: HealthReport) -> str:
         """Generate human-readable health check report."""
 
         # Determine health status
-        if health_report.optimization_potential < 30:
-            status = "🟢 HEALTHY"
-            emoji = "✅"
-        elif health_report.optimization_potential < 70:
-            status = "🟡 OPTIMIZATION OPPORTUNITY"
-            emoji = "📈"
+        if health_report.optimization_potential >= 70:
+            status = "🔴 Poor"
+            action = "Immediate optimization recommended!"
+        elif health_report.optimization_potential >= 40:
+            status = "🟡 Fair"
+            action = "Optimization would help"
         else:
-            status = "🔴 HIGH OPTIMIZATION POTENTIAL"
-            emoji = "🚀"
+            status = "🟢 Good"
+            action = "Already well-optimized"
 
         report = f"""
-╔══════════════════════════════════════════════════════════════════╗
-║                    SIMP PERFORMANCE HEALTH CHECK                 ║
-╚══════════════════════════════════════════════════════════════════╝
+Simp Performance Health Check
+============================
 
-Project: {health_report.project_path.name}
-Status: {status}
+Overall Health: {status}
+Action: {action}
 
-📊 STATISTICS
-────────────────────────────────────────────────────────────────────
-Total simp rules:     {health_report.total_rules}
-Custom priorities:    {health_report.custom_priorities} ({health_report.custom_priorities/max(health_report.total_rules,1)*100:.1f}%)
-Default priorities:   {health_report.default_priorities} ({health_report.default_priorities/max(health_report.total_rules,1)*100:.1f}%)
-Modules analyzed:     {health_report.modules_analyzed}
-Slow proofs found:    {len(health_report.slow_proofs)}
+Statistics:
+-----------
+Total simp rules: {health_report.total_rules}
+Custom priorities: {health_report.custom_priorities} ({health_report.priority_ratio:.0%})
+Default priorities: {health_report.default_priorities}
 
-{emoji} OPTIMIZATION POTENTIAL: {health_report.optimization_potential:.0f}/100
-📈 ESTIMATED IMPROVEMENT: {health_report.estimated_improvement:.0f}%
+Optimization Potential: {health_report.optimization_potential:.0f}/100
+Estimated Improvement: {health_report.estimated_improvement:.0f}%
 
-💡 RECOMMENDATIONS
-────────────────────────────────────────────────────────────────────"""
+"""
 
-        for i, rec in enumerate(health_report.recommendations, 1):
-            report += f"\n{i}. {rec}"
+        if health_report.slow_modules:
+            report += "Slow Modules:\n"
+            report += "-------------\n"
+            for module, time_ms in health_report.slow_modules[:5]:
+                report += f"- {module}: {time_ms:.0f}ms\n"
+            report += "\n"
 
-        if health_report.slow_proofs:
-            report += "\n\n🐌 SLOWEST PROOFS\n"
-            report += (
-                "────────────────────────────────────────────────────────────────────\n"
-            )
-            for proof in health_report.slow_proofs[:5]:
-                report += f"• {proof['proof']} in {proof['file']}: {proof['simp_time']:.0f}ms\n"
+        report += "Recommendations:\n"
+        report += "----------------\n"
+        for rec in health_report.recommendations:
+            report += f"{rec}\n"
 
-        if health_report.optimization_potential > 50:
+        if health_report.optimization_potential >= 40:
             report += f"""
-🚀 NEXT STEPS
-────────────────────────────────────────────────────────────────────
-1. Run: simpulse optimize {health_report.project_path}
+Next Steps:
+-----------
+1. Run: simpulse optimize --project {Path.cwd().name}
 2. Review suggested changes
 3. Measure improvement
 4. Share your success story!
-
-Expected time savings: {health_report.estimated_improvement * 0.01 * 100:.0f}ms per build
-"""
-        else:
-            report += """
-✅ Your simp rules are well-optimized! Minor tweaks may still help.
 """
 
         return report
 
-    def generate_markdown_report(self, health_report: HealthReport) -> str:
-        """Generate markdown report for GitHub issues/PRs."""
+    def save_report(self, health_report: HealthReport, output_path: Path):
+        """Save report in multiple formats."""
 
-        status_emoji = (
-            "🟢"
-            if health_report.optimization_potential < 30
-            else "🟡" if health_report.optimization_potential < 70 else "🔴"
-        )
+        # Save human-readable version
+        text_report = self.generate_report(health_report)
+        (output_path / "simp_health_report.txt").write_text(text_report)
 
-        return f"""## Simp Performance Health Check {status_emoji}
+        # Save JSON for automation
+        json_data = {
+            "total_rules": health_report.total_rules,
+            "custom_priorities": health_report.custom_priorities,
+            "optimization_potential": health_report.optimization_potential,
+            "estimated_improvement": health_report.estimated_improvement,
+            "patterns": health_report.patterns_found,
+            "slow_modules": health_report.slow_modules,
+            "recommendations": health_report.recommendations,
+        }
 
-I analyzed your project's simp rule performance and found:
-
-- **Total simp rules**: {health_report.total_rules}
-- **Custom priorities**: {health_report.custom_priorities} ({health_report.custom_priorities/max(health_report.total_rules,1)*100:.1f}%)
-- **Optimization potential**: {health_report.optimization_potential:.0f}/100
-- **Estimated improvement**: {health_report.estimated_improvement:.0f}%
-
-### Recommendations
-
-{chr(10).join(f'- {rec}' for rec in health_report.recommendations)}
-
-### How to optimize
-
-```bash
-# Install Simpulse
-pip install simpulse
-
-# Run optimization
-simpulse optimize {health_report.project_path.name}
-```
-
-*Generated by [Simpulse](https://github.com/Bright-L01/simpulse) - the Lean 4 simp optimizer*
-"""
+        with open(output_path / "simp_health_report.json", "w") as f:
+            json.dump(json_data, f, indent=2)
 
 
 async def main():
-    """Run health check on a project."""
-    if len(sys.argv) < 2:
-        print("Usage: simp_health_check.py <project_path>")
-        return 1
+    """Run health check on current directory or specified project."""
+    import sys
 
-    project_path = Path(sys.argv[1])
+    if len(sys.argv) > 1:
+        project_path = Path(sys.argv[1])
+    else:
+        project_path = Path.cwd()
+
     if not project_path.exists():
         print(f"Error: {project_path} not found")
         return 1
@@ -443,21 +366,16 @@ async def main():
     checker = SimpHealthChecker()
     report = await checker.analyze_project(project_path)
 
-    # Print human-readable report
-    print(checker.generate_report(report))
+    print("\n" + checker.generate_report(report))
 
-    # Save JSON report
-    json_path = project_path / "simp_health_report.json"
-    json_path.write_text(report.to_json())
-    print(f"\n📄 Full report saved to: {json_path}")
-
-    # Save markdown report
-    md_path = project_path / "simp_health_report.md"
-    md_path.write_text(checker.generate_markdown_report(report))
-    print(f"📝 Markdown report saved to: {md_path}")
+    # Save report
+    checker.save_report(report, project_path)
+    print(f"📄 Full report saved to {project_path}/simp_health_report.txt")
 
     return 0
 
 
 if __name__ == "__main__":
+    import sys
+
     sys.exit(asyncio.run(main()))

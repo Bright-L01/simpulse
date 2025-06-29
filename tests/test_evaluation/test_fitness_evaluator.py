@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from simpulse.evaluation.fitness_evaluator import FitnessEvaluator, FitnessScore
-from simpulse.evolution.models_v2 import Candidate
+from simpulse.evolution.models import Candidate
 
 
 class TestFitnessEvaluator:

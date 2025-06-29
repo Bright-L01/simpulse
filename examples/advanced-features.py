@@ -15,10 +15,12 @@ from datetime import datetime
 from pathlib import Path
 
 from simpulse.config import ClaudeConfig, Config, OptimizationConfig, PathConfig
-from simpulse.deployment.continuous_optimizer import ContinuousOptimizer
-from simpulse.deployment.github_action import GitHubActionRunner
+
+# from simpulse.deployment.continuous_optimizer import ContinuousOptimizer
+# from simpulse.deployment.github_action import GitHubActionRunner
 from simpulse.evolution.evolution_engine import EvolutionEngine
-from simpulse.monitoring.metrics_collector import MetricsCollector
+
+# from simpulse.monitoring.metrics_collector import MetricsCollector
 from simpulse.reporting.report_generator import ReportGenerator
 
 

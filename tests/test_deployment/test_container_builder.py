@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from simpulse.deployment.container_builder import ContainerBuilder
+# from simpulse.deployment.container_builder import ContainerBuilder
 
 
 class TestContainerBuilder:

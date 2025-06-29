@@ -118,7 +118,7 @@ class PerformanceBenchmark:
         """
         from simpulse.config import Config
         from simpulse.evaluation.fitness_evaluator import FitnessEvaluator
-        from simpulse.evolution.models_v2 import Candidate
+        from simpulse.evolution.models import Candidate
 
         config = Config()
         evaluator = FitnessEvaluator(config)
@@ -236,7 +236,7 @@ class PerformanceBenchmark:
             Benchmark result
         """
         from simpulse.evolution.evolution_engine import OptimizationResult
-        from simpulse.evolution.models_v2 import EvolutionHistory, GenerationResult
+        from simpulse.evolution.models import EvolutionHistory, GenerationResult
         from simpulse.reporting.report_generator import ReportGenerator
 
         generator = ReportGenerator()

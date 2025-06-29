@@ -7,23 +7,21 @@ from pathlib import Path
 import pytest
 
 from simpulse.evolution.models import (
-    ModuleRules,
-    MutationSuggestion,
-    MutationType,
-    OptimizationGoal,
-    SimpDirection,
-    SimpPriority,
-    SimpRule,
-    SourceLocation,
-)
-from simpulse.evolution.models_v2 import (
     Candidate,
     EvolutionConfig,
     EvolutionHistory,
     FitnessScore,
     GenerationResult,
+    ModuleRules,
     Mutation,
+    MutationSuggestion,
+    MutationType,
+    OptimizationGoal,
     Population,
+    SimpDirection,
+    SimpPriority,
+    SimpRule,
+    SourceLocation,
 )
 
 

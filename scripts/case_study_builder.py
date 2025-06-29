@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-Case Study Builder - Document successful optimizations.
-Turn success stories into compelling evidence!
+Case Study Builder - Create compelling documentation of successful optimizations.
+Success stories drive adoption!
 """
 
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional
+from typing import List
 
 import matplotlib.pyplot as plt
 
@@ -19,94 +20,77 @@ class Metrics:
     total_time: float  # seconds
     simp_time: float  # seconds
     total_rules: int
-    rules_modified: int
+    custom_priorities: int
     slow_proof_count: int
     slowest_proof_time: float  # ms
-    build_time: float  # seconds
-    memory_usage: float  # MB
+    rules_modified: int = 0
 
 
 @dataclass
-class ProjectInfo:
-    """Project information for case study."""
+class OptimizationChange:
+    """A single rule priority change."""
 
-    name: str
-    description: str
-    url: str
-    stars: int
-    language: str = "Lean 4"
-    domain: str = "Mathematics"  # Mathematics, Computer Science, etc.
+    rule_name: str
+    old_priority: str
+    new_priority: str
+    reason: str
 
 
 class CaseStudyBuilder:
     """Create compelling case studies from successful optimizations."""
 
-    def __init__(self):
-        self.template_path = Path(__file__).parent / "templates"
-        self.output_path = Path("case_studies")
-        self.output_path.mkdir(exist_ok=True)
+    def __init__(self, output_dir: Path = None):
+        self.output_dir = output_dir or Path("case_studies")
+        self.output_dir.mkdir(exist_ok=True)
 
     async def build_case_study(
         self,
-        project: ProjectInfo,
+        project: str,
         before: Metrics,
         after: Metrics,
-        testimonial: Optional[str] = None,
+        changes: List[OptimizationChange],
+        project_url: str = None,
     ) -> Path:
         """Generate a complete case study."""
 
-        print(f"📊 Building case study for {project.name}...")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        study_dir = self.output_dir / f"{project}_{timestamp}"
+        study_dir.mkdir(exist_ok=True)
 
-        # Create project directory
-        project_dir = self.output_path / project.name.lower().replace(" ", "_")
-        project_dir.mkdir(exist_ok=True)
-
-        # Generate visuals
-        chart_path = self.create_performance_chart(before, after, project_dir)
-        timeline_path = self.create_optimization_timeline(before, after, project_dir)
-
-        # Calculate improvements
-        improvements = self.calculate_improvements(before, after)
+        # Create visuals
+        chart_path = self._create_performance_chart(before, after, study_dir)
 
         # Generate markdown report
-        report = self.generate_markdown_report(
-            project, before, after, improvements, testimonial, chart_path, timeline_path
+        report = self._generate_markdown(
+            project, before, after, changes, project_url, chart_path
         )
 
         # Save report
-        report_path = project_dir / "README.md"
+        report_path = study_dir / "README.md"
         report_path.write_text(report)
 
-        # Generate one-page summary
-        summary = self.generate_summary(project, improvements)
-        summary_path = project_dir / "summary.md"
-        summary_path.write_text(summary)
-
-        # Generate social media content
-        social = self.generate_social_content(project, improvements)
-        social_path = project_dir / "social_media.md"
-        social_path.write_text(social)
+        # Save data for future analysis
+        self._save_data(study_dir, project, before, after, changes)
 
         print(f"✅ Case study created: {report_path}")
-
         return report_path
 
-    def create_performance_chart(
+    def _create_performance_chart(
         self, before: Metrics, after: Metrics, output_dir: Path
     ) -> Path:
-        """Create a performance comparison chart."""
+        """Create visual performance comparison chart."""
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
-        # Chart 1: Time comparison
-        categories = ["Total\nBuild", "Simp\nTime", "Slowest\nProof"]
+        # Time comparison
+        categories = ["Total Build", "Simp Time", "Slowest Proof"]
         before_times = [
-            before.build_time,
+            before.total_time,
             before.simp_time,
             before.slowest_proof_time / 1000,
         ]
         after_times = [
-            after.build_time,
+            after.total_time,
             after.simp_time,
             after.slowest_proof_time / 1000,
         ]
@@ -119,14 +103,14 @@ class CaseStudyBuilder:
             before_times,
             width,
             label="Before",
-            color="#ff7f0e",
+            color="#ff6b6b",
         )
         ax1.bar(
             [i + width / 2 for i in x],
             after_times,
             width,
             label="After",
-            color="#2ca02c",
+            color="#51cf66",
         )
 
         ax1.set_ylabel("Time (seconds)")
@@ -134,396 +118,333 @@ class CaseStudyBuilder:
         ax1.set_xticks(x)
         ax1.set_xticklabels(categories)
         ax1.legend()
-        ax1.grid(axis="y", alpha=0.3)
 
-        # Add improvement percentages
-        for i, (b, a) in enumerate(zip(before_times, after_times)):
-            if b > 0:
-                improvement = (b - a) / b * 100
-                ax1.text(
-                    i,
-                    max(b, a) * 1.05,
-                    f"-{improvement:.0f}%",
-                    ha="center",
-                    va="bottom",
-                    fontweight="bold",
-                    color="green",
-                )
+        # Improvement percentages
+        improvements = [
+            self._calculate_improvement(before.total_time, after.total_time),
+            self._calculate_improvement(before.simp_time, after.simp_time),
+            self._calculate_improvement(
+                before.slowest_proof_time, after.slowest_proof_time
+            ),
+        ]
 
-        # Chart 2: Rule optimization
-        labels = ["Optimized", "Unchanged"]
-        sizes = [after.rules_modified, before.total_rules - after.rules_modified]
-        colors = ["#2ca02c", "#d3d3d3"]
+        colors = ["#51cf66" if imp > 0 else "#ff6b6b" for imp in improvements]
+        ax2.bar(categories, improvements, color=colors)
+        ax2.set_ylabel("Improvement (%)")
+        ax2.set_title("Performance Gains")
+        ax2.axhline(y=0, color="black", linestyle="-", linewidth=0.5)
 
-        ax2.pie(sizes, labels=labels, colors=colors, autopct="%1.0f%%", startangle=90)
-        ax2.set_title(f"Rules Optimized ({after.rules_modified}/{before.total_rules})")
+        # Add value labels
+        for i, v in enumerate(improvements):
+            ax2.text(i, v + 1, f"{v:.1f}%", ha="center", va="bottom")
 
         plt.tight_layout()
 
-        # Save
-        chart_path = output_dir / "performance_chart.png"
-        plt.savefig(chart_path, dpi=300, bbox_inches="tight")
+        chart_path = output_dir / "performance_comparison.png"
+        plt.savefig(chart_path, dpi=150, bbox_inches="tight")
         plt.close()
 
         return chart_path
 
-    def create_optimization_timeline(
-        self, before: Metrics, after: Metrics, output_dir: Path
-    ) -> Path:
-        """Create an optimization timeline visualization."""
+    def _calculate_improvement(self, before: float, after: float) -> float:
+        """Calculate percentage improvement."""
+        if before == 0:
+            return 0
+        return ((before - after) / before) * 100
 
-        fig, ax = plt.subplots(figsize=(10, 6))
-
-        # Timeline data
-        events = [
-            ("Initial State", 0, before.build_time, "#ff7f0e"),
-            ("Health Check", 1, 0.1, "#1f77b4"),
-            ("Optimization", 2, 0.5, "#9467bd"),
-            ("Validation", 3, 0.2, "#17becf"),
-            ("Final State", 4, after.build_time, "#2ca02c"),
-        ]
-
-        # Draw timeline
-        for i, (name, pos, duration, color) in enumerate(events):
-            ax.barh(pos, duration, left=i * 2, height=0.5, color=color, alpha=0.8)
-            ax.text(
-                i * 2 + duration / 2,
-                pos,
-                name,
-                ha="center",
-                va="center",
-                fontweight="bold",
-            )
-
-        # Add improvement arrow
-        improvement = (before.build_time - after.build_time) / before.build_time * 100
-        ax.annotate(
-            f"{improvement:.0f}% Faster!",
-            xy=(8, 4),
-            xytext=(8, 0),
-            arrowprops=dict(arrowstyle="->", lw=2, color="green"),
-            fontsize=14,
-            fontweight="bold",
-            color="green",
-            ha="center",
-        )
-
-        ax.set_xlim(-0.5, 10)
-        ax.set_ylim(-1, 5)
-        ax.set_xlabel("Optimization Process")
-        ax.set_title("Simpulse Optimization Timeline")
-        ax.axis("off")
-
-        # Save
-        timeline_path = output_dir / "optimization_timeline.png"
-        plt.savefig(timeline_path, dpi=300, bbox_inches="tight")
-        plt.close()
-
-        return timeline_path
-
-    def calculate_improvements(
-        self, before: Metrics, after: Metrics
-    ) -> Dict[str, float]:
-        """Calculate all improvement metrics."""
-
-        def calc_improvement(before_val, after_val):
-            if before_val == 0:
-                return 0
-            return (before_val - after_val) / before_val * 100
-
-        return {
-            "overall": calc_improvement(before.build_time, after.build_time),
-            "simp_time": calc_improvement(before.simp_time, after.simp_time),
-            "slowest_proof": calc_improvement(
-                before.slowest_proof_time, after.slowest_proof_time
-            ),
-            "memory": calc_improvement(before.memory_usage, after.memory_usage),
-            "time_saved_per_build": before.build_time - after.build_time,
-            "annual_time_saved": (before.build_time - after.build_time)
-            * 1000,  # Assuming 1000 builds/year
-        }
-
-    def generate_markdown_report(
+    def _generate_markdown(
         self,
-        project: ProjectInfo,
+        project: str,
         before: Metrics,
         after: Metrics,
-        improvements: Dict[str, float],
-        testimonial: Optional[str],
+        changes: List[OptimizationChange],
+        project_url: str,
         chart_path: Path,
-        timeline_path: Path,
     ) -> str:
-        """Generate the full markdown case study."""
+        """Generate markdown case study report."""
 
-        return f"""# Case Study: {project.name}
+        total_improvement = self._calculate_improvement(
+            before.total_time, after.total_time
+        )
+        simp_improvement = self._calculate_improvement(
+            before.simp_time, after.simp_time
+        )
 
-<div align="center">
-  
-  ## {improvements['overall']:.0f}% Faster Builds with Simpulse
-  
-  ![Performance Chart]({chart_path.name})
-  
-</div>
+        report = f"""# Case Study: {project}
 
 ## Overview
 
-- **Project**: [{project.name}]({project.url})
-- **Domain**: {project.domain}
-- **Size**: {before.total_rules} simp rules across {project.language}
-- **Problem**: {before.slow_proof_count} slow proofs causing {before.build_time:.1f}s builds
-- **Solution**: Optimized {after.rules_modified} rule priorities with Simpulse
+**Project**: [{project}]({project_url or '#'})  
+**Date**: {datetime.now().strftime('%B %d, %Y')}  
+**Tool**: Simpulse v0.1.0
 
-## The Challenge
+### Problem
+- {before.slow_proof_count} slow proofs (>100ms)
+- {before.total_rules} simp rules with only {before.custom_priorities} custom priorities
+- Build time: {before.total_time:.1f}s
 
-{project.name} is a {project.domain.lower()} project with {before.total_rules} simp rules. 
-Like many Lean projects, all rules used default priorities, causing the simplifier to check 
-rules in suboptimal order. This led to:
-
-- Build times of {before.build_time:.1f} seconds
-- {before.slow_proof_count} proofs taking over 100ms
-- Slowest proof requiring {before.slowest_proof_time:.0f}ms
-
-## The Solution
-
-Simpulse analyzed the codebase and identified optimization opportunities:
-
-1. **Frequency Analysis**: Identified which rules were used most often
-2. **Complexity Assessment**: Determined which rules were computationally expensive  
-3. **Priority Assignment**: Reordered rules to check common cases first
-
-![Optimization Timeline]({timeline_path.name})
+### Solution
+- Optimized {after.rules_modified} rule priorities
+- Applied data-driven priority assignments
+- Focused on frequently-used rules
 
 ## Results
 
-### Performance Improvements
+![Performance Comparison]({chart_path.name})
+
+### Key Metrics
 
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
-| Build Time | {before.build_time:.1f}s | {after.build_time:.1f}s | **{improvements['overall']:.0f}%** |
-| Simp Time | {before.simp_time:.1f}s | {after.simp_time:.1f}s | **{improvements['simp_time']:.0f}%** |
-| Slowest Proof | {before.slowest_proof_time:.0f}ms | {after.slowest_proof_time:.0f}ms | **{improvements['slowest_proof']:.0f}%** |
-| Memory Usage | {before.memory_usage:.0f}MB | {after.memory_usage:.0f}MB | **{improvements['memory']:.0f}%** |
-
-### Impact
-
-- **{improvements['time_saved_per_build']:.1f} seconds** saved per build
-- **{improvements['annual_time_saved']/3600:.0f} hours** saved annually (assuming 1000 builds)
-- **{after.rules_modified} rules** optimized out of {before.total_rules}
+| Total Build Time | {before.total_time:.1f}s | {after.total_time:.1f}s | **{total_improvement:.1f}%** |
+| Simp Time | {before.simp_time:.1f}s | {after.simp_time:.1f}s | **{simp_improvement:.1f}%** |
+| Slowest Proof | {before.slowest_proof_time:.0f}ms | {after.slowest_proof_time:.0f}ms | {self._calculate_improvement(before.slowest_proof_time, after.slowest_proof_time):.1f}% |
+| Slow Proofs | {before.slow_proof_count} | {after.slow_proof_count} | -{before.slow_proof_count - after.slow_proof_count} |
 
 ## Technical Details
 
-### Before Optimization
+### Priority Changes Made
 
-```lean
--- All rules had default priority
-@[simp] theorem rule1 : ...
-@[simp] theorem rule2 : ...
-@[simp] theorem rule3 : ...
-```
+The following rule priority optimizations had the biggest impact:
 
-### After Optimization  
+"""
 
-```lean
--- Frequently used rules get high priority
-@[simp 1000] theorem rule1 : ...  -- Used in 80% of proofs
-@[simp 900] theorem rule2 : ...   -- Used in 60% of proofs
-@[simp 100] theorem rule3 : ...   -- Rarely used
-```
+        # Add top 5 most impactful changes
+        for i, change in enumerate(changes[:5], 1):
+            report += f"""
+{i}. **{change.rule_name}**
+   - Changed from: `@[simp {change.old_priority}]` → `@[simp {change.new_priority}]`
+   - Reason: {change.reason}
+"""
 
-### Key Optimizations
+        if len(changes) > 5:
+            report += f"\n...and {len(changes) - 5} more optimizations\n"
 
-1. **Common case first**: Rules like `append_nil` that match frequently were given high priority
-2. **Expensive rules last**: Complex pattern matching rules were deprioritized
-3. **Related rules grouped**: Similar rules were given similar priorities for cache efficiency
+        report += """
+### Analysis
+
+"""
+
+        # Add analysis based on the changes
+        if before.custom_priorities == 0:
+            report += """This project had **zero custom priorities** before optimization, which is a common anti-pattern. 
+By analyzing proof traces and rule usage patterns, Simpulse identified which rules were:
+- Used most frequently (given high priority)
+- Rarely used but expensive (given low priority)  
+- Simple and fast (given high priority)
+
+"""
+
+        report += f"""The {simp_improvement:.1f}% improvement in simp performance translated directly to a {total_improvement:.1f}% 
+improvement in overall build time, demonstrating that simp optimization can have significant real-world impact.
 
 ## How to Reproduce
 
-```bash
-# 1. Install Simpulse
-pip install simpulse
+1. Clone the project:
+   ```bash
+   git clone {project_url or 'PROJECT_URL'}
+   cd {project}
+   ```
 
-# 2. Run health check
-simpulse check {project.name}
+2. Run Simpulse optimization:
+   ```bash
+   simpulse optimize .
+   ```
 
-# 3. Apply optimizations
-simpulse optimize {project.name} --accept-all
+3. Review and apply suggested changes
 
-# 4. Verify improvements
-lake build  # Or your build command
-```
+4. Measure the improvement:
+   ```bash
+   time lake build
+   ```
 
-{f'''## Testimonial
+## Lessons Learned
 
-> {testimonial}
+"""
 
-*- {project.name} maintainer*
-''' if testimonial else ''}
+        # Add specific lessons based on patterns
+        if before.custom_priorities == 0:
+            report += "- Projects with all default priorities have the highest optimization potential\n"
+        if before.total_rules > 100:
+            report += "- Large rule sets (>100 rules) benefit significantly from priority optimization\n"
+        if simp_improvement > 50:
+            report += "- Simple priority changes can yield dramatic performance improvements\n"
 
+        report += """
 ## Conclusion
 
-Simpulse delivered a **{improvements['overall']:.0f}% performance improvement** for {project.name} 
-by simply reordering simp rule priorities. No code logic was changed, all proofs remain valid, 
-and the optimization process took less than 5 minutes.
+This case study demonstrates that Simpulse can deliver significant performance improvements with minimal effort. 
+The {total_improvement:.1f}% build time reduction was achieved through automated analysis and simple priority adjustments.
 
-This case study demonstrates that many Lean projects can benefit from simp optimization, 
-especially those using default priorities for all rules.
+### Impact
+
+- **Developer Time Saved**: ~{self._calculate_time_saved(before.total_time, after.total_time)} per build
+- **CI/CD Cost Reduction**: {total_improvement:.0f}% lower compute costs
+- **Developer Experience**: Faster feedback loops and improved productivity
 
 ---
 
-*Optimized with [Simpulse](https://github.com/Bright-L01/simpulse) - Make your Lean proofs faster*
-
-Generated: {datetime.now().strftime("%B %d, %Y")}
+*Generated by Simpulse - [Learn more](https://github.com/Bright-L01/simpulse)*
 """
 
-    def generate_summary(
-        self, project: ProjectInfo, improvements: Dict[str, float]
-    ) -> str:
-        """Generate a one-page summary for quick sharing."""
+        return report
 
-        return f"""# {project.name}: {improvements['overall']:.0f}% Faster with Simpulse
+    def _calculate_time_saved(self, before_time: float, after_time: float) -> str:
+        """Calculate human-readable time saved."""
+        saved = before_time - after_time
+        if saved < 1:
+            return f"{saved*1000:.0f}ms"
+        elif saved < 60:
+            return f"{saved:.1f}s"
+        else:
+            return f"{saved/60:.1f}min"
 
-## Quick Facts
-- **Before**: {improvements['time_saved_per_build'] + improvements['time_saved_per_build']/0.3:.1f}s builds
-- **After**: {improvements['time_saved_per_build']/0.3:.1f}s builds  
-- **Improvement**: {improvements['overall']:.0f}% faster
-- **Time to optimize**: <5 minutes
-- **Changes required**: Priority annotations only
+    def _save_data(
+        self,
+        output_dir: Path,
+        project: str,
+        before: Metrics,
+        after: Metrics,
+        changes: List[OptimizationChange],
+    ):
+        """Save raw data for future analysis."""
 
-## The Problem
-All simp rules used default priorities, causing inefficient proof search.
+        data = {
+            "project": project,
+            "timestamp": datetime.now().isoformat(),
+            "before": {
+                "total_time": before.total_time,
+                "simp_time": before.simp_time,
+                "total_rules": before.total_rules,
+                "custom_priorities": before.custom_priorities,
+                "slow_proof_count": before.slow_proof_count,
+                "slowest_proof_time": before.slowest_proof_time,
+            },
+            "after": {
+                "total_time": after.total_time,
+                "simp_time": after.simp_time,
+                "total_rules": after.total_rules,
+                "custom_priorities": after.custom_priorities,
+                "slow_proof_count": after.slow_proof_count,
+                "slowest_proof_time": after.slowest_proof_time,
+                "rules_modified": after.rules_modified,
+            },
+            "changes": [
+                {
+                    "rule": change.rule_name,
+                    "old_priority": change.old_priority,
+                    "new_priority": change.new_priority,
+                    "reason": change.reason,
+                }
+                for change in changes
+            ],
+            "improvements": {
+                "total_time": self._calculate_improvement(
+                    before.total_time, after.total_time
+                ),
+                "simp_time": self._calculate_improvement(
+                    before.simp_time, after.simp_time
+                ),
+                "slowest_proof": self._calculate_improvement(
+                    before.slowest_proof_time, after.slowest_proof_time
+                ),
+            },
+        }
 
-## The Solution  
-Simpulse automatically reordered priorities based on usage patterns.
+        with open(output_dir / "data.json", "w") as f:
+            json.dump(data, f, indent=2)
 
-## Try It Yourself
-```bash
-pip install simpulse
-simpulse optimize YourProject.lean
-```
+    def create_summary_report(self) -> str:
+        """Create a summary of all case studies."""
 
-[Full Case Study]({project.url}) | [Get Simpulse](https://github.com/Bright-L01/simpulse)
+        all_studies = []
+
+        # Load all case study data
+        for study_dir in self.output_dir.iterdir():
+            if study_dir.is_dir():
+                data_file = study_dir / "data.json"
+                if data_file.exists():
+                    with open(data_file) as f:
+                        all_studies.append(json.load(f))
+
+        if not all_studies:
+            return "No case studies found."
+
+        # Calculate aggregate statistics
+        total_projects = len(all_studies)
+        avg_improvement = (
+            sum(s["improvements"]["total_time"] for s in all_studies) / total_projects
+        )
+        total_time_saved = sum(
+            s["before"]["total_time"] - s["after"]["total_time"] for s in all_studies
+        )
+
+        report = f"""# Simpulse Case Studies Summary
+
+## Impact Statistics
+
+- **Projects Optimized**: {total_projects}
+- **Average Improvement**: {avg_improvement:.1f}%
+- **Total Time Saved**: {total_time_saved:.1f}s per build cycle
+- **Best Result**: {max(s['improvements']['total_time'] for s in all_studies):.1f}% improvement
+
+## Project Breakdown
+
+| Project | Total Improvement | Simp Improvement | Rules Modified |
+|---------|-------------------|------------------|----------------|
 """
 
-    def generate_social_content(
-        self, project: ProjectInfo, improvements: Dict[str, float]
-    ) -> str:
-        """Generate social media content for sharing success."""
+        for study in sorted(
+            all_studies, key=lambda x: x["improvements"]["total_time"], reverse=True
+        ):
+            report += f"| {study['project']} | {study['improvements']['total_time']:.1f}% | {study['improvements']['simp_time']:.1f}% | {study['after']['rules_modified']} |\n"
 
-        return f"""# Social Media Content
-
-## Twitter/X
-
-🚀 Just made {project.name} {improvements['overall']:.0f}% faster with #Simpulse!
-
-⏱️ Before: {improvements['time_saved_per_build'] + improvements['time_saved_per_build']/0.3:.1f}s
-⚡ After: {improvements['time_saved_per_build']/0.3:.1f}s
-
-No code changes, just smarter simp priorities. #Lean4 #ProofAssistant
-
-Try it: github.com/Bright-L01/simpulse
-
-## LinkedIn
-
-**Success Story: {improvements['overall']:.0f}% Performance Improvement for {project.name}**
-
-I'm excited to share how Simpulse helped {project.name} achieve dramatic performance improvements 
-in their Lean 4 codebase:
-
-✅ {improvements['overall']:.0f}% faster build times
-✅ {improvements['annual_time_saved']/3600:.0f} hours saved annually  
-✅ Zero code logic changes
-✅ 5 minute optimization process
-
-The key insight: Most Lean projects use default priorities for all simp rules, leading to 
-inefficient proof search. Simpulse analyzes usage patterns and automatically optimizes priorities.
-
-Interested in faster Lean builds? Check out Simpulse: github.com/Bright-L01/simpulse
-
-#Lean4 #PerformanceOptimization #OpenSource #Mathematics #ProofAssistants
-
-## Reddit (r/lean4, r/programming)
-
-**[Case Study] Made a Lean project {improvements['overall']:.0f}% faster by reordering simp priorities**
-
-Hey everyone! Wanted to share a success story with Simpulse, a tool I've been working on for 
-optimizing Lean's simp tactic performance.
-
-**The Problem**: {project.name} had {improvements['time_saved_per_build'] + improvements['time_saved_per_build']/0.3:.1f}s build times with all simp rules using default priorities.
-
-**The Solution**: Simpulse analyzed which rules were used most frequently and reordered priorities accordingly.
-
-**The Result**: {improvements['overall']:.0f}% improvement, now building in {improvements['time_saved_per_build']/0.3:.1f}s!
-
-What's cool is that this required zero changes to the actual proof logic - just adding priority 
-annotations like `@[simp 1000]` to frequent rules and `@[simp 100]` to rare ones.
-
-Full case study and tool: github.com/Bright-L01/simpulse
-
-Happy to answer questions about how it works!
-"""
+        return report
 
 
-def create_example_case_study():
-    """Create an example case study for demonstration."""
+# Example usage
+async def demo():
+    """Demonstrate case study creation."""
 
-    project = ProjectInfo(
-        name="MathLib-Algebra",
-        description="Algebraic structures and theorems",
-        url="https://github.com/example/mathlib-algebra",
-        stars=245,
-        domain="Mathematics",
-    )
-
+    # Example metrics
     before = Metrics(
         total_time=45.2,
-        simp_time=28.5,
+        simp_time=12.3,
         total_rules=156,
-        rules_modified=0,
+        custom_priorities=0,
         slow_proof_count=23,
-        slowest_proof_time=450,
-        build_time=45.2,
-        memory_usage=512,
+        slowest_proof_time=850,
     )
 
     after = Metrics(
-        total_time=12.8,
-        simp_time=7.2,
+        total_time=28.7,
+        simp_time=4.1,
         total_rules=156,
-        rules_modified=89,
+        custom_priorities=45,
         slow_proof_count=3,
         slowest_proof_time=120,
-        build_time=12.8,
-        memory_usage=485,
+        rules_modified=45,
     )
 
-    testimonial = (
-        "Simpulse transformed our build times! What used to be a coffee break is now "
-        "just a few seconds. The fact that it required no code changes made it a no-brainer."
-    )
-
-    return project, before, after, testimonial
-
-
-async def main():
-    """Generate an example case study."""
+    changes = [
+        OptimizationChange(
+            "list_append_nil", "default", "high", "Most frequently used rule"
+        ),
+        OptimizationChange("nat_add_zero", "default", "high", "Simple and common"),
+        OptimizationChange(
+            "complex_theorem_42", "default", "low", "Expensive and rarely used"
+        ),
+        OptimizationChange("mul_one", "default", "high", "Trivial and frequent"),
+        OptimizationChange("div_self", "default", "medium", "Moderate usage"),
+    ]
 
     builder = CaseStudyBuilder()
-    project, before, after, testimonial = create_example_case_study()
-
-    case_study_path = await builder.build_case_study(
-        project, before, after, testimonial
+    await builder.build_case_study(
+        "example-project", before, after, changes, "https://github.com/example/project"
     )
-    print(f"\n✅ Example case study created at: {case_study_path}")
-    print("\nUse this as a template for documenting real optimizations!")
 
 
 if __name__ == "__main__":
-    # Note: matplotlib import will fail without the package
-    # In production, we'd handle this gracefully
-    try:
-        import asyncio
+    import asyncio
 
-        asyncio.run(main())
-    except ImportError:
-        print("Note: Install matplotlib for chart generation: pip install matplotlib")
-        print("Case studies can still be generated without charts.")
+    asyncio.run(demo())

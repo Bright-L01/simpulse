@@ -9,12 +9,13 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from simpulse.evolution.evolution_engine import EvolutionEngine
-from simpulse.evolution.models import OptimizationResult, SimpRule
-from simpulse.evolution.models_v2 import (
+from simpulse.evolution.models import (
     Candidate,
     EvolutionHistory,
     FitnessScore,
+    OptimizationResult,
     Population,
+    SimpRule,
 )
 
 

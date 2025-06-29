@@ -7,12 +7,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from simpulse.evolution.evolution_engine import OptimizationResult
-from simpulse.evolution.models_v2 import (
-    Candidate,
-    EvolutionHistory,
-    FitnessScore,
-    GenerationResult,
-)
+from simpulse.evolution.models import EvolutionHistory, GenerationResult
 from simpulse.reporting.report_generator import (
     PLOTLY_AVAILABLE,
     Dashboard,
