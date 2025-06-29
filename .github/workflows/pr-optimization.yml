@@ -1,0 +1,214 @@
+name: 'PR Simp Optimization'
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - '**/*.lean'
+      - 'lakefile.lean'
+      - 'lakefile.toml'
+  
+  # Manual trigger for existing PRs
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to optimize'
+        required: true
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has-lean-changes: ${{ steps.changes.outputs.lean }}
+      modules: ${{ steps.modules.outputs.modules }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Detect file changes
+      id: changes
+      uses: dorny/paths-filter@v2
+      with:
+        filters: |
+          lean:
+            - '**/*.lean'
+            - 'lakefile.lean'
+            - 'lakefile.toml'
+    
+    - name: Extract affected modules
+      id: modules
+      if: steps.changes.outputs.lean == 'true'
+      run: |
+        # Get list of changed .lean files
+        CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} -- '*.lean')
+        
+        # Convert to module names
+        MODULES=""
+        for file in $CHANGED_FILES; do
+          if [[ $file == *.lean ]]; then
+            # Convert path to module name
+            module=$(echo "$file" | sed 's/\.lean$//' | sed 's/\//./g')
+            if [[ -n "$MODULES" ]]; then
+              MODULES="$MODULES,$module"
+            else
+              MODULES="$module"
+            fi
+          fi
+        done
+        
+        if [[ -z "$MODULES" ]]; then
+          MODULES="auto"
+        fi
+        
+        echo "modules=$MODULES" >> $GITHUB_OUTPUT
+        echo "Detected modules to optimize: $MODULES"
+
+  optimize:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-lean-changes == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Add optimization comment
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number
+          });
+          
+          // Check if we already have a simpulse comment
+          const existingComment = comments.find(comment => 
+            comment.body.includes('🧬 Simpulse Optimization') && 
+            comment.user.type === 'Bot'
+          );
+          
+          const body = `## 🧬 Simpulse Optimization Starting
+          
+          Detected changes to Lean files in this PR. Starting automated simp rule optimization...
+          
+          **Target modules**: \`${{ needs.detect-changes.outputs.modules }}\`
+          
+          ⏳ *This may take several minutes. Results will be posted here when complete.*`;
+          
+          if (existingComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existingComment.id,
+              body: body
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+          }
+    
+    - name: Run Simpulse Optimization
+      id: simpulse
+      uses: ./.github/actions/simpulse
+      with:
+        modules: ${{ needs.detect-changes.outputs.modules }}
+        time-budget: '3600'  # Shorter budget for PR optimization
+        target-improvement: '10'  # Lower target for PR optimization
+        population-size: '20'
+        max-generations: '30'
+        create-pr: 'false'  # Don't create new PR, update existing one
+        cache-enabled: 'true'
+        progress-comments: 'true'
+        report-format: 'markdown'
+        parallel-workers: '2'
+        enable-telemetry: 'true'
+        dry-run: 'false'
+    
+    - name: Update PR with results
+      if: always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const success = '${{ steps.simpulse.outputs.success }}' === 'true';
+          const improvement = '${{ steps.simpulse.outputs.improvement-percent }}';
+          const generations = '${{ steps.simpulse.outputs.total-generations }}';
+          const execTime = '${{ steps.simpulse.outputs.execution-time }}';
+          const mutations = '${{ steps.simpulse.outputs.mutations-applied }}';
+          
+          let body;
+          if (success) {
+            body = `## ✅ Simpulse Optimization Completed
+            
+            **Results for this PR:**
+            - 📈 **Performance Improvement**: ${improvement}%
+            - 🧬 **Generations Evolved**: ${generations}
+            - ⏱️ **Optimization Time**: ${execTime}s
+            - 🔧 **Mutations Applied**: ${mutations}
+            
+            ${improvement > 5 ? '🎉 **Great improvement!** Consider merging these optimizations.' : 
+              improvement > 0 ? '✨ **Minor improvement detected.** Small gains are still valuable.' :
+              '📊 **No improvement found.** Current simp rules are already well-optimized.'}
+            
+            *Optimization completed at ${new Date().toISOString()}*`;
+          } else {
+            body = `## ❌ Simpulse Optimization Failed
+            
+            The automated optimization encountered an error and could not complete.
+            
+            **Details:**
+            - ⏱️ **Runtime**: ${execTime}s
+            - 🔍 **Next Steps**: Check the [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details
+            
+            *Failed at ${new Date().toISOString()}*`;
+          }
+          
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number
+          });
+          
+          const existingComment = comments.find(comment => 
+            comment.body.includes('🧬 Simpulse Optimization') && 
+            comment.user.type === 'Bot'
+          );
+          
+          if (existingComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: existingComment.id,
+              body: body
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
+          }
+    
+    - name: Upload PR optimization report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pr-optimization-report-${{ github.event.number }}
+        path: |
+          /app/reports/optimization_report.md
+          /app/reports/results.json
+        retention-days: 14

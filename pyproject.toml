@@ -4,48 +4,92 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simpulse"
-version = "0.1.0"
-description = "AlphaEvolve-style Simp Rule Optimizer for Lean 4"
-readme = "README.md"
-requires-python = ">=3.9"
-license = {text = "MIT"}
+version = "1.0.0"
+description = "ML-powered optimization for Lean 4's simp tactic"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Simpulse Team", email = "hello@simpulse.dev"}
 ]
+maintainers = [
+    {name = "Simpulse Team", email = "hello@simpulse.dev"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Code Generators",
+]
+keywords = ["lean4", "simp", "optimization", "theorem-proving", "machine-learning"]
+
 dependencies = [
-    "click>=8.0",
-    "anthropic>=0.18.0",
-    "pandas>=2.0",
-    "numpy>=1.24",
-    "pyyaml>=6.0",
-    "rich>=13.0",
-    "asyncio>=3.4",
-    "aiofiles>=23.0",
-    "matplotlib>=3.7",
-    "seaborn>=0.12",
-    "pytest>=7.0",
-    "pytest-asyncio>=0.21",
+    # Core functionality uses only Python standard library
 ]
 
 [project.optional-dependencies]
 dev = [
-    "black>=23.0",
-    "isort>=5.12",
-    "mypy>=1.0",
-    "ruff>=0.1",
-    "pre-commit>=3.0",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.20.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+    "flake8>=6.0.0",
+    "pre-commit>=3.0.0",
+]
+web = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.20.0",
+    "websockets>=11.0",
+]
+docs = [
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "sphinx-copybutton>=0.5.0",
+    "myst-parser>=1.0.0",
 ]
 
-[project.scripts]
-simpulse = "simpulse.cli:main"
+[project.urls]
+Homepage = "https://simpulse.dev"
+Documentation = "https://simpulse.dev/docs"
+Repository = "https://github.com/yourusername/simpulse"
+Issues = "https://github.com/yourusername/simpulse/issues"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[project.scripts]
+simpulse = "simpulse.cli_v2:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["simpulse"]
+
+[tool.setuptools.package-data]
+simpulse = ["*.json", "*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+asyncio_mode = "auto"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
+target-version = ['py38']
+include = '\.pyi?$'
 
-[tool.isort]
-profile = "black"
-line_length = 88
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [".git", "__pycache__", "build", "dist"]
+EOF < /dev/null
