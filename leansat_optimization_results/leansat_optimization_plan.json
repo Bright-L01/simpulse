@@ -1,0 +1,1106 @@
+{
+  "project": "leanprover/leansat",
+  "timestamp": "2025-06-29 13:26:12",
+  "total_rules": 134,
+  "rules_to_change": 122,
+  "changes": [
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 132,
+      "rule": "not_mem_cons",
+      "current_priority": 1000,
+      "new_priority": 2300,
+      "pattern": "list_base",
+      "reason": "Pattern: list_base, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 45,
+      "rule": "eval_append",
+      "current_priority": 1000,
+      "new_priority": 2100,
+      "pattern": "list_append",
+      "reason": "Pattern: list_append, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 18,
+      "rule": "Ref_cast",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 23,
+      "rule": "Ref_cast",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 28,
+      "rule": "Fanin_cast_ref",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 33,
+      "rule": "Fanin_cast_inv",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 38,
+      "rule": "GateInput_cast_lhs",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 43,
+      "rule": "GateInput_cast_rhs",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 54,
+      "rule": "unsat_nil_iff_false",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 60,
+      "rule": "unsat_nil_cons",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 153,
+      "rule": "not_mem_nil",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 154,
+      "rule": "mem_cons",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 161,
+      "rule": "mem_append",
+      "current_priority": 1000,
+      "new_priority": 1800,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 352,
+      "rule": "eval_eq",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 353,
+      "rule": "eval_ult",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 186,
+      "rule": "denote_mkConst",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 49,
+      "rule": "BinaryInput_asGateInput_lhs",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 53,
+      "rule": "BinaryInput_asGateInput_rhs",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 33,
+      "rule": "Clause",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 34,
+      "rule": "Clause",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 42,
+      "rule": "eval_nil",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 43,
+      "rule": "eval_succ",
+      "current_priority": 1000,
+      "new_priority": 1700,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/Util/Misc.lean",
+      "line": 9,
+      "rule": "Bool",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/ShiftRight.lean",
+      "line": 139,
+      "rule": "blastShiftRightConst_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "nat_arithmetic",
+      "reason": "Pattern: nat_arithmetic, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/ShiftRight.lean",
+      "line": 233,
+      "rule": "blastArithShiftRightConst_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "nat_arithmetic",
+      "reason": "Pattern: nat_arithmetic, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Extract.lean",
+      "line": 69,
+      "rule": "blastExtract_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "nat_arithmetic",
+      "reason": "Pattern: nat_arithmetic, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Basic.lean",
+      "line": 14,
+      "rule": "Assignment",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/RotateRight.lean",
+      "line": 82,
+      "rule": "blastRotateRight_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "nat_arithmetic",
+      "reason": "Pattern: nat_arithmetic, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/AIG/CNF.lean",
+      "line": 46,
+      "rule": "constToCNF_eval",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CNF.lean",
+      "line": 53,
+      "rule": "atomToCNF_eval",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CNF.lean",
+      "line": 62,
+      "rule": "gateToCNF_eval",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "sat_core",
+      "reason": "Pattern: sat_core, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 48,
+      "rule": "BinaryInput",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 146,
+      "rule": "denote_mkAtom",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/AIG/Relabel.lean",
+      "line": 70,
+      "rule": "relabel_size_eq_size",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStream.lean",
+      "line": 65,
+      "rule": "get_push_ref_eq",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedLemmas.lean",
+      "line": 81,
+      "rule": "mkAtomCached_eval_eq_mkAtom_eval",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedLemmas.lean",
+      "line": 157,
+      "rule": "mkConstCached_eval_eq_mkConst_eval",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedLemmas.lean",
+      "line": 324,
+      "rule": "mkGateCached_eval_eq_mkGate_eval",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 57,
+      "rule": "sat_nil",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 21,
+      "rule": "eval_relabel",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 54,
+      "rule": "eval_relabel",
+      "current_priority": 1000,
+      "new_priority": 1600,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/BitBlast.lean",
+      "line": 139,
+      "rule": "ofBoolExprCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/BitBlast.lean",
+      "line": 148,
+      "rule": "ofBoolExprCachedDirect_eval_eq_eval",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 3"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Impl/Add.lean",
+      "line": 28,
+      "rule": "lhs_cast",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Impl/Add.lean",
+      "line": 36,
+      "rule": "rhs_cast",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Impl/Add.lean",
+      "line": 44,
+      "rule": "cin_cast",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Pred.lean",
+      "line": 16,
+      "rule": "bitblast_denote_eq_eval",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 77,
+      "rule": "denote_mkNotCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 101,
+      "rule": "denote_mkAndCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 135,
+      "rule": "denote_mkOrCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 211,
+      "rule": "denote_mkBEqCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 250,
+      "rule": "denote_mkImpCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/If.lean",
+      "line": 64,
+      "rule": "denote_mkIfCached",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStreamOperator/Zip.lean",
+      "line": 24,
+      "rule": "denote_prefix_cast_ref",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStreamOperator/Map.lean",
+      "line": 24,
+      "rule": "denote_prefix_cast_ref",
+      "current_priority": 1000,
+      "new_priority": 1500,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/BitBlast.lean",
+      "line": 127,
+      "rule": "ofBoolExprCached",
+      "current_priority": 1000,
+      "new_priority": 1400,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/Lemmas.lean",
+      "line": 88,
+      "rule": "denote_mkGate",
+      "current_priority": 1000,
+      "new_priority": 1400,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/AIG/CachedGatesLemmas.lean",
+      "line": 171,
+      "rule": "denote_mkXorCached",
+      "current_priority": 1000,
+      "new_priority": 1400,
+      "pattern": "aig",
+      "reason": "Pattern: aig, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Add.lean",
+      "line": 18,
+      "rule": "denote_mkFullAdderOut",
+      "current_priority": 1000,
+      "new_priority": 1300,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Add.lean",
+      "line": 32,
+      "rule": "denote_mkFullAdderCarry",
+      "current_priority": 1000,
+      "new_priority": 1300,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/GetLsb.lean",
+      "line": 15,
+      "rule": "blastGetLsb_denote_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1300,
+      "pattern": "bool",
+      "reason": "Pattern: bool, Complexity: 5"
+    },
+    {
+      "file": "LeanSAT/AIG/RelabelNat.lean",
+      "line": 324,
+      "rule": "relabelNat",
+      "current_priority": 1000,
+      "new_priority": 1300,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/AIG/RelabelNat.lean",
+      "line": 328,
+      "rule": "relabelNat_size_eq_size",
+      "current_priority": 1000,
+      "new_priority": 1300,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/Basic.lean",
+      "line": 68,
+      "rule": "eval_literal",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/Basic.lean",
+      "line": 69,
+      "rule": "eval_const",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/Basic.lean",
+      "line": 70,
+      "rule": "eval_not",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BoolExpr/Basic.lean",
+      "line": 71,
+      "rule": "eval_gate",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 83,
+      "rule": "eval_and",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 84,
+      "rule": "eval_or",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 85,
+      "rule": "eval_xor",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 86,
+      "rule": "eval_add",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 87,
+      "rule": "eval_mul",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 155,
+      "rule": "eval_not",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 283,
+      "rule": "eval_const",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 416,
+      "rule": "eval_literal",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 417,
+      "rule": "eval_const",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 418,
+      "rule": "eval_not",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 419,
+      "rule": "eval_gate",
+      "current_priority": 1000,
+      "new_priority": 1200,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 1"
+    },
+    {
+      "file": "LeanSAT/Util/Misc.lean",
+      "line": 16,
+      "rule": "Prod",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/Util/Misc.lean",
+      "line": 20,
+      "rule": "Prod",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 157,
+      "rule": "eval_shiftLeftConst",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 161,
+      "rule": "eval_shiftRightConst",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 165,
+      "rule": "eval_rotateLeft",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 169,
+      "rule": "eval_rotateRight",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 173,
+      "rule": "eval_arithShiftRightConst",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 279,
+      "rule": "eval_var",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 286,
+      "rule": "eval_zeroExtend",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 290,
+      "rule": "eval_extract",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 294,
+      "rule": "eval_bin",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 298,
+      "rule": "eval_un",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 302,
+      "rule": "eval_append",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 306,
+      "rule": "eval_replicate",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 310,
+      "rule": "eval_signExtend",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 314,
+      "rule": "eval_shiftLeft",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 318,
+      "rule": "eval_shiftRight",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 393,
+      "rule": "eval_bin",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/Basic.lean",
+      "line": 397,
+      "rule": "eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Var.lean",
+      "line": 108,
+      "rule": "blastVar_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Const.lean",
+      "line": 108,
+      "rule": "blastConst_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/BitBlast/BVExpr/BitBlast/Lemmas/Expr.lean",
+      "line": 207,
+      "rule": "bitblast_denote_eq_eval_getLsb",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/CNF.lean",
+      "line": 106,
+      "rule": "projectLeftAssign_property",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/AIG/CNF.lean",
+      "line": 123,
+      "rule": "satAssignment_inl",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/AIG/CNF.lean",
+      "line": 556,
+      "rule": "State",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/AIG/LawfulStreamOperator.lean",
+      "line": 54,
+      "rule": "denote_input_entry",
+      "current_priority": 1000,
+      "new_priority": 900,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/LawfulStreamOperator.lean",
+      "line": 62,
+      "rule": "denote_cast_entry",
+      "current_priority": 1000,
+      "new_priority": 900,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/LawfulStreamOperator.lean",
+      "line": 75,
+      "rule": "denote_input_stream",
+      "current_priority": 1000,
+      "new_priority": 900,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/LawfulOperator.lean",
+      "line": 126,
+      "rule": "denote_input_entry",
+      "current_priority": 1000,
+      "new_priority": 900,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/LawfulOperator.lean",
+      "line": 134,
+      "rule": "denote_cast_entry",
+      "current_priority": 1000,
+      "new_priority": 900,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/Relabel.lean",
+      "line": 94,
+      "rule": "denote_relabel",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStream.lean",
+      "line": 86,
+      "rule": "get_cast",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStream.lean",
+      "line": 164,
+      "rule": "lhs_get_cast",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStream.lean",
+      "line": 172,
+      "rule": "rhs_get_cast",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStreamOperator/Zip.lean",
+      "line": 252,
+      "rule": "denote_zip",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStreamOperator/Map.lean",
+      "line": 221,
+      "rule": "denote_map",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/AIG/RefStreamOperator/Fold.lean",
+      "line": 165,
+      "rule": "denote_fold_and",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "nat_other",
+      "reason": "Pattern: nat_other, Complexity: 4"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 73,
+      "rule": "not_mem_nil",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Basic.lean",
+      "line": 74,
+      "rule": "mem_cons",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 25,
+      "rule": "relabel_id",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 36,
+      "rule": "relabel_relabel",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 58,
+      "rule": "relabel_append",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 61,
+      "rule": "relabel_relabel",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    },
+    {
+      "file": "LeanSAT/CNF/Relabel.lean",
+      "line": 64,
+      "rule": "relabel_id",
+      "current_priority": 1000,
+      "new_priority": 1100,
+      "pattern": "other",
+      "reason": "Pattern: other, Complexity: 2"
+    }
+  ]
+}

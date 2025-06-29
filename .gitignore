@@ -57,3 +57,6 @@ temp/
 .env
 config/secrets.yaml
 mathlib4/
+
+# Analyzed repositories
+analyzed_repos/

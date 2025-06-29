@@ -1,0 +1,35 @@
+🔍 Analyzing duality...
+   Found 9 Lean files
+   Found 24 simp rules
+
+
+Simp Performance Health Check
+============================
+
+Overall Health: 🟡 Fair
+Action: Optimization would help
+
+Statistics:
+-----------
+Total simp rules: 24
+Custom priorities: 0 (0%)
+Default priorities: 24
+
+Optimization Potential: 60/100
+Estimated Improvement: 63%
+
+Recommendations:
+----------------
+🔴 CRITICAL: All simp rules use default priority. This is the #1 optimization opportunity!
+💡 Quick win: Give frequently-used rules high priority
+🟡 Most rules use default priority. Consider prioritizing common patterns.
+💡 No high-priority rules found. Mark simple, frequent rules as high priority.
+
+Next Steps:
+-----------
+1. Run: simpulse optimize --project simpulse
+2. Review suggested changes
+3. Measure improvement
+4. Share your success story!
+
+📄 Full report saved to analyzed_repos/duality/simp_health_report.txt
