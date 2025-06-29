@@ -1,0 +1,82 @@
+{
+  "platforms": {
+    "Zulip": [
+      {
+        "title": "Simpulse - Automatic simp rule priority optimization",
+        "url": "https://leanprover.zulipchat.com/#narrow/stream/general",
+        "content_summary": "Introduced Simpulse tool, shared leansat case study",
+        "timestamp": "2025-06-29T14:13:08.949814",
+        "status": "posted"
+      }
+    ]
+  },
+  "projects": {
+    "leanprover/leansat": {
+      "first_contact": "2025-06-29T14:13:08.950013",
+      "status": "pr_prepared",
+      "history": [
+        {
+          "timestamp": "2025-06-29T14:13:08.950017",
+          "status": "pr_prepared",
+          "details": {
+            "pr_branch": "simpulse-optimization",
+            "rules_optimized": 37,
+            "estimated_improvement": 63
+          }
+        }
+      ],
+      "last_update": "2025-06-29T14:13:08.950016"
+    },
+    "AndrasKovacs/smalltt": {
+      "first_contact": "2025-06-29T14:13:08.950153",
+      "status": "contacted",
+      "history": [
+        {
+          "timestamp": "2025-06-29T14:13:08.950158",
+          "status": "contacted",
+          "details": {
+            "method": "GitHub issue",
+            "message_file": "outreach_messages/smalltt.txt"
+          }
+        }
+      ],
+      "last_update": "2025-06-29T14:13:08.950157"
+    },
+    "madvorak/duality": {
+      "first_contact": "2025-06-29T14:13:08.950262",
+      "status": "contacted",
+      "history": [
+        {
+          "timestamp": "2025-06-29T14:13:08.950265",
+          "status": "contacted",
+          "details": {
+            "method": "GitHub issue",
+            "message_file": "outreach_messages/duality.txt"
+          }
+        }
+      ],
+      "last_update": "2025-06-29T14:13:08.950264"
+    },
+    "lean-dojo/LeanCopilot": {
+      "first_contact": "2025-06-29T14:13:08.950371",
+      "status": "contacted",
+      "history": [
+        {
+          "timestamp": "2025-06-29T14:13:08.950373",
+          "status": "contacted",
+          "details": {
+            "method": "GitHub issue",
+            "message_file": "outreach_messages/LeanCopilot.txt"
+          }
+        }
+      ],
+      "last_update": "2025-06-29T14:13:08.950372"
+    }
+  },
+  "metrics": {
+    "total_outreach": 1,
+    "responses_received": 0,
+    "projects_optimized": 0,
+    "performance_improvements": []
+  }
+}
