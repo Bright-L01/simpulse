@@ -4,10 +4,12 @@
 
 Simpulse is an AlphaEvolve-style optimizer that uses evolutionary algorithms and Claude AI to automatically optimize simp rule performance in Lean 4 projects.
 
+[![Tests](https://github.com/Bright-L01/simpulse/workflows/Tests/badge.svg)](https://github.com/Bright-L01/simpulse/actions)
 [![GitHub Action](https://img.shields.io/badge/GitHub-Action-blue?logo=github)](https://github.com/marketplace/actions/simpulse-optimizer)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Lean 4](https://img.shields.io/badge/Lean-4.0+-purple.svg)](https://leanprover.github.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## ✨ Features
 
