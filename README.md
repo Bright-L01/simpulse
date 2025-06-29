@@ -1,320 +1,157 @@
-# 🧬 Simpulse
-
-**Evolutionary Simp Optimization for Lean 4**
-
-Simpulse is an AlphaEvolve-style optimizer that uses evolutionary algorithms and Claude AI to automatically optimize simp rule performance in Lean 4 projects.
+# Simpulse: Experimental Simp Rule Optimizer for Lean 4
 
 [![Tests](https://github.com/Bright-L01/simpulse/workflows/Tests/badge.svg)](https://github.com/Bright-L01/simpulse/actions)
-[![GitHub Action](https://img.shields.io/badge/GitHub-Action-blue?logo=github)](https://github.com/marketplace/actions/simpulse-optimizer)
+[![Status](https://img.shields.io/badge/status-experimental-orange.svg)](https://github.com/Bright-L01/simpulse)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Lean 4](https://img.shields.io/badge/Lean-4.0+-purple.svg)](https://leanprover.github.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## ✨ Features
+⚠️ **Status: Experimental Proof of Concept** - Not yet validated on real projects
 
-- 🧬 **Evolutionary Algorithm**: Multi-objective optimization with genetic operators
-- 🤖 **Claude AI Integration**: Intelligent mutation suggestions via Claude Code CLI
-- 📊 **Performance Metrics**: Comprehensive profiling and fitness evaluation
-- 🔄 **GitHub Integration**: Automated PR creation with optimization results
-- 📈 **Rich Reporting**: Interactive HTML dashboards and detailed analytics
-- ⚡ **Parallel Evaluation**: Multi-core fitness evaluation for speed
-- 🔧 **Continuous Optimization**: Scheduled and event-driven optimization
-- 🐳 **Production Ready**: Docker support and GitHub Actions integration
+## What Simpulse Does
 
-## 🚀 Quick Start
+Simpulse aims to optimize the performance of Lean 4's `simp` tactic by intelligently reordering rule priorities based on usage patterns. It uses evolutionary algorithms and Claude AI to suggest optimizations.
 
-### Installation
+## Current Status
+
+✅ **What's Working:**
+- Basic Lean file compilation and profiling
+- Simp rule extraction from Lean source code
+- Evolutionary algorithm framework
+- Claude AI integration for mutations
+- Infrastructure and CI/CD setup
+
+⚠️ **What's Not Proven:**
+- Actual performance improvements on real Lean projects
+- Integration with mathlib4
+- Scalability to large codebases
+- Production readiness
+
+❌ **Known Issues:**
+- 95 unused functions in codebase
+- Security issues (exec() usage, potential hardcoded secrets)
+- Test coverage only ~30%
+- No real-world validation data
+
+## The Theory
+
+Simpulse reorders simp rule priorities based on:
+1. **Frequency**: Rules used often should be checked first
+2. **Complexity**: Simple rules before complex ones  
+3. **Dependencies**: Related rules grouped together
+
+Example transformation:
+```lean
+-- Before: All rules equal priority
+@[simp] theorem add_zero : n + 0 = n
+@[simp] theorem add_comm : a + b = b + a
+
+-- After: Optimized priorities  
+@[simp high] theorem add_zero : n + 0 = n     -- Simple & frequent
+@[simp low] theorem add_comm : a + b = b + a   -- Complex & rare
+```
+
+## Quick Test (Experimental)
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/simpulse.git
+# Clone and install
+git clone https://github.com/Bright-L01/simpulse.git
 cd simpulse
-
-# Install with pip
 pip install -e .
+
+# Test on a minimal Lean file
+python scripts/validate_lean_integration.py
+
+# Try on your project (may not work)
+simpulse optimize YourFile.lean  # Not fully implemented
 ```
 
-### Prerequisites
+## Validation Results
 
-1. **Lean 4 and Lake**:
-   ```bash
-   curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh
-   ```
+Recent validation on minimal Lean files:
+- ✅ Successfully compiled and profiled test Lean files
+- ✅ Extracted 3-4 simp rules from test code
+- ⚠️ Performance improvements only shown in simulations (18-30%)
+- ❌ No validation on real projects or mathlib4
 
-2. **Claude Code CLI** (recommended) or Claude API access
+## Help Wanted
 
-### Basic Usage
+This is an experimental research project. We need:
+- **Lean users** to test on real projects
+- **Performance data** from actual codebases
+- **Bug reports** when it inevitably breaks
+- **Contributors** to help validate the approach
 
-```bash
-# Optimize all modules automatically
-simpulse optimize --modules auto
-
-# Optimize specific modules  
-simpulse optimize --modules "MyProject.Core,MyProject.Data"
-
-# Create GitHub PR with results
-simpulse optimize --modules auto --create-pr
-```
-
-### Expected Results
-
-- **Performance Improvement**: 15-25% typical gains
-- **Optimization Time**: 1-2 hours for standard projects
-- **Success Rate**: 85%+ of projects see measurable improvement
-
-## 🎯 How It Works
-
-1. **Profile Extraction**: Analyzes Lean simp performance using trace profilers
-2. **Rule Discovery**: Automatically extracts simp rules from source code
-3. **Mutation Generation**: Claude AI suggests intelligent rule modifications
-4. **Evolution Process**: Genetic algorithm optimizes rule configurations
-5. **Fitness Evaluation**: Multi-objective scoring of time, memory, and complexity
-6. **Result Application**: Best mutations applied and validated
-
-## 📋 GitHub Action Usage
-
-Add to your workflow (`.github/workflows/optimize.yml`):
-
-```yaml
-name: Optimize Simp Rules
-on:
-  schedule:
-    - cron: '0 2 * * 0'  # Weekly on Sunday
-  workflow_dispatch:
-
-jobs:
-  optimize:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Optimize Simp Rules
-      uses: ./.github/actions/simpulse
-      with:
-        modules: 'auto'
-        time-budget: '7200'
-        target-improvement: '15'
-        create-pr: 'true'
-        pr-branch: 'simpulse/optimize-${{ github.run_number }}'
-```
-
-## 🛠️ Configuration
-
-Create `~/.simpulse/config.toml`:
-
-```toml
-[optimization]
-population_size = 30
-generations = 50
-time_budget = 3600
-target_improvement = 15.0
-
-[claude]
-backend = "claude_code"  # or "api"
-
-[github]
-create_pr = true
-progress_comments = true
-```
-
-## 📊 Architecture
+## Technical Architecture
 
 ```
-┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
-│   Lean Source   │ -> │   Profiler   │ -> │  Rule Extractor │
-└─────────────────┘    └──────────────┘    └─────────────────┘
-                                                     │
-┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
-│     Results     │ <- │   Evolution  │ <- │  Claude Client  │
-└─────────────────┘    │    Engine    │    └─────────────────┘
-                       └──────────────┘
-                              │
-                    ┌─────────────────┐
-                    │ Fitness Evaluator│
-                    └─────────────────┘
+Lean File → Parse Rules → Profile Performance → Generate Mutations → Apply & Test
 ```
 
-## 🏗️ Project Structure
+Core modules:
+- `rule_extractor.py` - Extract simp rules from Lean files
+- `lean_runner.py` - Interface with Lean compiler
+- `evolution_engine.py` - Evolutionary optimization algorithm
+- `mutation_applicator.py` - Apply optimizations to code
 
-```
-simpulse/
-├── src/simpulse/
-│   ├── profiling/          # Lean profiler integration
-│   ├── claude/             # Claude AI client
-│   ├── evolution/          # Genetic algorithm engine
-│   ├── evaluation/         # Fitness evaluation
-│   ├── deployment/         # GitHub and CI/CD
-│   ├── monitoring/         # Metrics collection
-│   └── reporting/          # Report generation
-├── examples/               # Usage examples
-├── .github/actions/        # GitHub Action definition
-└── docker/                 # Production containers
-```
+## Known Limitations
 
-## 📈 Performance Benchmarks
+- Requires Lean 4.8.0+ (tested only on 4.20.0)
+- No real-world performance data
+- May not work with all Lean syntax
+- Large files may take significant time
+- No integration with Lake build system
+- ~40% of codebase is unused/experimental
 
-| Project Size | Avg Improvement | Time Budget | Success Rate |
-|-------------|----------------|-------------|-------------|
-| Small (<1K LOC) | 12.3% | 30 min | 91% |
-| Medium (1-10K LOC) | 18.7% | 90 min | 87% |
-| Large (>10K LOC) | 24.1% | 180 min | 83% |
+## Contributing
 
-## 🔧 Advanced Features
+This project needs validation before it can be useful. If you're interested:
+1. Try it on your Lean project
+2. Report what breaks
+3. Share performance data (if any)
+4. Help fix the core issues
 
-### Continuous Optimization
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-```python
-from simpulse.deployment import ContinuousOptimizer
+## Production Readiness
 
-optimizer = ContinuousOptimizer(config)
-await optimizer.start_service()
+**Current Status: NOT READY** ❌
 
-# Schedule weekly optimization
-await optimizer.schedule_optimization(
-    trigger_id="weekly",
-    modules=["MyProject.Core"],
-    cron_expression="0 2 * * 0"
-)
-```
+Critical issues that must be fixed:
+1. Validate performance improvements on real Lean code
+2. Fix security issues (exec() usage, hardcoded secrets)
+3. Achieve 80%+ test coverage
+4. Remove ~40% unused code
+5. Add proper error handling
 
-### Custom Fitness Functions
+## FAQ
 
-```python
-config.optimization.fitness_weights = {
-    "time": 0.6,       # 60% weight on execution time
-    "memory": 0.2,     # 20% weight on memory usage  
-    "iterations": 0.15, # 15% weight on iteration count
-    "depth": 0.05      # 5% weight on search depth
-}
-```
+**Q: Does this actually work?**  
+A: The infrastructure works, but we have no proof it improves real Lean performance.
 
-### Metrics and Monitoring
+**Q: Is it safe to use?**  
+A: Use at your own risk. Always verify your proofs still compile.
 
-```python
-from simpulse.monitoring import MetricsCollector
+**Q: How much improvement can I expect?**  
+A: Unknown. Simulations suggest 18-30%, but this is unvalidated.
 
-metrics = MetricsCollector(enable_telemetry=True)
-await metrics.track_optimization_run(run_id, modules, config)
-```
+**Q: Why hasn't this been tested on mathlib4?**  
+A: We're validating the core concept on smaller files first.
 
-## 🎛️ CLI Reference
+## Roadmap
 
-```bash
-# Main commands
-simpulse optimize      # Run optimization
-simpulse serve         # Start continuous service  
-simpulse validate      # Check environment
-simpulse report        # Generate reports
+1. ✅ Build infrastructure
+2. ✅ Create proof of concept
+3. ✅ Validate on minimal Lean files
+4. ⬜ **Validate on real projects** ← Current focus
+5. ⬜ Clean up codebase
+6. ⬜ Test on mathlib4
+7. ⬜ Production release
 
-# Common options
---modules TEXT         # Modules to optimize
---time-budget INT      # Time budget in seconds
---target-improvement FLOAT  # Target improvement %
---create-pr           # Create GitHub PR
---dry-run             # Test mode
---parallel-workers INT # Parallel evaluations
-```
+## License
 
-## 🧪 Examples
-
-See [`examples/`](examples/) directory for:
-
-- [Basic Usage](examples/basic-usage.py) - Getting started guide
-- [Advanced Features](examples/advanced-features.py) - Production features
-- [GitHub Workflows](examples/README.md#github-actions-examples) - CI/CD integration
-
-## 🐳 Docker Usage
-
-```bash
-# Build container
-docker build -t simpulse .
-
-# Run optimization
-docker run -v $(pwd):/workspace simpulse \
-  --modules auto \
-  --time-budget 3600 \
-  --create-pr true
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-```bash
-# Clone and setup
-git clone https://github.com/your-org/simpulse.git
-cd simpulse
-
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest tests/
-
-# Run linting
-black src/ tests/
-mypy src/
-```
-
-### Project Phases
-
-- ✅ **Phase 0**: Profiling infrastructure 
-- ✅ **Phase 1**: Claude integration and rule analysis
-- ✅ **Phase 2**: Evolution engine and mutation application
-- ✅ **Phase 3**: Production deployment and CI/CD
-
-## 📚 Documentation
-
-- [Configuration Guide](docs/configuration.md)
-- [GitHub Actions](docs/github-actions.md) 
-- [API Reference](docs/api.md)
-- [Performance Tuning](docs/performance.md)
-- [Troubleshooting](docs/troubleshooting.md)
-
-## 🔒 Security
-
-- No sensitive data in logs or telemetry
-- Sandboxed evaluation environments
-- Optional anonymous usage statistics
-- GitHub token scoped to repository access only
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Lean not found**: Install via elan
-2. **Claude unavailable**: Configure API or install Claude Code CLI
-3. **No improvements**: Try longer time budget or different modules
-4. **GitHub errors**: Check token permissions and repository access
-
-### Getting Help
-
-- 📖 Check [documentation](docs/)
-- 🐛 Open [GitHub issue](https://github.com/your-org/simpulse/issues)
-- 💬 Join [Discord community](https://discord.gg/simpulse)
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Lean 4 development team for the excellent theorem prover
-- Anthropic for Claude AI integration
-- AlphaEvolve paper for evolutionary optimization inspiration
-- Open source community for tools and libraries
-
-## 📊 Statistics
-
-- **Total Optimizations**: 10,000+ runs
-- **Average Improvement**: 19.2%
-- **Time Saved**: 2,400+ compute hours
-- **Active Users**: 150+ developers
-- **GitHub Stars**: 500+ ⭐
+MIT - See [LICENSE](LICENSE)
 
 ---
 
-**Ready to optimize your Lean proofs?** Start with `simpulse optimize --modules auto` 🚀
+**Note**: This is experimental software seeking validation. The claimed performance improvements are from simulations only and have not been validated on real Lean projects. Use with extreme caution.
