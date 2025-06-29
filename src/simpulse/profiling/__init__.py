@@ -5,15 +5,14 @@ particularly focusing on simp tactic performance.
 """
 
 from .lean_runner import LeanExecutionMode, LeanResult, LeanRunner
-from .trace_parser import (ProfileEntry, ProfileReport, SimpRewriteInfo,
-                           TraceParser)
+from .trace_parser import ProfileEntry, ProfileReport, SimpRewriteInfo, TraceParser
 
 __all__ = [
-    'LeanRunner',
-    'LeanResult', 
-    'LeanExecutionMode',
-    'TraceParser',
-    'ProfileReport',
-    'ProfileEntry',
-    'SimpRewriteInfo'
+    "LeanRunner",
+    "LeanResult",
+    "LeanExecutionMode",
+    "TraceParser",
+    "ProfileReport",
+    "ProfileEntry",
+    "SimpRewriteInfo",
 ]

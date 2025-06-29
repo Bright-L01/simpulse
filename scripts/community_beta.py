@@ -12,30 +12,25 @@ This script handles:
 """
 
 import argparse
-import hashlib
 import json
 import logging
-import os
 import secrets
-import smtplib
 import sqlite3
 import subprocess
-import sys
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime, timedelta
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, Optional
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class BetaTester:
     """Beta program participant."""
+
     email: str
     name: str
     github_username: Optional[str]
@@ -50,6 +45,7 @@ class BetaTester:
 @dataclass
 class BetaFeedback:
     """Feedback from beta testers."""
+
     tester_email: str
     timestamp: datetime
     category: str  # bug, feature, performance, usability
@@ -63,6 +59,7 @@ class BetaFeedback:
 @dataclass
 class BetaMetrics:
     """Beta program metrics."""
+
     total_testers: int
     active_testers: int
     total_feedback: int
@@ -74,10 +71,10 @@ class BetaMetrics:
 
 class CommunityBetaManager:
     """Manage Simpulse community beta program."""
-    
+
     def __init__(self, project_root: Path, data_dir: Optional[Path] = None):
         """Initialize beta program manager.
-        
+
         Args:
             project_root: Root directory of the project
             data_dir: Directory for beta program data
@@ -85,17 +82,18 @@ class CommunityBetaManager:
         self.project_root = project_root
         self.data_dir = data_dir or project_root / "beta_program"
         self.data_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self.db_path = self.data_dir / "beta_program.db"
         self.init_database()
-    
+
     def init_database(self) -> None:
         """Initialize beta program database."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Create testers table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS testers (
                 email TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
@@ -107,10 +105,12 @@ class CommunityBetaManager:
                 feedback_count INTEGER DEFAULT 0,
                 last_active TIMESTAMP
             )
-        """)
-        
+        """
+        )
+
         # Create feedback table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS feedback (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tester_email TEXT,
@@ -123,10 +123,12 @@ class CommunityBetaManager:
                 status TEXT DEFAULT 'new',
                 FOREIGN KEY (tester_email) REFERENCES testers(email)
             )
-        """)
-        
+        """
+        )
+
         # Create metrics table
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS metrics (
                 date DATE PRIMARY KEY,
                 total_testers INTEGER,
@@ -134,52 +136,53 @@ class CommunityBetaManager:
                 daily_feedback INTEGER,
                 satisfaction_score REAL
             )
-        """)
-        
+        """
+        )
+
         conn.commit()
         conn.close()
-    
+
     async def launch_beta_program(self) -> bool:
         """Launch the community beta program."""
         logger.info("Launching Simpulse Community Beta Program...")
-        
+
         try:
             # Step 1: Create beta documentation
             logger.info("\n📝 Creating beta documentation...")
             self.create_beta_docs()
-            
+
             # Step 2: Setup feedback system
             logger.info("\n💬 Setting up feedback system...")
             self.setup_feedback_system()
-            
+
             # Step 3: Create beta builds
             logger.info("\n🏗️ Creating beta builds...")
             self.create_beta_builds()
-            
+
             # Step 4: Setup communication channels
             logger.info("\n📢 Setting up communication channels...")
             self.setup_communication()
-            
+
             # Step 5: Create onboarding materials
             logger.info("\n🎓 Creating onboarding materials...")
             self.create_onboarding()
-            
+
             # Step 6: Launch announcement
             logger.info("\n🚀 Preparing launch announcement...")
             self.create_announcement()
-            
+
             logger.info("\n✅ Beta program launched successfully!")
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to launch beta program: {e}")
             return False
-    
+
     def create_beta_docs(self) -> None:
         """Create beta program documentation."""
         docs_dir = self.data_dir / "docs"
         docs_dir.mkdir(exist_ok=True)
-        
+
         # Beta program overview
         overview_path = docs_dir / "BETA_OVERVIEW.md"
         overview_content = """# Simpulse Beta Program
@@ -223,7 +226,7 @@ Simpulse is an ML-powered optimization tool for Lean 4's `simp` tactic that uses
 Thank you for helping make Simpulse better!
 """
         overview_path.write_text(overview_content)
-        
+
         # Beta tester guide
         guide_path = docs_dir / "BETA_GUIDE.md"
         guide_content = """# Beta Tester Guide
@@ -317,15 +320,15 @@ A: Beta versions are stable but use at your own discretion.
 A: Run `pip install --upgrade --pre simpulse`
 """
         guide_path.write_text(guide_content)
-        
+
         logger.info("✓ Beta documentation created")
-    
+
     def setup_feedback_system(self) -> None:
         """Setup feedback collection system."""
         # Create feedback form template
         feedback_dir = self.data_dir / "feedback"
         feedback_dir.mkdir(exist_ok=True)
-        
+
         # Web form template
         form_template = feedback_dir / "feedback_form.html"
         form_content = """<!DOCTYPE html>
@@ -425,7 +428,7 @@ A: Run `pip install --upgrade --pre simpulse`
 </html>
 """
         form_template.write_text(form_content)
-        
+
         # CLI feedback script
         cli_script = self.project_root / "src" / "simpulse" / "beta" / "feedback.py"
         cli_script.parent.mkdir(parents=True, exist_ok=True)
@@ -515,43 +518,42 @@ if __name__ == "__main__":
     submit_feedback()
 '''
         cli_script.write_text(cli_content)
-        
+
         logger.info("✓ Feedback system configured")
-    
+
     def create_beta_builds(self) -> None:
         """Create beta distribution builds."""
         builds_dir = self.data_dir / "builds"
         builds_dir.mkdir(exist_ok=True)
-        
+
         # Create beta version identifier
         beta_version = "1.0.0b1"
-        
+
         # Update version for beta
         version_file = self.project_root / "src" / "simpulse" / "__init__.py"
         if version_file.exists():
             content = version_file.read_text()
             content = content.replace(
-                '__version__ = "1.0.0"',
-                f'__version__ = "{beta_version}"'
+                '__version__ = "1.0.0"', f'__version__ = "{beta_version}"'
             )
             version_file.write_text(content)
-        
+
         # Build beta distribution
         try:
             subprocess.run(
                 ["python", "-m", "build", "--outdir", str(builds_dir)],
                 cwd=self.project_root,
-                check=True
+                check=True,
             )
             logger.info(f"✓ Beta build created: {beta_version}")
         except subprocess.CalledProcessError:
             logger.warning("Could not create beta build")
-    
+
     def setup_communication(self) -> None:
         """Setup communication channels for beta testers."""
         comm_dir = self.data_dir / "communication"
         comm_dir.mkdir(exist_ok=True)
-        
+
         # Discord webhook configuration
         discord_config = comm_dir / "discord_config.json"
         discord_content = {
@@ -560,21 +562,21 @@ if __name__ == "__main__":
                 "announcements": "beta-announcements",
                 "general": "beta-general",
                 "bugs": "beta-bugs",
-                "features": "beta-features"
+                "features": "beta-features",
             },
             "roles": {
                 "beta_tester": "Beta Tester",
-                "active_tester": "Active Beta Tester"
-            }
+                "active_tester": "Active Beta Tester",
+            },
         }
-        
-        with open(discord_config, 'w') as f:
+
+        with open(discord_config, "w") as f:
             json.dump(discord_content, f, indent=2)
-        
+
         # Email templates
         templates_dir = comm_dir / "email_templates"
         templates_dir.mkdir(exist_ok=True)
-        
+
         # Welcome email
         welcome_template = templates_dir / "welcome.html"
         welcome_content = """<html>
@@ -615,14 +617,14 @@ if __name__ == "__main__":
 </html>
 """
         welcome_template.write_text(welcome_content)
-        
+
         logger.info("✓ Communication channels configured")
-    
+
     def create_onboarding(self) -> None:
         """Create onboarding materials for beta testers."""
         onboarding_dir = self.data_dir / "onboarding"
         onboarding_dir.mkdir(exist_ok=True)
-        
+
         # Quick start video script
         video_script = onboarding_dir / "video_script.md"
         script_content = """# Simpulse Beta Onboarding Video Script
@@ -655,7 +657,7 @@ if __name__ == "__main__":
 "That's it! You're now ready to optimize your Lean 4 projects. We can't wait to see what you discover!"
 """
         video_script.write_text(script_content)
-        
+
         # Interactive tutorial
         tutorial_path = onboarding_dir / "interactive_tutorial.py"
         tutorial_content = '''#!/usr/bin/env python3
@@ -724,14 +726,14 @@ if __name__ == "__main__":
     asyncio.run(main())
 '''
         tutorial_path.write_text(tutorial_content)
-        
+
         logger.info("✓ Onboarding materials created")
-    
+
     def create_announcement(self) -> None:
         """Create beta program announcement."""
         announce_dir = self.data_dir / "announcements"
         announce_dir.mkdir(exist_ok=True)
-        
+
         # Main announcement
         announcement = announce_dir / "beta_launch.md"
         announcement_content = """# 🚀 Simpulse Beta Program is Now Open!
@@ -799,14 +801,14 @@ Join us in making Lean 4 faster for everyone! 🎉
 """
         announcement_content = announcement_content.format(
             date=datetime.now().strftime("%B %d, %Y"),
-            release_date=(datetime.now() + timedelta(weeks=6)).strftime("%B %d, %Y")
+            release_date=(datetime.now() + timedelta(weeks=6)).strftime("%B %d, %Y"),
         )
         announcement.write_text(announcement_content)
-        
+
         # Social media posts
         social_dir = announce_dir / "social_media"
         social_dir.mkdir(exist_ok=True)
-        
+
         # Twitter/X post
         twitter_post = social_dir / "twitter.txt"
         twitter_content = """🚀 Excited to announce the Simpulse beta program!
@@ -821,7 +823,7 @@ Apply now: https://beta.simpulse.dev
 
 #FormalVerification #TheoremProving"""
         twitter_post.write_text(twitter_content)
-        
+
         # Lean Zulip post
         zulip_post = social_dir / "lean_zulip.md"
         zulip_content = """**Simpulse Beta Program Launch**
@@ -852,19 +854,25 @@ Questions? Feel free to ask here or email beta@simpulse.dev
 Looking forward to your participation! 🎉
 """
         zulip_post.write_text(zulip_content)
-        
+
         logger.info("✓ Beta announcements created")
-    
-    def register_tester(self, email: str, name: str, github_username: Optional[str] = None,
-                       organization: Optional[str] = None, use_case: str = "") -> str:
+
+    def register_tester(
+        self,
+        email: str,
+        name: str,
+        github_username: Optional[str] = None,
+        organization: Optional[str] = None,
+        use_case: str = "",
+    ) -> str:
         """Register a new beta tester.
-        
+
         Returns:
             Access token for the tester
         """
         # Generate unique access token
         access_token = secrets.token_urlsafe(32)
-        
+
         tester = BetaTester(
             email=email,
             name=name,
@@ -872,83 +880,89 @@ Looking forward to your participation! 🎉
             organization=organization,
             use_case=use_case,
             joined_date=datetime.now(),
-            access_token=access_token
+            access_token=access_token,
         )
-        
+
         # Save to database
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
-        cursor.execute("""
+
+        cursor.execute(
+            """
             INSERT OR REPLACE INTO testers 
             (email, name, github_username, organization, use_case, joined_date, access_token)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            tester.email, tester.name, tester.github_username,
-            tester.organization, tester.use_case,
-            tester.joined_date.isoformat(), tester.access_token
-        ))
-        
+        """,
+            (
+                tester.email,
+                tester.name,
+                tester.github_username,
+                tester.organization,
+                tester.use_case,
+                tester.joined_date.isoformat(),
+                tester.access_token,
+            ),
+        )
+
         conn.commit()
         conn.close()
-        
+
         # Send welcome email
         self.send_welcome_email(tester)
-        
+
         logger.info(f"Registered beta tester: {email}")
         return access_token
-    
+
     def send_welcome_email(self, tester: BetaTester) -> None:
         """Send welcome email to new beta tester."""
         # This would integrate with email service
         # For now, save to file
         email_dir = self.data_dir / "emails_to_send"
         email_dir.mkdir(exist_ok=True)
-        
+
         email_file = email_dir / f"welcome_{tester.email.replace('@', '_at_')}.json"
         email_data = {
             "to": tester.email,
             "subject": "Welcome to Simpulse Beta! 🎉",
             "template": "welcome",
-            "variables": {
-                "name": tester.name,
-                "token": tester.access_token
-            }
+            "variables": {"name": tester.name, "token": tester.access_token},
         }
-        
-        with open(email_file, 'w') as f:
+
+        with open(email_file, "w") as f:
             json.dump(email_data, f, indent=2)
-    
+
     def collect_metrics(self) -> BetaMetrics:
         """Collect and analyze beta program metrics."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Total testers
         cursor.execute("SELECT COUNT(*) FROM testers")
         total_testers = cursor.fetchone()[0]
-        
+
         # Active testers (active in last 7 days)
         week_ago = (datetime.now() - timedelta(days=7)).isoformat()
-        cursor.execute("SELECT COUNT(*) FROM testers WHERE last_active > ?", (week_ago,))
+        cursor.execute(
+            "SELECT COUNT(*) FROM testers WHERE last_active > ?", (week_ago,)
+        )
         active_testers = cursor.fetchone()[0]
-        
+
         # Feedback metrics
         cursor.execute("SELECT COUNT(*) FROM feedback")
         total_feedback = cursor.fetchone()[0]
-        
+
         cursor.execute("SELECT COUNT(*) FROM feedback WHERE category = 'bug'")
         bugs_reported = cursor.fetchone()[0]
-        
+
         cursor.execute("SELECT COUNT(*) FROM feedback WHERE category = 'feature'")
         features_requested = cursor.fetchone()[0]
-        
+
         conn.close()
-        
+
         # Calculate response time and satisfaction (placeholder)
         avg_response_time = 24.5  # hours
         satisfaction_score = 4.2  # out of 5
-        
+
         return BetaMetrics(
             total_testers=total_testers,
             active_testers=active_testers,
@@ -956,14 +970,14 @@ Looking forward to your participation! 🎉
             bugs_reported=bugs_reported,
             features_requested=features_requested,
             average_response_time=avg_response_time,
-            satisfaction_score=satisfaction_score
+            satisfaction_score=satisfaction_score,
         )
-    
+
     def generate_beta_report(self) -> None:
         """Generate beta program status report."""
         metrics = self.collect_metrics()
         report_path = self.data_dir / "beta_report.md"
-        
+
         lines = [
             "# Simpulse Beta Program Report",
             "",
@@ -986,7 +1000,7 @@ Looking forward to your participation! 🎉
             "## Top Issues",
             "",
             "1. Performance on large modules",
-            "2. Memory usage with mathlib4", 
+            "2. Memory usage with mathlib4",
             "3. Integration with VS Code",
             "",
             "## Success Stories",
@@ -1001,8 +1015,8 @@ Looking forward to your participation! 🎉
             "- Implement most requested feature",
             "- Prepare for public release",
         ]
-        
-        report_path.write_text('\n'.join(lines))
+
+        report_path.write_text("\n".join(lines))
         logger.info(f"Beta report saved to {report_path}")
 
 
@@ -1011,12 +1025,12 @@ async def main():
     parser = argparse.ArgumentParser(
         description="Manage Simpulse community beta program"
     )
-    
+
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
-    
+
     # Launch command
-    launch_parser = subparsers.add_parser("launch", help="Launch beta program")
-    
+    subparsers.add_parser("launch", help="Launch beta program")
+
     # Register command
     register_parser = subparsers.add_parser("register", help="Register beta tester")
     register_parser.add_argument("--email", required=True)
@@ -1024,55 +1038,48 @@ async def main():
     register_parser.add_argument("--github", help="GitHub username")
     register_parser.add_argument("--org", help="Organization")
     register_parser.add_argument("--use-case", help="Intended use case")
-    
+
     # Report command
-    report_parser = subparsers.add_parser("report", help="Generate beta report")
-    
+    subparsers.add_parser("report", help="Generate beta report")
+
     # Common arguments
     parser.add_argument(
-        "--project-root",
-        type=Path,
-        default=Path.cwd(),
-        help="Project root directory"
+        "--project-root", type=Path, default=Path.cwd(), help="Project root directory"
     )
-    parser.add_argument(
-        "--data-dir",
-        type=Path,
-        help="Beta program data directory"
-    )
-    
+    parser.add_argument("--data-dir", type=Path, help="Beta program data directory")
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return
-    
+
     # Initialize manager
     manager = CommunityBetaManager(args.project_root, args.data_dir)
-    
+
     if args.command == "launch":
         success = await manager.launch_beta_program()
         if success:
-            logger.info("\n" + "="*60)
+            logger.info("\n" + "=" * 60)
             logger.info("BETA PROGRAM LAUNCHED SUCCESSFULLY")
-            logger.info("="*60)
+            logger.info("=" * 60)
             logger.info("Next steps:")
             logger.info("1. Configure email service")
             logger.info("2. Set up Discord webhook")
             logger.info("3. Deploy feedback website")
             logger.info("4. Send announcements")
-            logger.info("="*60)
-    
+            logger.info("=" * 60)
+
     elif args.command == "register":
         token = manager.register_tester(
             email=args.email,
             name=args.name,
             github_username=args.github,
             organization=args.org,
-            use_case=args.use_case or ""
+            use_case=args.use_case or "",
         )
         logger.info(f"Access token: {token}")
-    
+
     elif args.command == "report":
         manager.generate_beta_report()
         logger.info("Report generated successfully")
@@ -1080,4 +1087,5 @@ async def main():
 
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

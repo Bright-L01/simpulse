@@ -12,7 +12,6 @@ This script handles:
 """
 
 import argparse
-import json
 import logging
 import os
 import subprocess
@@ -20,39 +19,45 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 
 import requests
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class GitHubConfig:
     """GitHub deployment configuration."""
+
     owner: str
     repo: str
     token: Optional[str]
     visibility: str = "public"
     topics: List[str] = None
     default_branch: str = "main"
-    
+
     def __post_init__(self):
         if self.topics is None:
             self.topics = [
-                "lean4", "simp", "optimization", "machine-learning",
-                "theorem-proving", "automated-reasoning", "simpulse"
+                "lean4",
+                "simp",
+                "optimization",
+                "machine-learning",
+                "theorem-proving",
+                "automated-reasoning",
+                "simpulse",
             ]
 
 
 class GitHubDeployer:
     """Deploy Simpulse to GitHub with full configuration."""
-    
+
     def __init__(self, project_root: Path, config: GitHubConfig):
         """Initialize GitHub deployer.
-        
+
         Args:
             project_root: Root directory of the project
             config: GitHub configuration
@@ -60,76 +65,76 @@ class GitHubDeployer:
         self.project_root = project_root
         self.config = config
         self.api_base = "https://api.github.com"
-        self.headers = {
-            "Accept": "application/vnd.github.v3+json"
-        }
+        self.headers = {"Accept": "application/vnd.github.v3+json"}
         if config.token:
             self.headers["Authorization"] = f"token {config.token}"
-    
+
     async def deploy_full_repository(self) -> bool:
         """Complete GitHub deployment process."""
         logger.info("Starting GitHub deployment...")
-        
+
         try:
             # Step 1: Create or verify repository
             logger.info("\n📦 Setting up repository...")
-            repo_created = await self.create_repository()
-            
+            await self.create_repository()
+
             # Step 2: Push code
             logger.info("\n📤 Pushing code...")
             self.push_code()
-            
+
             # Step 3: Configure branch protection
             logger.info("\n🔐 Setting up branch protection...")
             self.setup_branch_protection()
-            
+
             # Step 4: Setup GitHub Actions
             logger.info("\n⚙️ Configuring GitHub Actions...")
             self.setup_github_actions()
-            
+
             # Step 5: Create issue templates
             logger.info("\n📝 Creating issue templates...")
             self.create_issue_templates()
-            
+
             # Step 6: Setup labels
             logger.info("\n🏷️ Setting up labels...")
             self.setup_labels()
-            
+
             # Step 7: Create initial release
             logger.info("\n🚀 Creating initial release...")
             self.create_release()
-            
+
             # Step 8: Enable community features
             logger.info("\n👥 Enabling community features...")
             self.enable_community_features()
-            
+
             # Step 9: Update repository settings
             logger.info("\n⚙️ Updating repository settings...")
             self.update_repository_settings()
-            
+
             # Step 10: Create project board
             logger.info("\n📋 Creating project board...")
             self.create_project_board()
-            
+
             logger.info("\n✅ GitHub deployment complete!")
-            logger.info(f"Repository: https://github.com/{self.config.owner}/{self.config.repo}")
-            
+            logger.info(
+                f"Repository: https://github.com/{self.config.owner}/{self.config.repo}"
+            )
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Deployment failed: {e}")
             return False
-    
+
     async def create_repository(self) -> bool:
         """Create GitHub repository or verify it exists."""
         # Check if repo exists
         check_url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}"
         response = requests.get(check_url, headers=self.headers)
-        
+
         if response.status_code == 200:
             logger.info(f"Repository {self.config.repo} already exists")
             return False
-        
+
         # Create repository
         create_url = f"{self.api_base}/user/repos"
         data = {
@@ -142,94 +147,100 @@ class GitHubDeployer:
             "has_wiki": True,
             "auto_init": False,
             "license_template": "mit",
-            "topics": self.config.topics
+            "topics": self.config.topics,
         }
-        
+
         response = requests.post(create_url, json=data, headers=self.headers)
-        
+
         if response.status_code == 201:
             logger.info(f"Created repository: {self.config.repo}")
             return True
         else:
             logger.error(f"Failed to create repository: {response.json()}")
             return False
-    
+
     def push_code(self) -> None:
         """Push code to GitHub repository."""
         try:
             # Add remote if not exists
-            remotes = subprocess.run(
-                ["git", "remote"],
-                cwd=self.project_root,
-                capture_output=True,
-                text=True
-            ).stdout.strip().split('\n')
-            
+            remotes = (
+                subprocess.run(
+                    ["git", "remote"],
+                    cwd=self.project_root,
+                    capture_output=True,
+                    text=True,
+                )
+                .stdout.strip()
+                .split("\n")
+            )
+
             if "origin" not in remotes:
-                remote_url = f"https://github.com/{self.config.owner}/{self.config.repo}.git"
+                remote_url = (
+                    f"https://github.com/{self.config.owner}/{self.config.repo}.git"
+                )
                 if self.config.token:
                     remote_url = f"https://{self.config.token}@github.com/{self.config.owner}/{self.config.repo}.git"
-                
+
                 subprocess.run(
                     ["git", "remote", "add", "origin", remote_url],
                     cwd=self.project_root,
-                    check=True
+                    check=True,
                 )
                 logger.info("Added git remote")
-            
+
             # Push all branches
             subprocess.run(
                 ["git", "push", "-u", "origin", "--all"],
                 cwd=self.project_root,
-                check=True
+                check=True,
             )
-            
+
             # Push tags
             subprocess.run(
-                ["git", "push", "origin", "--tags"],
-                cwd=self.project_root,
-                check=True
+                ["git", "push", "origin", "--tags"], cwd=self.project_root, check=True
             )
-            
+
             logger.info("Pushed code to GitHub")
-            
+
         except subprocess.CalledProcessError as e:
             logger.error(f"Failed to push code: {e}")
             raise
-    
+
     def setup_branch_protection(self) -> None:
         """Configure branch protection rules."""
         url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}/branches/{self.config.default_branch}/protection"
-        
+
         data = {
             "required_status_checks": {
                 "strict": True,
-                "contexts": ["continuous-integration", "tests", "security"]
+                "contexts": ["continuous-integration", "tests", "security"],
             },
             "enforce_admins": False,
             "required_pull_request_reviews": {
                 "required_approving_review_count": 1,
                 "dismiss_stale_reviews": True,
-                "require_code_owner_reviews": True
+                "require_code_owner_reviews": True,
             },
             "restrictions": None,
             "allow_force_pushes": False,
             "allow_deletions": False,
-            "required_conversation_resolution": True
+            "required_conversation_resolution": True,
         }
-        
+
         response = requests.put(url, json=data, headers=self.headers)
-        
+
         if response.status_code in [200, 201]:
             logger.info(f"Branch protection enabled for {self.config.default_branch}")
         else:
-            logger.warning(f"Could not enable branch protection: {response.status_code}")
-    
+            logger.warning(
+                f"Could not enable branch protection: {response.status_code}"
+            )
+
     def setup_github_actions(self) -> None:
         """Create GitHub Actions workflows if not present."""
         workflows_dir = self.project_root / ".github" / "workflows"
         workflows_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # CI workflow
         ci_workflow = workflows_dir / "ci.yml"
         if not ci_workflow.exists():
@@ -305,7 +316,7 @@ jobs:
 """
             ci_workflow.write_text(ci_content)
             logger.info("Created CI workflow")
-        
+
         # Release workflow
         release_workflow = workflows_dir / "release.yml"
         if not release_workflow.exists():
@@ -354,12 +365,12 @@ jobs:
 """
             release_workflow.write_text(release_content)
             logger.info("Created release workflow")
-    
+
     def create_issue_templates(self) -> None:
         """Create issue templates for bug reports and features."""
         templates_dir = self.project_root / ".github" / "ISSUE_TEMPLATE"
         templates_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Bug report template
         bug_template = templates_dir / "bug_report.md"
         bug_content = """---
@@ -398,7 +409,7 @@ Paste any error messages here
 Add any other context about the problem here.
 """
         bug_template.write_text(bug_content)
-        
+
         # Feature request template
         feature_template = templates_dir / "feature_request.md"
         feature_content = """---
@@ -423,26 +434,58 @@ A clear and concise description of any alternative solutions or features you've 
 Add any other context or screenshots about the feature request here.
 """
         feature_template.write_text(feature_content)
-        
+
         logger.info("Created issue templates")
-    
+
     def setup_labels(self) -> None:
         """Create standard labels for issues."""
         labels = [
-            {"name": "bug", "color": "d73a4a", "description": "Something isn't working"},
-            {"name": "enhancement", "color": "a2eeef", "description": "New feature or request"},
-            {"name": "documentation", "color": "0075ca", "description": "Improvements or additions to documentation"},
-            {"name": "good first issue", "color": "7057ff", "description": "Good for newcomers"},
-            {"name": "help wanted", "color": "008672", "description": "Extra attention is needed"},
-            {"name": "performance", "color": "fbca04", "description": "Performance improvements"},
-            {"name": "security", "color": "ee0000", "description": "Security related issues"},
+            {
+                "name": "bug",
+                "color": "d73a4a",
+                "description": "Something isn't working",
+            },
+            {
+                "name": "enhancement",
+                "color": "a2eeef",
+                "description": "New feature or request",
+            },
+            {
+                "name": "documentation",
+                "color": "0075ca",
+                "description": "Improvements or additions to documentation",
+            },
+            {
+                "name": "good first issue",
+                "color": "7057ff",
+                "description": "Good for newcomers",
+            },
+            {
+                "name": "help wanted",
+                "color": "008672",
+                "description": "Extra attention is needed",
+            },
+            {
+                "name": "performance",
+                "color": "fbca04",
+                "description": "Performance improvements",
+            },
+            {
+                "name": "security",
+                "color": "ee0000",
+                "description": "Security related issues",
+            },
             {"name": "lean4", "color": "1d76db", "description": "Lean 4 specific"},
-            {"name": "mathlib4", "color": "5319e7", "description": "mathlib4 integration"},
+            {
+                "name": "mathlib4",
+                "color": "5319e7",
+                "description": "mathlib4 integration",
+            },
             {"name": "testing", "color": "bfd4f2", "description": "Testing related"},
         ]
-        
+
         url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}/labels"
-        
+
         for label in labels:
             response = requests.post(url, json=label, headers=self.headers)
             if response.status_code == 201:
@@ -451,9 +494,9 @@ Add any other context or screenshots about the feature request here.
                 # Label already exists, update it
                 update_url = f"{url}/{label['name']}"
                 requests.patch(update_url, json=label, headers=self.headers)
-        
+
         logger.info("Labels configured")
-    
+
     def create_release(self) -> None:
         """Create initial release."""
         # Get latest tag
@@ -462,22 +505,19 @@ Add any other context or screenshots about the feature request here.
                 ["git", "describe", "--tags", "--abbrev=0"],
                 cwd=self.project_root,
                 capture_output=True,
-                text=True
+                text=True,
             ).stdout.strip()
-        except:
+        except Exception:
             latest_tag = "v1.0.0"
             # Create tag if doesn't exist
             subprocess.run(
                 ["git", "tag", "-a", latest_tag, "-m", "Initial release"],
-                cwd=self.project_root
+                cwd=self.project_root,
             )
-            subprocess.run(
-                ["git", "push", "origin", latest_tag],
-                cwd=self.project_root
-            )
-        
+            subprocess.run(["git", "push", "origin", latest_tag], cwd=self.project_root)
+
         url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}/releases"
-        
+
         release_notes = """# Simpulse v1.0.0 - Initial Release 🎉
 
 We're excited to announce the first public release of Simpulse, an ML-powered optimization tool for Lean 4's simp tactic!
@@ -531,33 +571,35 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md).
 
 Special thanks to the Lean community and the mathlib4 maintainers!
 """
-        
+
         data = {
             "tag_name": latest_tag,
             "name": f"Simpulse {latest_tag}",
             "body": release_notes,
             "draft": False,
-            "prerelease": False
+            "prerelease": False,
         }
-        
+
         response = requests.post(url, json=data, headers=self.headers)
-        
+
         if response.status_code == 201:
             logger.info(f"Created release: {latest_tag}")
         else:
             logger.warning(f"Could not create release: {response.status_code}")
-    
+
     def enable_community_features(self) -> None:
         """Enable GitHub community features."""
         # Enable discussions
-        discussions_url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}"
+        discussions_url = (
+            f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}"
+        )
         data = {"has_discussions": True}
-        
+
         response = requests.patch(discussions_url, json=data, headers=self.headers)
-        
+
         if response.status_code == 200:
             logger.info("Enabled GitHub Discussions")
-        
+
         # Create CONTRIBUTING.md
         contributing_path = self.project_root / "CONTRIBUTING.md"
         if not contributing_path.exists():
@@ -617,7 +659,7 @@ Please note we have a Code of Conduct - be respectful and professional in all in
 """
             contributing_path.write_text(contributing_content)
             logger.info("Created CONTRIBUTING.md")
-        
+
         # Create CODE_OF_CONDUCT.md
         coc_path = self.project_root / "CODE_OF_CONDUCT.md"
         if not coc_path.exists():
@@ -656,11 +698,11 @@ https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
 """
             coc_path.write_text(coc_content)
             logger.info("Created CODE_OF_CONDUCT.md")
-    
+
     def update_repository_settings(self) -> None:
         """Update repository settings and metadata."""
         url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}"
-        
+
         data = {
             "has_issues": True,
             "has_projects": True,
@@ -670,23 +712,23 @@ https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
             "allow_merge_commit": True,
             "allow_rebase_merge": True,
             "delete_branch_on_merge": True,
-            "topics": self.config.topics
+            "topics": self.config.topics,
         }
-        
+
         response = requests.patch(url, json=data, headers=self.headers)
-        
+
         if response.status_code == 200:
             logger.info("Updated repository settings")
-        
+
         # Add badges to README
         self.add_badges_to_readme()
-    
+
     def add_badges_to_readme(self) -> None:
         """Add status badges to README."""
         readme_path = self.project_root / "README.md"
         if readme_path.exists():
             content = readme_path.read_text()
-            
+
             badges = f"""[![CI](https://github.com/{self.config.owner}/{self.config.repo}/workflows/CI/badge.svg)](https://github.com/{self.config.owner}/{self.config.repo}/actions)
 [![codecov](https://codecov.io/gh/{self.config.owner}/{self.config.repo}/branch/main/graph/badge.svg)](https://codecov.io/gh/{self.config.owner}/{self.config.repo})
 [![PyPI version](https://badge.fury.io/py/simpulse.svg)](https://badge.fury.io/py/simpulse)
@@ -694,53 +736,51 @@ https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
 [![Discord](https://img.shields.io/discord/123456789012345678?label=Discord&logo=discord)](https://discord.gg/simpulse)
 
 """
-            
-            if not "![CI]" in content:  # Avoid duplicate badges
+
+            if "![CI]" not in content:  # Avoid duplicate badges
                 # Insert badges after title
-                lines = content.split('\n')
+                lines = content.split("\n")
                 for i, line in enumerate(lines):
-                    if line.startswith('# '):
-                        lines.insert(i + 1, '')
+                    if line.startswith("# "):
+                        lines.insert(i + 1, "")
                         lines.insert(i + 2, badges)
                         break
-                
-                readme_path.write_text('\n'.join(lines))
+
+                readme_path.write_text("\n".join(lines))
                 logger.info("Added badges to README")
-    
+
     def create_project_board(self) -> None:
         """Create GitHub project board for tracking work."""
         # Projects API v2 is in beta, using classic projects for now
         url = f"{self.api_base}/repos/{self.config.owner}/{self.config.repo}/projects"
-        
+
         data = {
             "name": "Simpulse Roadmap",
-            "body": "Track development progress and upcoming features"
+            "body": "Track development progress and upcoming features",
         }
-        
+
         response = requests.post(url, json=data, headers=self.headers)
-        
+
         if response.status_code == 201:
             project_id = response.json()["id"]
-            
+
             # Create columns
             columns = ["Backlog", "In Progress", "Review", "Done"]
             columns_url = f"{self.api_base}/projects/{project_id}/columns"
-            
+
             for column_name in columns:
                 requests.post(
-                    columns_url,
-                    json={"name": column_name},
-                    headers=self.headers
+                    columns_url, json={"name": column_name}, headers=self.headers
                 )
-            
+
             logger.info("Created project board")
         else:
             logger.warning("Could not create project board")
-    
+
     def generate_deployment_report(self) -> None:
         """Generate deployment summary report."""
         report_path = self.project_root / "github_deployment_report.md"
-        
+
         lines = [
             "# GitHub Deployment Report",
             "",
@@ -783,77 +823,62 @@ https://www.contributor-covenant.org/version/2/0/code_of_conduct.html.
             f"- **Actions**: https://github.com/{self.config.owner}/{self.config.repo}/actions",
             f"- **Releases**: https://github.com/{self.config.owner}/{self.config.repo}/releases",
         ]
-        
-        report_path.write_text('\n'.join(lines))
+
+        report_path.write_text("\n".join(lines))
         logger.info(f"Deployment report saved to {report_path}")
 
 
 async def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Deploy Simpulse to GitHub"
-    )
+    parser = argparse.ArgumentParser(description="Deploy Simpulse to GitHub")
     parser.add_argument(
-        "--owner",
-        type=str,
-        required=True,
-        help="GitHub username or organization"
+        "--owner", type=str, required=True, help="GitHub username or organization"
     )
-    parser.add_argument(
-        "--repo",
-        type=str,
-        default="simpulse",
-        help="Repository name"
-    )
+    parser.add_argument("--repo", type=str, default="simpulse", help="Repository name")
     parser.add_argument(
         "--token",
         type=str,
-        help="GitHub personal access token (or use GITHUB_TOKEN env var)"
+        help="GitHub personal access token (or use GITHUB_TOKEN env var)",
     )
     parser.add_argument(
         "--visibility",
         choices=["public", "private"],
         default="public",
-        help="Repository visibility"
+        help="Repository visibility",
     )
     parser.add_argument(
-        "--project-root",
-        type=Path,
-        default=Path.cwd(),
-        help="Project root directory"
+        "--project-root", type=Path, default=Path.cwd(), help="Project root directory"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Get token from args or environment
     token = args.token or os.environ.get("GITHUB_TOKEN")
     if not token:
         logger.error("GitHub token required. Set GITHUB_TOKEN or use --token")
         sys.exit(1)
-    
+
     # Create configuration
     config = GitHubConfig(
-        owner=args.owner,
-        repo=args.repo,
-        token=token,
-        visibility=args.visibility
+        owner=args.owner, repo=args.repo, token=token, visibility=args.visibility
     )
-    
+
     # Deploy to GitHub
     deployer = GitHubDeployer(args.project_root, config)
     success = await deployer.deploy_full_repository()
-    
+
     if success:
         deployer.generate_deployment_report()
-        logger.info("\n" + "="*60)
+        logger.info("\n" + "=" * 60)
         logger.info("GITHUB DEPLOYMENT SUCCESSFUL")
-        logger.info("="*60)
+        logger.info("=" * 60)
         logger.info(f"Repository: https://github.com/{config.owner}/{config.repo}")
-        logger.info("="*60)
+        logger.info("=" * 60)
     else:
         sys.exit(1)
 
 
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

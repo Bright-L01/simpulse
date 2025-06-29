@@ -4,22 +4,18 @@ Case Study Builder - Document successful optimizations.
 Turn success stories into compelling evidence!
 """
 
-import base64
-import json
-import subprocess
 from dataclasses import dataclass
 from datetime import datetime
-from io import BytesIO
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
-import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 
 
 @dataclass
 class Metrics:
     """Performance metrics before/after optimization."""
+
     total_time: float  # seconds
     simp_time: float  # seconds
     total_rules: int
@@ -33,6 +29,7 @@ class Metrics:
 @dataclass
 class ProjectInfo:
     """Project information for case study."""
+
     name: str
     description: str
     url: str
@@ -43,165 +40,221 @@ class ProjectInfo:
 
 class CaseStudyBuilder:
     """Create compelling case studies from successful optimizations."""
-    
+
     def __init__(self):
         self.template_path = Path(__file__).parent / "templates"
         self.output_path = Path("case_studies")
         self.output_path.mkdir(exist_ok=True)
-        
-    async def build_case_study(self, 
-                              project: ProjectInfo, 
-                              before: Metrics, 
-                              after: Metrics,
-                              testimonial: Optional[str] = None) -> Path:
+
+    async def build_case_study(
+        self,
+        project: ProjectInfo,
+        before: Metrics,
+        after: Metrics,
+        testimonial: Optional[str] = None,
+    ) -> Path:
         """Generate a complete case study."""
-        
+
         print(f"📊 Building case study for {project.name}...")
-        
+
         # Create project directory
         project_dir = self.output_path / project.name.lower().replace(" ", "_")
         project_dir.mkdir(exist_ok=True)
-        
+
         # Generate visuals
         chart_path = self.create_performance_chart(before, after, project_dir)
         timeline_path = self.create_optimization_timeline(before, after, project_dir)
-        
+
         # Calculate improvements
         improvements = self.calculate_improvements(before, after)
-        
+
         # Generate markdown report
         report = self.generate_markdown_report(
-            project, before, after, improvements, testimonial, 
-            chart_path, timeline_path
+            project, before, after, improvements, testimonial, chart_path, timeline_path
         )
-        
+
         # Save report
         report_path = project_dir / "README.md"
         report_path.write_text(report)
-        
+
         # Generate one-page summary
         summary = self.generate_summary(project, improvements)
         summary_path = project_dir / "summary.md"
         summary_path.write_text(summary)
-        
+
         # Generate social media content
         social = self.generate_social_content(project, improvements)
         social_path = project_dir / "social_media.md"
         social_path.write_text(social)
-        
+
         print(f"✅ Case study created: {report_path}")
-        
+
         return report_path
-        
-    def create_performance_chart(self, before: Metrics, after: Metrics, output_dir: Path) -> Path:
+
+    def create_performance_chart(
+        self, before: Metrics, after: Metrics, output_dir: Path
+    ) -> Path:
         """Create a performance comparison chart."""
-        
+
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
-        
+
         # Chart 1: Time comparison
-        categories = ['Total\nBuild', 'Simp\nTime', 'Slowest\nProof']
-        before_times = [before.build_time, before.simp_time, before.slowest_proof_time/1000]
-        after_times = [after.build_time, after.simp_time, after.slowest_proof_time/1000]
-        
+        categories = ["Total\nBuild", "Simp\nTime", "Slowest\nProof"]
+        before_times = [
+            before.build_time,
+            before.simp_time,
+            before.slowest_proof_time / 1000,
+        ]
+        after_times = [
+            after.build_time,
+            after.simp_time,
+            after.slowest_proof_time / 1000,
+        ]
+
         x = range(len(categories))
         width = 0.35
-        
-        ax1.bar([i - width/2 for i in x], before_times, width, label='Before', color='#ff7f0e')
-        ax1.bar([i + width/2 for i in x], after_times, width, label='After', color='#2ca02c')
-        
-        ax1.set_ylabel('Time (seconds)')
-        ax1.set_title('Performance Comparison')
+
+        ax1.bar(
+            [i - width / 2 for i in x],
+            before_times,
+            width,
+            label="Before",
+            color="#ff7f0e",
+        )
+        ax1.bar(
+            [i + width / 2 for i in x],
+            after_times,
+            width,
+            label="After",
+            color="#2ca02c",
+        )
+
+        ax1.set_ylabel("Time (seconds)")
+        ax1.set_title("Performance Comparison")
         ax1.set_xticks(x)
         ax1.set_xticklabels(categories)
         ax1.legend()
-        ax1.grid(axis='y', alpha=0.3)
-        
+        ax1.grid(axis="y", alpha=0.3)
+
         # Add improvement percentages
         for i, (b, a) in enumerate(zip(before_times, after_times)):
             if b > 0:
                 improvement = (b - a) / b * 100
-                ax1.text(i, max(b, a) * 1.05, f'-{improvement:.0f}%', 
-                        ha='center', va='bottom', fontweight='bold', color='green')
-        
+                ax1.text(
+                    i,
+                    max(b, a) * 1.05,
+                    f"-{improvement:.0f}%",
+                    ha="center",
+                    va="bottom",
+                    fontweight="bold",
+                    color="green",
+                )
+
         # Chart 2: Rule optimization
-        labels = ['Optimized', 'Unchanged']
+        labels = ["Optimized", "Unchanged"]
         sizes = [after.rules_modified, before.total_rules - after.rules_modified]
-        colors = ['#2ca02c', '#d3d3d3']
-        
-        ax2.pie(sizes, labels=labels, colors=colors, autopct='%1.0f%%', startangle=90)
-        ax2.set_title(f'Rules Optimized ({after.rules_modified}/{before.total_rules})')
-        
+        colors = ["#2ca02c", "#d3d3d3"]
+
+        ax2.pie(sizes, labels=labels, colors=colors, autopct="%1.0f%%", startangle=90)
+        ax2.set_title(f"Rules Optimized ({after.rules_modified}/{before.total_rules})")
+
         plt.tight_layout()
-        
+
         # Save
         chart_path = output_dir / "performance_chart.png"
-        plt.savefig(chart_path, dpi=300, bbox_inches='tight')
+        plt.savefig(chart_path, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         return chart_path
-        
-    def create_optimization_timeline(self, before: Metrics, after: Metrics, output_dir: Path) -> Path:
+
+    def create_optimization_timeline(
+        self, before: Metrics, after: Metrics, output_dir: Path
+    ) -> Path:
         """Create an optimization timeline visualization."""
-        
+
         fig, ax = plt.subplots(figsize=(10, 6))
-        
+
         # Timeline data
         events = [
-            ("Initial State", 0, before.build_time, '#ff7f0e'),
-            ("Health Check", 1, 0.1, '#1f77b4'),
-            ("Optimization", 2, 0.5, '#9467bd'),
-            ("Validation", 3, 0.2, '#17becf'),
-            ("Final State", 4, after.build_time, '#2ca02c')
+            ("Initial State", 0, before.build_time, "#ff7f0e"),
+            ("Health Check", 1, 0.1, "#1f77b4"),
+            ("Optimization", 2, 0.5, "#9467bd"),
+            ("Validation", 3, 0.2, "#17becf"),
+            ("Final State", 4, after.build_time, "#2ca02c"),
         ]
-        
+
         # Draw timeline
         for i, (name, pos, duration, color) in enumerate(events):
-            ax.barh(pos, duration, left=i*2, height=0.5, color=color, alpha=0.8)
-            ax.text(i*2 + duration/2, pos, name, ha='center', va='center', fontweight='bold')
-        
+            ax.barh(pos, duration, left=i * 2, height=0.5, color=color, alpha=0.8)
+            ax.text(
+                i * 2 + duration / 2,
+                pos,
+                name,
+                ha="center",
+                va="center",
+                fontweight="bold",
+            )
+
         # Add improvement arrow
         improvement = (before.build_time - after.build_time) / before.build_time * 100
-        ax.annotate(f'{improvement:.0f}% Faster!', 
-                   xy=(8, 4), xytext=(8, 0),
-                   arrowprops=dict(arrowstyle='->', lw=2, color='green'),
-                   fontsize=14, fontweight='bold', color='green',
-                   ha='center')
-        
+        ax.annotate(
+            f"{improvement:.0f}% Faster!",
+            xy=(8, 4),
+            xytext=(8, 0),
+            arrowprops=dict(arrowstyle="->", lw=2, color="green"),
+            fontsize=14,
+            fontweight="bold",
+            color="green",
+            ha="center",
+        )
+
         ax.set_xlim(-0.5, 10)
         ax.set_ylim(-1, 5)
-        ax.set_xlabel('Optimization Process')
-        ax.set_title('Simpulse Optimization Timeline')
-        ax.axis('off')
-        
+        ax.set_xlabel("Optimization Process")
+        ax.set_title("Simpulse Optimization Timeline")
+        ax.axis("off")
+
         # Save
         timeline_path = output_dir / "optimization_timeline.png"
-        plt.savefig(timeline_path, dpi=300, bbox_inches='tight')
+        plt.savefig(timeline_path, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         return timeline_path
-        
-    def calculate_improvements(self, before: Metrics, after: Metrics) -> Dict[str, float]:
+
+    def calculate_improvements(
+        self, before: Metrics, after: Metrics
+    ) -> Dict[str, float]:
         """Calculate all improvement metrics."""
-        
+
         def calc_improvement(before_val, after_val):
             if before_val == 0:
                 return 0
             return (before_val - after_val) / before_val * 100
-            
+
         return {
-            'overall': calc_improvement(before.build_time, after.build_time),
-            'simp_time': calc_improvement(before.simp_time, after.simp_time),
-            'slowest_proof': calc_improvement(before.slowest_proof_time, after.slowest_proof_time),
-            'memory': calc_improvement(before.memory_usage, after.memory_usage),
-            'time_saved_per_build': before.build_time - after.build_time,
-            'annual_time_saved': (before.build_time - after.build_time) * 1000  # Assuming 1000 builds/year
+            "overall": calc_improvement(before.build_time, after.build_time),
+            "simp_time": calc_improvement(before.simp_time, after.simp_time),
+            "slowest_proof": calc_improvement(
+                before.slowest_proof_time, after.slowest_proof_time
+            ),
+            "memory": calc_improvement(before.memory_usage, after.memory_usage),
+            "time_saved_per_build": before.build_time - after.build_time,
+            "annual_time_saved": (before.build_time - after.build_time)
+            * 1000,  # Assuming 1000 builds/year
         }
-        
-    def generate_markdown_report(self, project: ProjectInfo, before: Metrics, after: Metrics,
-                               improvements: Dict[str, float], testimonial: Optional[str],
-                               chart_path: Path, timeline_path: Path) -> str:
+
+    def generate_markdown_report(
+        self,
+        project: ProjectInfo,
+        before: Metrics,
+        after: Metrics,
+        improvements: Dict[str, float],
+        testimonial: Optional[str],
+        chart_path: Path,
+        timeline_path: Path,
+    ) -> str:
         """Generate the full markdown case study."""
-        
+
         return f"""# Case Study: {project.name}
 
 <div align="center">
@@ -321,10 +374,12 @@ especially those using default priorities for all rules.
 
 Generated: {datetime.now().strftime("%B %d, %Y")}
 """
-        
-    def generate_summary(self, project: ProjectInfo, improvements: Dict[str, float]) -> str:
+
+    def generate_summary(
+        self, project: ProjectInfo, improvements: Dict[str, float]
+    ) -> str:
         """Generate a one-page summary for quick sharing."""
-        
+
         return f"""# {project.name}: {improvements['overall']:.0f}% Faster with Simpulse
 
 ## Quick Facts
@@ -348,10 +403,12 @@ simpulse optimize YourProject.lean
 
 [Full Case Study]({project.url}) | [Get Simpulse](https://github.com/Bright-L01/simpulse)
 """
-        
-    def generate_social_content(self, project: ProjectInfo, improvements: Dict[str, float]) -> str:
+
+    def generate_social_content(
+        self, project: ProjectInfo, improvements: Dict[str, float]
+    ) -> str:
         """Generate social media content for sharing success."""
-        
+
         return f"""# Social Media Content
 
 ## Twitter/X
@@ -408,15 +465,15 @@ Happy to answer questions about how it works!
 
 def create_example_case_study():
     """Create an example case study for demonstration."""
-    
+
     project = ProjectInfo(
         name="MathLib-Algebra",
         description="Algebraic structures and theorems",
         url="https://github.com/example/mathlib-algebra",
         stars=245,
-        domain="Mathematics"
+        domain="Mathematics",
     )
-    
+
     before = Metrics(
         total_time=45.2,
         simp_time=28.5,
@@ -425,9 +482,9 @@ def create_example_case_study():
         slow_proof_count=23,
         slowest_proof_time=450,
         build_time=45.2,
-        memory_usage=512
+        memory_usage=512,
     )
-    
+
     after = Metrics(
         total_time=12.8,
         simp_time=7.2,
@@ -436,25 +493,26 @@ def create_example_case_study():
         slow_proof_count=3,
         slowest_proof_time=120,
         build_time=12.8,
-        memory_usage=485
+        memory_usage=485,
     )
-    
+
     testimonial = (
         "Simpulse transformed our build times! What used to be a coffee break is now "
         "just a few seconds. The fact that it required no code changes made it a no-brainer."
     )
-    
+
     return project, before, after, testimonial
 
 
 async def main():
     """Generate an example case study."""
-    import asyncio
-    
+
     builder = CaseStudyBuilder()
     project, before, after, testimonial = create_example_case_study()
-    
-    case_study_path = await builder.build_case_study(project, before, after, testimonial)
+
+    case_study_path = await builder.build_case_study(
+        project, before, after, testimonial
+    )
     print(f"\n✅ Example case study created at: {case_study_path}")
     print("\nUse this as a template for documenting real optimizations!")
 
@@ -464,6 +522,7 @@ if __name__ == "__main__":
     # In production, we'd handle this gracefully
     try:
         import asyncio
+
         asyncio.run(main())
     except ImportError:
         print("Note: Install matplotlib for chart generation: pip install matplotlib")

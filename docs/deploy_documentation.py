@@ -14,23 +14,23 @@ This script handles:
 import argparse
 import json
 import logging
-import os
 import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Optional
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class DocsConfig:
     """Documentation deployment configuration."""
+
     project_name: str = "Simpulse"
     author: str = "Simpulse Team"
     copyright_year: str = str(datetime.now().year)
@@ -43,10 +43,10 @@ class DocsConfig:
 
 class DocumentationDeployer:
     """Deploy Simpulse documentation website."""
-    
+
     def __init__(self, project_root: Path, config: DocsConfig):
         """Initialize documentation deployer.
-        
+
         Args:
             project_root: Root directory of the project
             config: Documentation configuration
@@ -55,62 +55,62 @@ class DocumentationDeployer:
         self.docs_dir = project_root / "docs"
         self.build_dir = self.docs_dir / "_build"
         self.config = config
-    
+
     async def deploy_documentation(self) -> bool:
         """Complete documentation deployment process."""
         logger.info("Starting documentation deployment...")
-        
+
         try:
             # Step 1: Setup Sphinx configuration
             logger.info("\n📝 Setting up Sphinx configuration...")
             self.setup_sphinx_config()
-            
+
             # Step 2: Generate API documentation
             logger.info("\n🔧 Generating API documentation...")
             self.generate_api_docs()
-            
+
             # Step 3: Create custom pages
             logger.info("\n📄 Creating custom documentation pages...")
             self.create_custom_pages()
-            
+
             # Step 4: Setup theme and styling
             logger.info("\n🎨 Setting up theme and styling...")
             self.setup_theme()
-            
+
             # Step 5: Build documentation
             logger.info("\n🏗️ Building documentation...")
             if not self.build_docs():
                 return False
-            
+
             # Step 6: Setup GitHub Pages
             logger.info("\n🌐 Setting up GitHub Pages...")
             self.setup_github_pages()
-            
+
             # Step 7: Configure custom domain
             if self.config.domain:
                 logger.info("\n🔗 Configuring custom domain...")
                 self.setup_custom_domain()
-            
+
             # Step 8: Deploy to GitHub Pages
             logger.info("\n🚀 Deploying to GitHub Pages...")
             self.deploy_to_github_pages()
-            
+
             # Step 9: Setup search
             logger.info("\n🔍 Setting up search functionality...")
             self.setup_search()
-            
+
             logger.info("\n✅ Documentation deployment complete!")
             return True
-            
+
         except Exception as e:
             logger.error(f"Documentation deployment failed: {e}")
             return False
-    
+
     def setup_sphinx_config(self) -> None:
         """Setup Sphinx configuration."""
         conf_path = self.docs_dir / "conf.py"
-        
-        conf_content = f'''# Configuration file for the Sphinx documentation builder.
+
+        conf_content = f"""# Configuration file for the Sphinx documentation builder.
 
 import os
 import sys
@@ -227,13 +227,13 @@ html_css_files = [
 html_js_files = [
     'custom.js',
 ]
-'''
+"""
         conf_path.write_text(conf_content)
-        
+
         # Create static directory
         static_dir = self.docs_dir / "_static"
         static_dir.mkdir(exist_ok=True)
-        
+
         # Create custom CSS
         css_path = static_dir / "custom.css"
         css_content = """/* Custom CSS for Simpulse documentation */
@@ -305,7 +305,7 @@ table {
 }
 """
         css_path.write_text(css_content)
-        
+
         # Create custom JavaScript
         js_path = static_dir / "custom.js"
         js_content = """// Custom JavaScript for Simpulse documentation
@@ -366,15 +366,15 @@ document.addEventListener('click', function(e) {
 });
 """
         js_path.write_text(js_content)
-        
+
         logger.info("✓ Sphinx configuration created")
-    
+
     def generate_api_docs(self) -> None:
         """Generate API documentation from source code."""
         # Create API documentation directory
         api_dir = self.docs_dir / "api"
         api_dir.mkdir(exist_ok=True)
-        
+
         # Generate API index
         api_index = api_dir / "index.rst"
         api_index_content = """API Reference
@@ -407,10 +407,10 @@ Configuration
    :show-inheritance:
 """
         api_index.write_text(api_index_content)
-        
+
         # Generate module documentation
         modules = ["core", "evolution", "evaluation", "reporting", "utils"]
-        
+
         for module in modules:
             module_path = api_dir / f"{module}.rst"
             module_content = f"""{module.title()} Module
@@ -430,23 +430,27 @@ Submodules
    {module}_submodules
 """
             module_path.write_text(module_content)
-        
+
         # Run sphinx-apidoc
         try:
-            subprocess.run([
-                "sphinx-apidoc",
-                "-o", str(api_dir),
-                "-f",  # Force overwrite
-                "-e",  # Separate pages for each module
-                "-M",  # Module-first
-                str(self.project_root / "src" / "simpulse"),
-                "*test*",  # Exclude tests
-                "*__pycache__*"  # Exclude cache
-            ], check=True)
+            subprocess.run(
+                [
+                    "sphinx-apidoc",
+                    "-o",
+                    str(api_dir),
+                    "-f",  # Force overwrite
+                    "-e",  # Separate pages for each module
+                    "-M",  # Module-first
+                    str(self.project_root / "src" / "simpulse"),
+                    "*test*",  # Exclude tests
+                    "*__pycache__*",  # Exclude cache
+                ],
+                check=True,
+            )
             logger.info("✓ API documentation generated")
         except subprocess.CalledProcessError:
             logger.warning("Could not run sphinx-apidoc")
-    
+
     def create_custom_pages(self) -> None:
         """Create custom documentation pages."""
         # Main index
@@ -469,7 +473,7 @@ Submodules
 Welcome to Simpulse!
 --------------------
 
-Simpulse is an ML-powered optimization tool for Lean 4's simp tactic that uses evolutionary 
+Simpulse is an ML-powered optimization tool for Lean 4's simp tactic that uses evolutionary
 algorithms to discover optimal simplification strategies.
 
 .. note::
@@ -554,7 +558,7 @@ Indices and tables
 * :ref:`search`
 """
         index_path.write_text(index_content)
-        
+
         # Installation guide
         install_path = self.docs_dir / "installation.rst"
         install_content = """Installation
@@ -622,7 +626,7 @@ Next Steps
 - Join our community: :doc:`beta`
 """
         install_path.write_text(install_content)
-        
+
         # How it works page
         how_path = self.docs_dir / "how_it_works.md"
         how_content = """# How Simpulse Works
@@ -721,9 +725,9 @@ Results:
 - [Safety Guarantees](safety_guarantees.html)
 """
         how_path.write_text(how_content)
-        
+
         logger.info("✓ Custom documentation pages created")
-    
+
     def setup_theme(self) -> None:
         """Setup documentation theme and styling."""
         # Create requirements file for Read the Docs
@@ -735,7 +739,7 @@ sphinx-design>=0.3
 myst-parser>=0.18
 """
         requirements_path.write_text(requirements_content)
-        
+
         # Create .readthedocs.yaml
         rtd_config = self.project_root / ".readthedocs.yaml"
         rtd_content = """version: 2
@@ -761,61 +765,70 @@ python:
         - docs
 """
         rtd_config.write_text(rtd_content)
-        
+
         logger.info("✓ Theme configuration complete")
-    
+
     def build_docs(self) -> bool:
         """Build documentation with Sphinx."""
         try:
             # Clean previous builds
             if self.build_dir.exists():
                 shutil.rmtree(self.build_dir)
-            
+
             # Build HTML documentation
-            result = subprocess.run([
-                "sphinx-build",
-                "-b", "html",
-                "-W",  # Warnings as errors
-                str(self.docs_dir),
-                str(self.build_dir / "html")
-            ], capture_output=True, text=True)
-            
+            result = subprocess.run(
+                [
+                    "sphinx-build",
+                    "-b",
+                    "html",
+                    "-W",  # Warnings as errors
+                    str(self.docs_dir),
+                    str(self.build_dir / "html"),
+                ],
+                capture_output=True,
+                text=True,
+            )
+
             if result.returncode != 0:
                 logger.error("Documentation build failed")
                 logger.error(result.stderr)
                 return False
-            
+
             logger.info("✓ Documentation built successfully")
-            
+
             # Build PDF (optional)
             try:
-                subprocess.run([
-                    "sphinx-build",
-                    "-b", "latexpdf",
-                    str(self.docs_dir),
-                    str(self.build_dir / "pdf")
-                ], check=True)
+                subprocess.run(
+                    [
+                        "sphinx-build",
+                        "-b",
+                        "latexpdf",
+                        str(self.docs_dir),
+                        str(self.build_dir / "pdf"),
+                    ],
+                    check=True,
+                )
                 logger.info("✓ PDF documentation built")
-            except:
+            except Exception:
                 logger.info("PDF build skipped (LaTeX not available)")
-            
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Build failed: {e}")
             return False
-    
+
     def setup_github_pages(self) -> None:
         """Setup GitHub Pages configuration."""
         # Create .nojekyll file
         nojekyll = self.build_dir / "html" / ".nojekyll"
         nojekyll.touch()
-        
+
         # Create GitHub Pages config
         if self.config.domain:
             cname = self.build_dir / "html" / "CNAME"
             cname.write_text(self.config.domain)
-        
+
         # Create 404 page
         not_found = self.build_dir / "html" / "404.html"
         not_found_content = """<!DOCTYPE html>
@@ -838,14 +851,14 @@ python:
 </html>
 """
         not_found.write_text(not_found_content)
-        
+
         logger.info("✓ GitHub Pages configured")
-    
+
     def setup_custom_domain(self) -> None:
         """Setup custom domain configuration."""
         # This would typically involve DNS configuration
         # For now, we'll create instructions
-        
+
         dns_instructions = self.docs_dir / "DNS_SETUP.md"
         dns_content = f"""# DNS Configuration for {self.config.domain}
 
@@ -883,22 +896,24 @@ nslookup {self.config.domain}
 Visit https://{self.config.domain} to verify setup.
 """
         dns_instructions.write_text(dns_content)
-        
+
         logger.info("✓ Custom domain instructions created")
-    
+
     def deploy_to_github_pages(self) -> None:
         """Deploy documentation to GitHub Pages."""
         try:
             # Initialize gh-pages branch if needed
-            subprocess.run([
-                "git", "checkout", "--orphan", "gh-pages"
-            ], cwd=self.project_root, capture_output=True)
-            
+            subprocess.run(
+                ["git", "checkout", "--orphan", "gh-pages"],
+                cwd=self.project_root,
+                capture_output=True,
+            )
+
             # Remove all files
-            subprocess.run([
-                "git", "rm", "-rf", "."
-            ], cwd=self.project_root, capture_output=True)
-            
+            subprocess.run(
+                ["git", "rm", "-rf", "."], cwd=self.project_root, capture_output=True
+            )
+
             # Copy built documentation
             html_dir = self.build_dir / "html"
             if html_dir.exists():
@@ -908,32 +923,28 @@ Visit https://{self.config.domain} to verify setup.
                         shutil.copytree(item, dest)
                     else:
                         shutil.copy2(item, dest)
-            
+
             # Commit and push
-            subprocess.run([
-                "git", "add", "."
-            ], cwd=self.project_root)
-            
-            subprocess.run([
-                "git", "commit", "-m", "Deploy documentation"
-            ], cwd=self.project_root)
-            
-            subprocess.run([
-                "git", "push", "origin", "gh-pages", "--force"
-            ], cwd=self.project_root)
-            
+            subprocess.run(["git", "add", "."], cwd=self.project_root)
+
+            subprocess.run(
+                ["git", "commit", "-m", "Deploy documentation"], cwd=self.project_root
+            )
+
+            subprocess.run(
+                ["git", "push", "origin", "gh-pages", "--force"], cwd=self.project_root
+            )
+
             # Switch back to main branch
-            subprocess.run([
-                "git", "checkout", "main"
-            ], cwd=self.project_root)
-            
+            subprocess.run(["git", "checkout", "main"], cwd=self.project_root)
+
             logger.info("✓ Documentation deployed to GitHub Pages")
-            
+
         except Exception as e:
             logger.error(f"Deployment failed: {e}")
             # Try to recover
             subprocess.run(["git", "checkout", "main"], cwd=self.project_root)
-    
+
     def setup_search(self) -> None:
         """Setup search functionality for documentation."""
         # For GitHub Pages, we'll use Algolia DocSearch
@@ -947,19 +958,19 @@ Visit https://{self.config.domain} to verify setup.
             "selectors": {
                 "lvl0": {
                     "selector": ".menu-content h1",
-                    "default_value": "Documentation"
+                    "default_value": "Documentation",
                 },
                 "lvl1": ".content h1",
                 "lvl2": ".content h2",
                 "lvl3": ".content h3",
                 "lvl4": ".content h4",
-                "text": ".content p, .content li"
-            }
+                "text": ".content p, .content li",
+            },
         }
-        
-        with open(search_config, 'w') as f:
+
+        with open(search_config, "w") as f:
             json.dump(search_content, f, indent=2)
-        
+
         # Add search to documentation
         search_js = self.docs_dir / "_static" / "algolia_search.js"
         search_js_content = """// Algolia DocSearch integration
@@ -971,13 +982,13 @@ docsearch({
 });
 """
         search_js.write_text(search_js_content)
-        
+
         logger.info("✓ Search functionality configured")
-    
+
     def create_deployment_report(self) -> None:
         """Create documentation deployment report."""
         report_path = self.project_root / "docs_deployment_report.md"
-        
+
         lines = [
             "# Documentation Deployment Report",
             "",
@@ -999,96 +1010,80 @@ docsearch({
             "",
             f"- **GitHub Pages**: https://{self.config.github_repo.split('/')[0]}.github.io/{self.config.github_repo.split('/')[1]}/",
         ]
-        
+
         if self.config.domain:
             lines.append(f"- **Custom Domain**: https://{self.config.domain}/")
-        
-        lines.extend([
-            "",
-            "## Next Steps",
-            "",
-            "1. **Configure Algolia Search**:",
-            "   - Sign up at https://www.algolia.com/",
-            "   - Submit site to DocSearch",
-            "   - Add API key to documentation",
-            "",
-            "2. **Monitor Analytics**:",
-            "   - Set up Google Analytics",
-            "   - Track popular pages",
-            "   - Monitor search queries",
-            "",
-            "3. **Continuous Updates**:",
-            "   - Set up automatic deployment",
-            "   - Version documentation",
-            "   - Add language translations",
-            "",
-            "## Files Generated",
-            "",
-            "- `docs/conf.py` - Sphinx configuration",
-            "- `docs/index.rst` - Main documentation page",
-            "- `docs/api/` - API reference",
-            "- `docs/_static/` - Static assets",
-            "- `docs/_build/html/` - Built documentation",
-            "- `.readthedocs.yaml` - Read the Docs config",
-        ])
-        
-        report_path.write_text('\n'.join(lines))
+
+        lines.extend(
+            [
+                "",
+                "## Next Steps",
+                "",
+                "1. **Configure Algolia Search**:",
+                "   - Sign up at https://www.algolia.com/",
+                "   - Submit site to DocSearch",
+                "   - Add API key to documentation",
+                "",
+                "2. **Monitor Analytics**:",
+                "   - Set up Google Analytics",
+                "   - Track popular pages",
+                "   - Monitor search queries",
+                "",
+                "3. **Continuous Updates**:",
+                "   - Set up automatic deployment",
+                "   - Version documentation",
+                "   - Add language translations",
+                "",
+                "## Files Generated",
+                "",
+                "- `docs/conf.py` - Sphinx configuration",
+                "- `docs/index.rst` - Main documentation page",
+                "- `docs/api/` - API reference",
+                "- `docs/_static/` - Static assets",
+                "- `docs/_build/html/` - Built documentation",
+                "- `.readthedocs.yaml` - Read the Docs config",
+            ]
+        )
+
+        report_path.write_text("\n".join(lines))
         logger.info(f"Deployment report saved to {report_path}")
 
 
 async def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Deploy Simpulse documentation"
-    )
+    parser = argparse.ArgumentParser(description="Deploy Simpulse documentation")
     parser.add_argument(
-        "--version",
-        type=str,
-        default="1.0.0",
-        help="Documentation version"
+        "--version", type=str, default="1.0.0", help="Documentation version"
     )
-    parser.add_argument(
-        "--domain",
-        type=str,
-        help="Custom domain (e.g., simpulse.dev)"
-    )
+    parser.add_argument("--domain", type=str, help="Custom domain (e.g., simpulse.dev)")
     parser.add_argument(
         "--github-repo",
         type=str,
         default="yourusername/simpulse",
-        help="GitHub repository (owner/name)"
+        help="GitHub repository (owner/name)",
+    )
+    parser.add_argument("--analytics-id", type=str, help="Google Analytics ID")
+    parser.add_argument(
+        "--project-root", type=Path, default=Path.cwd(), help="Project root directory"
     )
     parser.add_argument(
-        "--analytics-id",
-        type=str,
-        help="Google Analytics ID"
+        "--build-only", action="store_true", help="Only build docs, don't deploy"
     )
-    parser.add_argument(
-        "--project-root",
-        type=Path,
-        default=Path.cwd(),
-        help="Project root directory"
-    )
-    parser.add_argument(
-        "--build-only",
-        action="store_true",
-        help="Only build docs, don't deploy"
-    )
-    
+
     args = parser.parse_args()
-    
+
     # Create configuration
     config = DocsConfig(
         version=args.version,
         release=args.version,
         domain=args.domain,
         github_repo=args.github_repo,
-        analytics_id=args.analytics_id
+        analytics_id=args.analytics_id,
     )
-    
+
     # Deploy documentation
     deployer = DocumentationDeployer(args.project_root, config)
-    
+
     if args.build_only:
         # Just build
         deployer.setup_sphinx_config()
@@ -1099,21 +1094,24 @@ async def main():
     else:
         # Full deployment
         success = await deployer.deploy_documentation()
-    
+
     if success:
         deployer.create_deployment_report()
-        logger.info("\n" + "="*60)
+        logger.info("\n" + "=" * 60)
         logger.info("DOCUMENTATION DEPLOYMENT COMPLETE")
-        logger.info("="*60)
+        logger.info("=" * 60)
         if args.domain:
             logger.info(f"Documentation: https://{args.domain}/")
         else:
-            logger.info(f"Documentation: https://{args.github_repo.split('/')[0]}.github.io/{args.github_repo.split('/')[1]}/")
-        logger.info("="*60)
+            logger.info(
+                f"Documentation: https://{args.github_repo.split('/')[0]}.github.io/{args.github_repo.split('/')[1]}/"
+            )
+        logger.info("=" * 60)
     else:
         sys.exit(1)
 
 
 if __name__ == "__main__":
     import asyncio
+
     asyncio.run(main())

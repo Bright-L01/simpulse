@@ -6,12 +6,12 @@ Help the community understand when and how to optimize!
 
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 
 def create_tutorial() -> str:
     """Create comprehensive 'Optimizing Simp Performance' tutorial."""
-    
+
     return """# Understanding Simp Performance in Lean 4
 
 A comprehensive guide to optimizing the `simp` tactic for faster proofs.
@@ -378,7 +378,7 @@ Happy optimizing! 🚀
 
 def create_quick_reference() -> str:
     """Create a quick reference card."""
-    
+
     return """# Simp Optimization Quick Reference
 
 ## Priority Levels
@@ -464,10 +464,12 @@ simpulse report <file>     # Generate detailed report
 
 def create_workshop_materials() -> Dict[str, str]:
     """Create materials for a workshop on simp optimization."""
-    
+
     materials = {}
-    
-    materials['slides_outline'] = """# Simp Optimization Workshop
+
+    materials[
+        "slides_outline"
+    ] = """# Simp Optimization Workshop
 
 ## Slide 1: Title
 **Optimizing Lean's Simp Tactic**
@@ -518,8 +520,10 @@ Hands-on exercise with provided codebase
 
 ## Slide 11: Q&A
 """
-    
-    materials['exercise'] = """# Hands-On Exercise: Optimize This!
+
+    materials[
+        "exercise"
+    ] = """# Hands-On Exercise: Optimize This!
 
 ## Setup
 ```bash
@@ -560,8 +564,10 @@ simpulse optimize Exercise.lean
 2. How did you decide on priority values?
 3. What patterns did you notice?
 """
-    
-    materials['handout'] = """# Simp Optimization Handout
+
+    materials[
+        "handout"
+    ] = """# Simp Optimization Handout
 
 ## Key Concepts
 
@@ -628,14 +634,14 @@ lean --profile YourFile.lean 2>&1 | grep theorem_name
 - Community: Lean Zulip #performance
 - Tool: github.com/Bright-L01/simpulse
 """
-    
+
     return materials
 
 
 def create_blog_post() -> str:
     """Create a blog post about simp optimization."""
-    
-    return f"""# How I Made My Lean Proofs 71% Faster With One Simple Trick
+
+    return rf"""# How I Made My Lean Proofs 71% Faster With One Simple Trick
 
 *Published: {datetime.now().strftime("%B %d, %Y")}*
 
@@ -745,7 +751,7 @@ Give it a try and let me know your results!
 
 def create_faq() -> str:
     """Create FAQ document."""
-    
+
     return """# Simp Optimization FAQ
 
 ## General Questions
@@ -908,40 +914,40 @@ Try reverting and re-analyzing.
 
 def generate_all_materials():
     """Generate all teaching materials."""
-    
+
     output_dir = Path("teaching_materials")
     output_dir.mkdir(exist_ok=True)
-    
+
     # Main tutorial
     tutorial_path = output_dir / "tutorial.md"
     tutorial_path.write_text(create_tutorial())
     print(f"✅ Created: {tutorial_path}")
-    
+
     # Quick reference
     ref_path = output_dir / "quick_reference.md"
     ref_path.write_text(create_quick_reference())
     print(f"✅ Created: {ref_path}")
-    
+
     # Workshop materials
     workshop_materials = create_workshop_materials()
     workshop_dir = output_dir / "workshop"
     workshop_dir.mkdir(exist_ok=True)
-    
+
     for name, content in workshop_materials.items():
         path = workshop_dir / f"{name}.md"
         path.write_text(content)
         print(f"✅ Created: {path}")
-    
+
     # Blog post
     blog_path = output_dir / "blog_post.md"
     blog_path.write_text(create_blog_post())
     print(f"✅ Created: {blog_path}")
-    
+
     # FAQ
     faq_path = output_dir / "FAQ.md"
     faq_path.write_text(create_faq())
     print(f"✅ Created: {faq_path}")
-    
+
     # Create index
     index_content = f"""# Simpulse Teaching Materials
 
@@ -973,11 +979,11 @@ To improve these materials, please submit PRs to the Simpulse repository.
 
 *Part of the [Simpulse](https://github.com/Bright-L01/simpulse) project*
 """
-    
+
     index_path = output_dir / "README.md"
     index_path.write_text(index_content)
     print(f"✅ Created: {index_path}")
-    
+
     print(f"\n📚 All teaching materials generated in: {output_dir}/")
 
 
