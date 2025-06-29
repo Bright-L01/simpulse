@@ -56,3 +56,4 @@ temp/
 # Secrets
 .env
 config/secrets.yaml
+mathlib4/

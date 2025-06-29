@@ -1,7 +1,1 @@
-# Minimal requirements for Simpulse proof of concept
-# All core functionality uses Python standard library
-
-# For future phases (not needed for proof of concept):
-# numpy>=1.20.0
-# pytest>=7.0.0
-# pytest-asyncio>=0.20.0
+# No external dependencies - using only Python stdlib
