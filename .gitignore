@@ -60,3 +60,23 @@ mathlib4/
 
 # Analyzed repositories
 analyzed_repos/
+
+# Test artifacts
+test_projects/
+test_simp_perf/
+test_demo/
+demo_test/
+benchmark_results/
+health_check_results/
+case_studies/
+outreach_messages/
+leansat_optimization_results/
+
+# Data files
+candidates.json
+community_engagement.json
+outreach_report.md
+
+# Simpulse specific
+simpulse_output/
+marketing/
