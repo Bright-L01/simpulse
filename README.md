@@ -152,7 +152,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **Issues**: [GitHub Issues](https://github.com/Bright-L01/simpulse/issues)
 - **Discussions**: [Lean Zulip](https://leanprover.zulipchat.com)
-- **Email**: bright.liu@example.com
+- **Email**: brightliu@college.harvard.edu
 
 ---
 
