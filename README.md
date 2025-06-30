@@ -30,7 +30,7 @@ Simpulse uses machine learning and static analysis to optimize Lean 4's `simp` t
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/simpulse.git
+git clone https://github.com/Bright-L01/simpulse.git
 cd simpulse
 
 # Install dependencies
@@ -160,9 +160,16 @@ pytest
 pre-commit run --all-files
 ```
 
+## 🔮 Future: SimpNG
+
+We're developing **SimpNG (Simp Next Generation)** - a revolutionary approach using transformer-based embeddings and neural proof search. Early prototypes show potential for **10-100x speedups**!
+
+[Learn more about SimpNG →](docs/simpng_architecture.md)
+
 ## 📚 Documentation
 
 - [Architecture Overview](docs/architecture.md)
+- [SimpNG - The Future](docs/simpng_architecture.md)
 - [API Reference](docs/api.md)
 - [Performance Analysis](docs/CRITICAL_PROOF_71_PERCENT.md)
 - [Validation Results](docs/SIMULATION_PROOF.md)
@@ -175,7 +182,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - **Author**: Bright Liu
 - **Email**: brightliu@college.harvard.edu
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **GitHub**: [@Bright-L01](https://github.com/Bright-L01)
 
 ## 🙏 Acknowledgments
 
