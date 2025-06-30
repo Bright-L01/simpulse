@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "generated_at": 1751298948.16669,
+  "statistics": {
+    "total_attempts": 106,
+    "unique_rules": 3,
+    "avg_improvement": 0.0
+  },
+  "priorities": {
+    "List.append_nil": 100,
+    "List.nil_append": 110,
+    "Nat.add_zero": 120
+  },
+  "hot_paths": {
+    "Lists:intro": 36,
+    "Arithmetic:rw.intro": 35,
+    "Mixed:simp.rw": 35
+  },
+  "rule_statistics": {
+    "List.append_nil": {
+      "success_rate": 1.0,
+      "avg_time": 3.7431716918945314e-07,
+      "attempts": 100
+    }
+  }
+}

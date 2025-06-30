@@ -6,12 +6,19 @@ Script to train tactic portfolio from mathlib4 or custom data.
 import argparse
 import json
 
-from simpulse.portfolio import (
-    TacticDataset,
-    TacticPredictor,
-    create_lean_integration,
-    train_from_mathlib,
-)
+from simpulse.portfolio import ML_AVAILABLE
+
+if ML_AVAILABLE:
+    from simpulse.portfolio import TacticDataset, TacticPredictor
+    from simpulse.portfolio.lean_interface import (
+        create_lean_integration,
+        train_from_mathlib,
+    )
+else:
+    print("ML dependencies not available. Please install scikit-learn and joblib.")
+    import sys
+
+    sys.exit(1)
 
 
 def train_from_json(json_path: str, output_model: str):
@@ -32,7 +39,7 @@ def train_from_json(json_path: str, output_model: str):
     print(f"Training on {len(balanced)} examples...")
     metrics = predictor.train(balanced)
 
-    print(f"\nTraining complete!")
+    print("\nTraining complete!")
     print(f"Metrics: {metrics}")
 
     # Save
@@ -72,7 +79,7 @@ def evaluate_model(model_path: str, test_file: str):
 
     accuracy = correct / total if total > 0 else 0
 
-    print(f"\nEvaluation Results:")
+    print("\nEvaluation Results:")
     print(f"  Total examples: {total}")
     print(f"  Correct predictions: {correct}")
     print(f"  Accuracy: {accuracy:.2%}")
