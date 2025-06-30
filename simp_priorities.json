@@ -1,0 +1,14 @@
+{
+  "mul_one": 5000,
+  "one_mul": 5000,
+  "zero_add": 5000,
+  "sub_self": 5000,
+  "add_zero": 5000,
+  "list_map_id": 5000,
+  "list_length_nil": 5000,
+  "list_filter_true": 5000,
+  "list_append_nil": 5000,
+  "list_nil_append": 5000,
+  "bool_and_true": 5000,
+  "option_some_eq": 5000
+}
