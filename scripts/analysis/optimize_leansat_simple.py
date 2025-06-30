@@ -250,7 +250,7 @@ class SimpleLeansatOptimizer:
             f.write("# Leansat Optimization Case Study\n\n")
             f.write("## Executive Summary\n\n")
             f.write(
-                f"- **Project**: leanprover/leansat - SAT solver written in Lean 4\n"
+                "- **Project**: leanprover/leansat - SAT solver written in Lean 4\n"
             )
             f.write(f"- **Build Time Improvement**: {improvement:.1f}%\n")
             f.write(
@@ -416,7 +416,7 @@ class SimpleLeansatOptimizer:
                 / baseline["total_build_time"]
                 * 100
             )
-            print(f"\n🎉 Optimization Complete!")
+            print("\n🎉 Optimization Complete!")
             print(f"   Build time improvement: {improvement:.1f}%")
             print(
                 f"   Time saved per build: {baseline['total_build_time'] - optimized['total_build_time']:.2f} seconds"

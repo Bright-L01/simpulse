@@ -212,7 +212,7 @@ Co-Authored-By: Simpulse <noreply@simpulse.ai>"""
             pr_desc_path = self.leansat_path / "SIMPULSE_PR_DESCRIPTION.md"
             pr_desc_path.write_text(pr_desc)
 
-            print(f"\n✅ PR prepared successfully!")
+            print("\n✅ PR prepared successfully!")
             print(f"   Branch: {self.pr_branch}")
             print(f"   Changes: {applied_count} files optimized")
             print(f"   PR description: {pr_desc_path}")

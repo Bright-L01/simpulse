@@ -1,9 +1,5 @@
 """Tests for evolution engine."""
 
-from pathlib import Path
-
-import pytest
-
 from simpulse.evolution.evolution_engine import SimpleEvolutionEngine
 
 

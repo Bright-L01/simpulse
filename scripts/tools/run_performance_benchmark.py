@@ -87,7 +87,7 @@ class PerformanceBenchmarker:
                 build_times.append(build_time)
                 print(f" {build_time:.2f}s ✓")
             else:
-                print(f" Failed ✗")
+                print(" Failed ✗")
                 print(f"Error: {result.stderr}")
 
         if not build_times:
@@ -139,7 +139,7 @@ class PerformanceBenchmarker:
                 results[file_path] = compile_time
                 print(f" {compile_time:.2f}s ✓")
             else:
-                print(f" Failed ✗")
+                print(" Failed ✗")
 
         return results
 
@@ -267,7 +267,7 @@ class PerformanceBenchmarker:
 
         # Generate report
         if baseline_results["build"] and optimized_results["build"]:
-            report_path = self.generate_report(
+            self.generate_report(
                 project_path.name,
                 baseline_results,
                 optimized_results,
@@ -288,7 +288,7 @@ class PerformanceBenchmarker:
                     indent=2,
                 )
 
-            print(f"\n🎯 Benchmark complete!")
+            print("\n🎯 Benchmark complete!")
             print(
                 f"   Performance improvement: {((baseline_results['build']['mean'] - optimized_results['build']['mean']) / baseline_results['build']['mean'] * 100):.1f}%"
             )

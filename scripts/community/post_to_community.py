@@ -43,7 +43,7 @@ class CommunityPoster:
         try:
             pyperclip.copy(short_version)
             print("\n✅ Content copied to clipboard!")
-        except:
+        except Exception:
             print("\n⚠️  Could not copy to clipboard. Please copy manually from above.")
 
         # Open Zulip in browser
@@ -104,7 +104,7 @@ class CommunityPoster:
         try:
             pyperclip.copy(content)
             print("\n✅ Content copied to clipboard!")
-        except:
+        except Exception:
             print("\n⚠️  Could not copy to clipboard. Please copy manually.")
 
         input(f"\nPress Enter to open {project} issues page...")

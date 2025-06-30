@@ -1,7 +1,5 @@
 """Tests for lean profiler (placeholder)."""
 
-import pytest
-
 
 class TestLeanProfiler:
     """Test lean profiler."""

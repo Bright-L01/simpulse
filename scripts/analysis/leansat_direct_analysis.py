@@ -90,7 +90,7 @@ class LeansatDirectAnalyzer:
             except Exception as e:
                 print(f"  ⚠️  Error reading {lean_file}: {e}")
 
-        print(f"\n📊 Analysis Summary:")
+        print("\n📊 Analysis Summary:")
         print(f"  - Total files: {total_files}")
         print(f"  - Files with simp: {files_with_simp}")
         print(f"  - Total simp rules: {len(rules)}")
@@ -555,7 +555,7 @@ class LeansatDirectAnalyzer:
             self.save_optimization_plan(plan)
 
             # Summary
-            print(f"\n✨ Analysis Complete!")
+            print("\n✨ Analysis Complete!")
             print(f"   Optimization Score: {analysis['optimization_score']}/100")
             print(f"   Estimated Improvement: {analysis['estimated_improvement']:.0f}%")
             print(

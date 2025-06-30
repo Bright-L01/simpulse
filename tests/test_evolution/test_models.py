@@ -1,13 +1,10 @@
 """Tests for evolution models."""
 
-import pytest
-
 from simpulse.evolution.models import (
     MutationType,
     OptimizationGoal,
     SimpDirection,
     SimpPriority,
-    SimpRule,
 )
 
 

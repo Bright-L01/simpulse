@@ -237,7 +237,7 @@ Found {len(candidates)} projects that could benefit from Simpulse optimization.
         for candidate in candidates[:20]:  # Top 20
             report += f"| [{candidate.name}]({candidate.url}) | {candidate.stars}⭐ | {candidate.simp_rule_count} | {candidate.optimization_potential:.0f}% | {candidate.estimated_improvement:.0f}% | {candidate.reason} |\n"
 
-        report += f"""
+        report += """
 
 ## Outreach Strategy
 

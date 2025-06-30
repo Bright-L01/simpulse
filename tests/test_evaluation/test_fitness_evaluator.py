@@ -1,7 +1,5 @@
 """Tests for fitness evaluator (placeholder)."""
 
-import pytest
-
 
 class TestFitnessEvaluator:
     """Test fitness evaluator."""

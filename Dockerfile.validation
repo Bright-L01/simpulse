@@ -1,0 +1,67 @@
+FROM ubuntu:22.04
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    python3 \
+    python3-pip \
+    build-essential \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Lean 4
+RUN curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain leanprover/lean4:v4.8.0
+ENV PATH="/root/.elan/bin:${PATH}"
+
+# Create working directory
+WORKDIR /validation
+
+# Copy validation scripts
+COPY validate_standalone.py .
+COPY validate_on_mathlib4.py .
+COPY quick_benchmark.py .
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir pydantic
+
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+echo "========================================"\n\
+echo "SIMPULSE VALIDATION SUITE"\n\
+echo "========================================"\n\
+echo ""\n\
+echo "This will validate Simpulse performance claims"\n\
+echo "using real Lean 4 compilation."\n\
+echo ""\n\
+echo "Select validation type:"\n\
+echo "1) Quick simulation (30 seconds)"\n\
+echo "2) Standalone test project (2-3 minutes)"\n\
+echo "3) Full mathlib4 validation (10+ minutes)"\n\
+echo ""\n\
+read -p "Enter choice [1-3]: " choice\n\
+\n\
+case $choice in\n\
+  1)\n\
+    echo "Running quick simulation..."\n\
+    python3 quick_benchmark.py\n\
+    ;;\n\
+  2)\n\
+    echo "Running standalone validation..."\n\
+    python3 validate_standalone.py\n\
+    ;;\n\
+  3)\n\
+    echo "Running mathlib4 validation..."\n\
+    python3 validate_on_mathlib4.py\n\
+    ;;\n\
+  *)\n\
+    echo "Invalid choice. Running quick simulation..."\n\
+    python3 quick_benchmark.py\n\
+    ;;\n\
+esac\n' > /validation/run_validation.sh && chmod +x /validation/run_validation.sh
+
+# Default command
+CMD ["/validation/run_validation.sh"]

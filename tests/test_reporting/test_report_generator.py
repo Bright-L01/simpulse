@@ -1,7 +1,5 @@
 """Tests for report generator (placeholder)."""
 
-import pytest
-
 
 class TestReportGenerator:
     """Test report generator."""

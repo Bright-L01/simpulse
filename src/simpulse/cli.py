@@ -60,14 +60,12 @@ def check(project_path: Path, json: bool):
         console.print(table)
 
         if result.score > 60:
-            console.print(
-                f"\n💡 [yellow]High optimization potential detected![/yellow]"
-            )
+            console.print("\n💡 [yellow]High optimization potential detected![/yellow]")
             console.print(
                 f"   Run [cyan]simpulse optimize {project_path}[/cyan] to optimize\n"
             )
         else:
-            console.print(f"\n✅ [green]Your project is well optimized![/green]\n")
+            console.print("\n✅ [green]Your project is well optimized![/green]\n")
 
 
 @cli.command()
@@ -96,7 +94,7 @@ def optimize(project_path: Path, output: Path, apply: bool, strategy: str):
         status.update("[bold green]Generating optimizations...")
         optimization = optimizer.optimize(analysis)
 
-    console.print(f"\n✨ Optimization complete!")
+    console.print("\n✨ Optimization complete!")
     console.print(f"   Rules to optimize: [cyan]{optimization.rules_changed}[/cyan]")
     console.print(
         f"   Estimated improvement: [green]{optimization.estimated_improvement}%[/green]\n"
@@ -140,7 +138,7 @@ def benchmark(project_path: Path, runs: int, compare: Path):
         results = benchmarker.compare(project_path, compare, runs=runs)
 
         improvement = results.improvement_percentage
-        console.print(f"\n📊 Results:")
+        console.print("\n📊 Results:")
         console.print(f"   Baseline: {results.baseline_mean:.2f}s")
         console.print(f"   Optimized: {results.optimized_mean:.2f}s")
         console.print(
@@ -149,7 +147,7 @@ def benchmark(project_path: Path, runs: int, compare: Path):
     else:
         # Run single benchmark
         results = benchmarker.benchmark(project_path, runs=runs)
-        console.print(f"\n📊 Benchmark Results:")
+        console.print("\n📊 Benchmark Results:")
         console.print(f"   Mean build time: {results.mean:.2f}s")
         console.print(f"   Std deviation: {results.stdev:.2f}s\n")
 
