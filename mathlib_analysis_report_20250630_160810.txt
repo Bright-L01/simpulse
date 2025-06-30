@@ -1,0 +1,278 @@
+================================================================================
+MATHLIB4 SIMP PRIORITY ANALYSIS REPORT
+================================================================================
+
+SUMMARY STATISTICS
+----------------------------------------
+Total simp rules found: 40,929
+Files analyzed: 6,964
+Analysis time: 1.3 seconds
+
+Default priority: 40,804 (99.7%)
+Custom priority: 125 (0.3%)
+With modifiers (↓←→): 5
+
+CUSTOM PRIORITY BREAKDOWN
+----------------------------------------
+Priority high: 93 (74.4% of custom)
+Priority low: 27 (21.6% of custom)
+
+MODIFIER BREAKDOWN
+----------------------------------------
+Modifier '↓': 3
+Modifier '←': 2
+
+TOP 10 MODULES BY SIMP RULE COUNT
+----------------------------------------
+Mathlib: 40833 rules (124 custom, 0.3%)
+Archive: 43 rules (1 custom, 2.3%)
+Counterexamples: 33 rules (0 custom, 0.0%)
+MathlibTest: 20 rules (0 custom, 0.0%)
+root: 0 rules (0 custom, 0.0%)
+LongestPole: 0 rules (0 custom, 0.0%)
+Cache: 0 rules (0 custom, 0.0%)
+Shake: 0 rules (0 custom, 0.0%)
+DownstreamTest: 0 rules (0 custom, 0.0%)
+scripts: 0 rules (0 custom, 0.0%)
+
+EXAMPLES OF CUSTOM PRIORITY RULES
+----------------------------------------
+
+Example 1:
+File: Archive/Arithcc.lean:169
+Attribute: simp↓
+Modifier: ↓
+Context: tion of the compiler (4.2).
+
+This definition explicitly takes a map from variables to registers.
+-/
+@[simp↓]
+def compile (map : Identifier → Register) : Expr → Register → List Instruction
+  | Expr.con...
+
+Example 2:
+File: Mathlib/Order/Nat.lean:33
+Attribute: simp high
+Priority: high
+Context: der : NoMaxOrder ℕ where
+  exists_gt n := ⟨n + 1, n.lt_succ_self⟩
+
+/-! ### Miscellaneous lemmas -/
+
+@[simp high] protected lemma bot_eq_zero : ⊥ = 0 := rfl
+
+/-- `Nat.find` is the minimum natural numbe...
+
+Example 3:
+File: Mathlib/NumberTheory/Divisors.lean:176
+Attribute: simp high
+Priority: high
+Context: ≠ 0 := by
+  rw [← List.mem_toFinset, toFinset_divisorsAntidiagonalList, mem_divisorsAntidiagonal]
+
+@[simp high]
+lemma swap_mem_divisorsAntidiagonalList {a : ℕ × ℕ} :
+    a.swap ∈ n.divisorsAntidiagona...
+
+Example 4:
+File: Mathlib/NumberTheory/Divisors.lean:316
+Attribute: simp high
+Priority: high
+Context: Antidiagonal_one : divisorsAntidiagonal 1 = {(1, 1)} := by
+  ext
+  simp [mul_eq_one, Prod.ext_iff]
+
+@[simp high]
+theorem swap_mem_divisorsAntidiagonal {x : ℕ × ℕ} :
+    x.swap ∈ divisorsAntidiagonal n...
+
+Example 5:
+File: Mathlib/NumberTheory/Divisors.lean:687
+Attribute: simp high
+Priority: high
+Context: odMk_mem_divisorsAntidiag (hz : z ≠ 0) : (x, y) ∈ z.divisorsAntidiag ↔ x * y = z := by
+  simp [hz]
+
+@[simp high]
+lemma swap_mem_divisorsAntidiag : xy.swap ∈ z.divisorsAntidiag ↔ xy ∈ z.divisorsAntidia...
+
+Example 6:
+File: Mathlib/AlgebraicGeometry/Gluing.lean:176
+Attribute: simp (high), reassoc
+Priority: high
+Context: 𝖣.ι_jointly_surjective forget x
+
+/-- Promoted to higher priority to short circuit simplifier. -/
+@[simp (high), reassoc]
+theorem glue_condition (i j : D.J) : D.t i j ≫ D.f j i ≫ D.ι j = D.f i j ≫ D.ι ...
+
+Example 7:
+File: Mathlib/Logic/Nonempty.lean:33
+Attribute: simp low
+Priority: low
+Context: : we set low priority here, to ensure it is not applied before `exists_prop`
+-- and `exists_const`.
+@[simp low]
+theorem exists_const_iff {α : Sort*} {P : Prop} : (∃ _ : α, P) ↔ Nonempty α ∧ P :=
+  Iff...
+
+Example 8:
+File: Mathlib/RingTheory/MatrixAlgebra.lean:207
+Attribute: simp (high)
+Priority: high
+Context: le p.1 p.2 1 :=
+  rfl
+
+-- Porting note: short circuiting simplifier from simplifying left hand side
+@[simp (high)]
+theorem matrixEquivTensor_apply_single (i j : n) (x : A) :
+    matrixEquivTensor n R ...
+
+Example 9:
+File: Mathlib/RingTheory/Nullstellensatz.lean:185
+Attribute: simp (high)
+Priority: high
+Context: ngIdeal_singleton_isMaximal⟩
+
+-- Porting note: marked this as high priority to short cut simplifier
+@[simp (high)]
+theorem IsPrime.vanishingIdeal_zeroLocus (P : Ideal (MvPolynomial σ k)) [h : P.IsPrim...
+
+Example 10:
+File: Mathlib/LinearAlgebra/Pi.lean:240
+Attribute: simp high
+Priority: high
+Context: by
+  simp_rw [lsum_apply, sum_apply, comp_apply, proj_apply, apply_single, Fintype.sum_pi_single']
+
+@[simp high]
+theorem lsum_single (S) [Fintype ι] [Semiring S]
+    [∀ i, Module S (φ i)] [∀ i, SMulCo...
+
+Example 11:
+File: Mathlib/Topology/Instances/Rat.lean:110
+Attribute: simp ←, push_cast
+Modifier: ←
+Context: nded_Icc (a : ℝ) b)
+
+end Rat
+
+namespace NNRat
+
+instance : MetricSpace ℚ≥0 :=
+  Subtype.metricSpace
+
+@[simp ←, push_cast]
+lemma dist_eq (p q : ℚ≥0) : dist p q = dist (p : ℚ) (q : ℚ) := rfl
+@[simp ←, pu...
+
+Example 12:
+File: Mathlib/Topology/Instances/Rat.lean:112
+Attribute: simp ←, push_cast
+Modifier: ←
+Context: etricSpace
+
+@[simp ←, push_cast]
+lemma dist_eq (p q : ℚ≥0) : dist p q = dist (p : ℚ) (q : ℚ) := rfl
+@[simp ←, push_cast]
+lemma nndist_eq (p q : ℚ≥0) : nndist p q = nndist (p : ℚ) (q : ℚ) := rfl
+
+insta...
+
+Example 13:
+File: Mathlib/Topology/Algebra/Module/Equiv.lean:510
+Attribute: simp high
+Priority: high
+Context: ₁₂] M₂) = (f.trans f' : M₁ →SL[σ₁₃] M₃) :=
+  rfl
+
+-- The priority should be higher than `comp_coe`.
+@[simp high]
+theorem coe_comp_coe_symm (e : M₁ ≃SL[σ₁₂] M₂) :
+    (e : M₁ →SL[σ₁₂] M₂).comp (e.symm ...
+
+Example 14:
+File: Mathlib/Topology/Algebra/Module/Equiv.lean:516
+Attribute: simp high
+Priority: high
+Context: :=
+  ContinuousLinearMap.ext e.apply_symm_apply
+
+-- The priority should be higher than `comp_coe`.
+@[simp high]
+theorem coe_symm_comp_coe (e : M₁ ≃SL[σ₁₂] M₂) :
+    (e.symm : M₂ →SL[σ₂₁] M₁).comp (e :...
+
+Example 15:
+File: Mathlib/Topology/Algebra/Algebra/Equiv.lean:238
+Attribute: simp high
+Priority: high
+Context: coe (e₁ : A ≃A[R] B) (e₂ : B ≃A[R] C) :
+    e₂.toAlgHom.comp e₁.toAlgHom = e₁.trans e₂ := by
+  rfl
+
+@[simp high]
+theorem coe_comp_coe_symm (e : A ≃A[R] B) :
+    e.toContinuousAlgHom.comp e.symm = Cont...
+
+Example 16:
+File: Mathlib/Topology/Algebra/Algebra/Equiv.lean:243
+Attribute: simp high
+Priority: high
+Context: ontinuousAlgHom.comp e.symm = ContinuousAlgHom.id R B :=
+  ContinuousAlgHom.ext e.apply_symm_apply
+
+@[simp high]
+theorem coe_symm_comp_coe (e : A ≃A[R] B) :
+    e.symm.toContinuousAlgHom.comp e = Cont...
+
+Example 17:
+File: Mathlib/Topology/Sheaves/SheafCondition/EqualizerProducts.lean:105
+Attribute: simp (high)
+Priority: high
+Context: (fork F U).π.app WalkingParallelPair.zero = res F U :=
+  rfl
+
+-- Porting note: Shortcut simplifier
+@[simp (high)]
+theorem fork_π_app_walkingParallelPair_one :
+    (fork F U).π.app WalkingParallelPair....
+
+Example 18:
+File: Mathlib/Analysis/InnerProductSpace/Projection.lean:1080
+Attribute: simp high
+Priority: high
+Context: tion_orthogonal w).symm
+
+-- Porting note: The priority should be higher than `Submodule.coe_inner`.
+@[simp high]
+theorem inner_orthogonalProjection_eq_of_mem_right [K.HasOrthogonalProjection] (u : K) ...
+
+Example 19:
+File: Mathlib/Analysis/InnerProductSpace/Projection.lean:1090
+Attribute: simp high
+Priority: high
+Context: d_left, add_sub_cancel]
+
+-- Porting note: The priority should be higher than `Submodule.coe_inner`.
+@[simp high]
+theorem inner_orthogonalProjection_eq_of_mem_left [K.HasOrthogonalProjection] (u : K) (...
+
+Example 20:
+File: Mathlib/Analysis/CStarAlgebra/CStarMatrix.lean:521
+Attribute: simp high
+Priority: high
+Context: A} :
+    toCLMNonUnitalAlgHom (A := A) M = MulOpposite.op (toCLM M) := rfl
+
+open WithCStarModule in
+@[simp high]
+lemma toCLM_apply_single [DecidableEq m] {M : CStarMatrix m n A} {i : m} (a : A) :
+    ...
+
+================================================================================
+CONCLUSION
+================================================================================
+The claim that 99.8% of mathlib4 uses default priorities is ACCURATE
+Actual percentage using default priority: 99.7%
+Actual percentage using custom priority: 0.3%

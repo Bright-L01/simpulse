@@ -1,0 +1,475 @@
+{
+  "total_simp_rules": 40929,
+  "default_priority": 40804,
+  "custom_priority": 125,
+  "with_modifier": 5,
+  "by_priority": {
+    "high": 93,
+    "low": 27
+  },
+  "by_modifier": {
+    "\u2193": 3,
+    "\u2190": 2
+  },
+  "by_module": {
+    "root": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    },
+    "LongestPole": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    },
+    "Mathlib": {
+      "total": 40833,
+      "default": 40709,
+      "custom": 124
+    },
+    "Counterexamples": {
+      "total": 33,
+      "default": 33,
+      "custom": 0
+    },
+    "Cache": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    },
+    "Archive": {
+      "total": 43,
+      "default": 42,
+      "custom": 1
+    },
+    "MathlibTest": {
+      "total": 20,
+      "default": 20,
+      "custom": 0
+    },
+    "Shake": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    },
+    "DownstreamTest": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    },
+    "scripts": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    },
+    "docs": {
+      "total": 0,
+      "default": 0,
+      "custom": 0
+    }
+  },
+  "custom_examples": [
+    {
+      "file": "Archive/Arithcc.lean",
+      "line": 169,
+      "attribute": "simp\u2193",
+      "priority": null,
+      "modifier": "\u2193",
+      "context_snippet": "tion of the compiler (4.2).\n\nThis definition explicitly takes a map from variables to registers.\n-/\n@[simp\u2193]\ndef compile (map : Identifier \u2192 Register) : Expr \u2192 Register \u2192 List Instruction\n  | Expr.con..."
+    },
+    {
+      "file": "Mathlib/Order/Nat.lean",
+      "line": 33,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "der : NoMaxOrder \u2115 where\n  exists_gt n := \u27e8n + 1, n.lt_succ_self\u27e9\n\n/-! ### Miscellaneous lemmas -/\n\n@[simp high] protected lemma bot_eq_zero : \u22a5 = 0 := rfl\n\n/-- `Nat.find` is the minimum natural numbe..."
+    },
+    {
+      "file": "Mathlib/NumberTheory/Divisors.lean",
+      "line": 176,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "\u2260 0 := by\n  rw [\u2190 List.mem_toFinset, toFinset_divisorsAntidiagonalList, mem_divisorsAntidiagonal]\n\n@[simp high]\nlemma swap_mem_divisorsAntidiagonalList {a : \u2115 \u00d7 \u2115} :\n    a.swap \u2208 n.divisorsAntidiagona..."
+    },
+    {
+      "file": "Mathlib/NumberTheory/Divisors.lean",
+      "line": 316,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "Antidiagonal_one : divisorsAntidiagonal 1 = {(1, 1)} := by\n  ext\n  simp [mul_eq_one, Prod.ext_iff]\n\n@[simp high]\ntheorem swap_mem_divisorsAntidiagonal {x : \u2115 \u00d7 \u2115} :\n    x.swap \u2208 divisorsAntidiagonal n..."
+    },
+    {
+      "file": "Mathlib/NumberTheory/Divisors.lean",
+      "line": 687,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "odMk_mem_divisorsAntidiag (hz : z \u2260 0) : (x, y) \u2208 z.divisorsAntidiag \u2194 x * y = z := by\n  simp [hz]\n\n@[simp high]\nlemma swap_mem_divisorsAntidiag : xy.swap \u2208 z.divisorsAntidiag \u2194 xy \u2208 z.divisorsAntidia..."
+    },
+    {
+      "file": "Mathlib/AlgebraicGeometry/Gluing.lean",
+      "line": 176,
+      "attribute": "simp (high), reassoc",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "\ud835\udda3.\u03b9_jointly_surjective forget x\n\n/-- Promoted to higher priority to short circuit simplifier. -/\n@[simp (high), reassoc]\ntheorem glue_condition (i j : D.J) : D.t i j \u226b D.f j i \u226b D.\u03b9 j = D.f i j \u226b D.\u03b9 ..."
+    },
+    {
+      "file": "Mathlib/Logic/Nonempty.lean",
+      "line": 33,
+      "attribute": "simp low",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": ": we set low priority here, to ensure it is not applied before `exists_prop`\n-- and `exists_const`.\n@[simp low]\ntheorem exists_const_iff {\u03b1 : Sort*} {P : Prop} : (\u2203 _ : \u03b1, P) \u2194 Nonempty \u03b1 \u2227 P :=\n  Iff..."
+    },
+    {
+      "file": "Mathlib/RingTheory/MatrixAlgebra.lean",
+      "line": 207,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "le p.1 p.2 1 :=\n  rfl\n\n-- Porting note: short circuiting simplifier from simplifying left hand side\n@[simp (high)]\ntheorem matrixEquivTensor_apply_single (i j : n) (x : A) :\n    matrixEquivTensor n R ..."
+    },
+    {
+      "file": "Mathlib/RingTheory/Nullstellensatz.lean",
+      "line": 185,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "ngIdeal_singleton_isMaximal\u27e9\n\n-- Porting note: marked this as high priority to short cut simplifier\n@[simp (high)]\ntheorem IsPrime.vanishingIdeal_zeroLocus (P : Ideal (MvPolynomial \u03c3 k)) [h : P.IsPrim..."
+    },
+    {
+      "file": "Mathlib/LinearAlgebra/Pi.lean",
+      "line": 240,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "by\n  simp_rw [lsum_apply, sum_apply, comp_apply, proj_apply, apply_single, Fintype.sum_pi_single']\n\n@[simp high]\ntheorem lsum_single (S) [Fintype \u03b9] [Semiring S]\n    [\u2200 i, Module S (\u03c6 i)] [\u2200 i, SMulCo..."
+    },
+    {
+      "file": "Mathlib/Topology/Instances/Rat.lean",
+      "line": 110,
+      "attribute": "simp \u2190, push_cast",
+      "priority": null,
+      "modifier": "\u2190",
+      "context_snippet": "nded_Icc (a : \u211d) b)\n\nend Rat\n\nnamespace NNRat\n\ninstance : MetricSpace \u211a\u22650 :=\n  Subtype.metricSpace\n\n@[simp \u2190, push_cast]\nlemma dist_eq (p q : \u211a\u22650) : dist p q = dist (p : \u211a) (q : \u211a) := rfl\n@[simp \u2190, pu..."
+    },
+    {
+      "file": "Mathlib/Topology/Instances/Rat.lean",
+      "line": 112,
+      "attribute": "simp \u2190, push_cast",
+      "priority": null,
+      "modifier": "\u2190",
+      "context_snippet": "etricSpace\n\n@[simp \u2190, push_cast]\nlemma dist_eq (p q : \u211a\u22650) : dist p q = dist (p : \u211a) (q : \u211a) := rfl\n@[simp \u2190, push_cast]\nlemma nndist_eq (p q : \u211a\u22650) : nndist p q = nndist (p : \u211a) (q : \u211a) := rfl\n\ninsta..."
+    },
+    {
+      "file": "Mathlib/Topology/Algebra/Module/Equiv.lean",
+      "line": 510,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "\u2081\u2082] M\u2082) = (f.trans f' : M\u2081 \u2192SL[\u03c3\u2081\u2083] M\u2083) :=\n  rfl\n\n-- The priority should be higher than `comp_coe`.\n@[simp high]\ntheorem coe_comp_coe_symm (e : M\u2081 \u2243SL[\u03c3\u2081\u2082] M\u2082) :\n    (e : M\u2081 \u2192SL[\u03c3\u2081\u2082] M\u2082).comp (e.symm ..."
+    },
+    {
+      "file": "Mathlib/Topology/Algebra/Module/Equiv.lean",
+      "line": 516,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": ":=\n  ContinuousLinearMap.ext e.apply_symm_apply\n\n-- The priority should be higher than `comp_coe`.\n@[simp high]\ntheorem coe_symm_comp_coe (e : M\u2081 \u2243SL[\u03c3\u2081\u2082] M\u2082) :\n    (e.symm : M\u2082 \u2192SL[\u03c3\u2082\u2081] M\u2081).comp (e :..."
+    },
+    {
+      "file": "Mathlib/Topology/Algebra/Algebra/Equiv.lean",
+      "line": 238,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "coe (e\u2081 : A \u2243A[R] B) (e\u2082 : B \u2243A[R] C) :\n    e\u2082.toAlgHom.comp e\u2081.toAlgHom = e\u2081.trans e\u2082 := by\n  rfl\n\n@[simp high]\ntheorem coe_comp_coe_symm (e : A \u2243A[R] B) :\n    e.toContinuousAlgHom.comp e.symm = Cont..."
+    },
+    {
+      "file": "Mathlib/Topology/Algebra/Algebra/Equiv.lean",
+      "line": 243,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "ontinuousAlgHom.comp e.symm = ContinuousAlgHom.id R B :=\n  ContinuousAlgHom.ext e.apply_symm_apply\n\n@[simp high]\ntheorem coe_symm_comp_coe (e : A \u2243A[R] B) :\n    e.symm.toContinuousAlgHom.comp e = Cont..."
+    },
+    {
+      "file": "Mathlib/Topology/Sheaves/SheafCondition/EqualizerProducts.lean",
+      "line": 105,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "(fork F U).\u03c0.app WalkingParallelPair.zero = res F U :=\n  rfl\n\n-- Porting note: Shortcut simplifier\n@[simp (high)]\ntheorem fork_\u03c0_app_walkingParallelPair_one :\n    (fork F U).\u03c0.app WalkingParallelPair...."
+    },
+    {
+      "file": "Mathlib/Analysis/InnerProductSpace/Projection.lean",
+      "line": 1080,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "tion_orthogonal w).symm\n\n-- Porting note: The priority should be higher than `Submodule.coe_inner`.\n@[simp high]\ntheorem inner_orthogonalProjection_eq_of_mem_right [K.HasOrthogonalProjection] (u : K) ..."
+    },
+    {
+      "file": "Mathlib/Analysis/InnerProductSpace/Projection.lean",
+      "line": 1090,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "d_left, add_sub_cancel]\n\n-- Porting note: The priority should be higher than `Submodule.coe_inner`.\n@[simp high]\ntheorem inner_orthogonalProjection_eq_of_mem_left [K.HasOrthogonalProjection] (u : K) (..."
+    },
+    {
+      "file": "Mathlib/Analysis/CStarAlgebra/CStarMatrix.lean",
+      "line": 521,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "A} :\n    toCLMNonUnitalAlgHom (A := A) M = MulOpposite.op (toCLM M) := rfl\n\nopen WithCStarModule in\n@[simp high]\nlemma toCLM_apply_single [DecidableEq m] {M : CStarMatrix m n A} {i : m} (a : A) :\n    ..."
+    },
+    {
+      "file": "Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Unique.lean",
+      "line": 150,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "alContinuousMapOfNNReal := by\n  simp [realContinuousMapOfNNReal]\n  fun_prop\n\nend IsTopologicalRing\n\n@[simp high]\nlemma realContinuousMapOfNNReal_apply_comp_toReal (\u03c6 : C(X, \u211d\u22650) \u2192\u22c6\u2090[\u211d\u22650] A)\n    (f : C..."
+    },
+    {
+      "file": "Mathlib/Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Unique.lean",
+      "line": 336,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "uousMapZeroOfNNReal := by\n  simp [realContinuousMapZeroOfNNReal]\n  fun_prop\n\nend IsTopologicalRing\n\n@[simp high]\nlemma realContinuousMapZeroOfNNReal_apply_comp_toReal (\u03c6 : C(X, \u211d\u22650)\u2080 \u2192\u22c6\u2099\u2090[\u211d\u22650] A)\n    ..."
+    },
+    {
+      "file": "Mathlib/Analysis/Complex/UpperHalfPlane/MoebiusAction.lean",
+      "line": 375,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "variable (g : SL(2, \u2124)) (z : \u210d)\n\n@[simp]\ntheorem sl_moeb : g \u2022 z = (g : GL (Fin 2) \u211d) \u2022 z := rfl\n\n@[simp high]\ntheorem SL_neg_smul : -g \u2022 z = g \u2022 z := by\n  rw [sl_moeb, \u2190 z.neg_smul]\n  congr 1 with i ..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+      "line": 154,
+      "attribute": "simp low, fun_prop",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "ast [IntCast F] (z : \u2124) (x : E) :\n    DifferentiableAt \ud835\udd5c (z : E \u2192 F) x := differentiableAt_const _\n\n@[simp low, fun_prop]\ntheorem differentiableAt_ofNat (n : \u2115) [OfNat F n] (x : E) :\n    Differentiabl..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+      "line": 209,
+      "attribute": "simp low",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "rivWithin_intCast [IntCast F] (z : \u2124) : fderivWithin \ud835\udd5c (z : E \u2192 F) s = 0 :=\n  fderivWithin_const _\n\n@[simp low]\ntheorem fderivWithin_ofNat (n : \u2115) [OfNat F n] : fderivWithin \ud835\udd5c (ofNat(n) : E \u2192 F) s = 0..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+      "line": 236,
+      "attribute": "simp low",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "_\n\n@[simp]\ntheorem fderiv_intCast [IntCast F] (z : \u2124) : fderiv \ud835\udd5c (z : E \u2192 F) = 0 := fderiv_const _\n\n@[simp low]\ntheorem fderiv_ofNat (n : \u2115) [OfNat F n] : fderiv \ud835\udd5c (ofNat(n) : E \u2192 F) = 0 := fderiv_con..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+      "line": 259,
+      "attribute": "simp low, fun_prop",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "rentiable_intCast [IntCast F] (z : \u2124) :\n    Differentiable \ud835\udd5c (z : E \u2192 F) := differentiable_const _\n\n@[simp low, fun_prop]\ntheorem differentiable_ofNat (n : \u2115) [OfNat F n] :\n    Differentiable \ud835\udd5c (ofNat..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+      "line": 283,
+      "attribute": "simp low, fun_prop",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "eOn_intCast [IntCast F] (z : \u2124) :\n    DifferentiableOn \ud835\udd5c (z : E \u2192 F) s := differentiableOn_const _\n\n@[simp low, fun_prop]\ntheorem differentiableOn_ofNat (n : \u2115) [OfNat F n] :\n    DifferentiableOn \ud835\udd5c (o..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+      "line": 752,
+      "attribute": "simp low",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "eorem deriv_intCast [IntCast F] (z : \u2124) : deriv (z : \ud835\udd5c \u2192 F) = 0 := funext fun _ => deriv_const _ _\n\n@[simp low]\ntheorem deriv_ofNat (n : \u2115) [OfNat F n] : deriv (ofNat(n) : \ud835\udd5c \u2192 F) = 0 :=\n  funext fun _..."
+    },
+    {
+      "file": "Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+      "line": 778,
+      "attribute": "simp low",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "derivWithin_intCast [IntCast F] (z : \u2124) : derivWithin (z : \ud835\udd5c \u2192 F) s = 0 :=\n  derivWithin_const _ _\n\n@[simp low]\ntheorem derivWithin_ofNat (n : \u2115) [OfNat F n] : derivWithin (ofNat(n) : \ud835\udd5c \u2192 F) s = 0 :=\n..."
+    },
+    {
+      "file": "Mathlib/Analysis/Normed/Lp/PiLp.lean",
+      "line": 795,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": ":=\n  LinearIsometryEquiv.ext fun z \u21a6\n    congr_arg (Equiv.toFun \u00b7 z) (Equiv.piCongrLeft'_symm _ _)\n\n@[simp high]\ntheorem _root_.LinearIsometryEquiv.piLpCongrLeft_single [DecidableEq \u03b9] [DecidableEq \u03b9'..."
+    },
+    {
+      "file": "Mathlib/Analysis/Normed/Lp/PiLp.lean",
+      "line": 847,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "LpCongrRight p e).symm =\n      LinearIsometryEquiv.piLpCongrRight p (fun i => (e i).symm) :=\n  rfl\n\n@[simp high]\ntheorem _root_.LinearIsometryEquiv.piLpCongrRight_single (e : \u2200 i, \u03b1 i \u2243\u2097\u1d62[\ud835\udd5c] \u03b2 i) [Dec..."
+    },
+    {
+      "file": "Mathlib/Probability/ProbabilityMassFunction/Constructions.lean",
+      "line": 227,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "apply]\n  exact tsum_eq_sum fun _ h \u21a6 (h <| mem_univ _).elim\n\nsection Measure\n\nvariable (s : Set \u03b1)\n\n@[simp high]\ntheorem toOuterMeasure_ofFintype_apply : (ofFintype f h).toOuterMeasure s = \u2211' x, s.ind..."
+    },
+    {
+      "file": "Mathlib/NumberTheory/Padics/PadicNumbers.lean",
+      "line": 751,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "t p.Prime]\n-- Porting note: Linter thinks this is a duplicate simp lemma, so `priority` is assigned\n@[simp (high)]\nprotected theorem mul (q r : \u211a_[p]) : \u2016q * r\u2016 = \u2016q\u2016 * \u2016r\u2016 := by simp [Norm.norm, map_..."
+    },
+    {
+      "file": "Mathlib/NumberTheory/Padics/PadicNumbers.lean",
+      "line": 782,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": ".1.one_lt\n\n-- Porting note: Linter thinks this is a duplicate simp lemma, so `priority` is assigned\n@[simp (high)]\ntheorem norm_p_zpow (n : \u2124) : \u2016(p : \u211a_[p]) ^ n\u2016 = (p : \u211d) ^ (-n) := by\n  rw [norm_zpo..."
+    },
+    {
+      "file": "Mathlib/NumberTheory/Padics/PadicNumbers.lean",
+      "line": 787,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "inv_zpow]\n\n-- Porting note: Linter thinks this is a duplicate simp lemma, so `priority` is assigned\n@[simp (high)]\ntheorem norm_p_pow (n : \u2115) : \u2016(p : \u211a_[p]) ^ n\u2016 = (p : \u211d) ^ (-n : \u2124) := by\n  rw [\u2190 nor..."
+    },
+    {
+      "file": "Mathlib/Logic/Equiv/Set.lean",
+      "line": 66,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "(f.symm.image_eq_preimage S).symm\n\n-- Increased priority so this fires before `image_subset_iff`\n@[simp high]\nprotected theorem symm_image_subset {\u03b1 \u03b2} (e : \u03b1 \u2243 \u03b2) (s : Set \u03b1) (t : Set \u03b2) :\n    e.symm..."
+    },
+    {
+      "file": "Mathlib/Logic/Equiv/Set.lean",
+      "line": 71,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "age_subset_iff, e.image_eq_preimage]\n\n-- Increased priority so this fires before `image_subset_iff`\n@[simp high]\nprotected theorem subset_symm_image {\u03b1 \u03b2} (e : \u03b1 \u2243 \u03b2) (s : Set \u03b1) (t : Set \u03b2) :\n    s \u2286..."
+    },
+    {
+      "file": "Mathlib/Logic/Function/Iterate.lean",
+      "line": 76,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": ":= by\n  rw [iterate_add f m n]\n  rfl\n\n-- can be proved by simp but this is shorter and more natural\n@[simp high]\ntheorem iterate_one : f^[1] = f :=\n  funext fun _ \u21a6 rfl\n\ntheorem iterate_mul (m : \u2115) : ..."
+    },
+    {
+      "file": "Mathlib/CategoryTheory/Monoidal/Preadditive.lean",
+      "line": 46,
+      "attribute": "simp (low)",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "oidalPreadditive\n\n-- The priority setting will not be needed when we replace `\ud835\udfd9 X \u2297\u2098 f` by `X \u25c1 f`.\n@[simp (low)]\ntheorem tensor_zero {W X Y Z : C} (f : W \u27f6 X) : f \u2297\u2098 (0 : Y \u27f6 Z) = 0 := by\n  simp [ten..."
+    },
+    {
+      "file": "Mathlib/CategoryTheory/Monoidal/Preadditive.lean",
+      "line": 51,
+      "attribute": "simp (low)",
+      "priority": "low",
+      "modifier": null,
+      "context_snippet": "[tensorHom_def]\n\n-- The priority setting will not be needed when we replace `f \u2297\u2098 \ud835\udfd9 X` by `f \u25b7 X`.\n@[simp (low)]\ntheorem zero_tensor {W X Y Z : C} (f : Y \u27f6 Z) : (0 : W \u27f6 X) \u2297\u2098 f = 0 := by\n  simp [tens..."
+    },
+    {
+      "file": "Mathlib/RingTheory/Ideal/Nonunits.lean",
+      "line": 47,
+      "attribute": "simp (high)",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "s\n\n-- Porting note : as this can be proved by other `simp` lemmas, this is marked as high priority.\n@[simp (high)]\ntheorem map_mem_nonunits_iff [Monoid \u03b1] [Monoid \u03b2] [FunLike F \u03b1 \u03b2] [MonoidHomClass F ..."
+    },
+    {
+      "file": "Mathlib/RingTheory/Ideal/Operations.lean",
+      "line": 1161,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "J \u2264 I\n  | \u27e8_, h\u27e9 => h.symm \u25b8 le_trans mul_le_inf inf_le_left\n\n/-- See also `isUnit_iff_eq_one`. -/\n@[simp high]\ntheorem isUnit_iff {I : Ideal R} : IsUnit I \u2194 I = \u22a4 :=\n  isUnit_iff_dvd_one.trans\n    ((..."
+    },
+    {
+      "file": "Mathlib/RingTheory/NonUnitalSubsemiring/Defs.lean",
+      "line": 213,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "(x * y : R) :=\n  rfl\n\n/-! Note: currently, there are no ordered versions of non-unital rings. -/\n\n\n@[simp high]\ntheorem mem_toSubsemigroup {s : NonUnitalSubsemiring R} {x : R} : x \u2208 s.toSubsemigroup \u2194..."
+    },
+    {
+      "file": "Mathlib/RingTheory/NonUnitalSubsemiring/Defs.lean",
+      "line": 217,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "em_toSubsemigroup {s : NonUnitalSubsemiring R} {x : R} : x \u2208 s.toSubsemigroup \u2194 x \u2208 s :=\n  Iff.rfl\n\n@[simp high]\ntheorem coe_toSubsemigroup (s : NonUnitalSubsemiring R) : (s.toSubsemigroup : Set R) = ..."
+    },
+    {
+      "file": "Mathlib/RingTheory/LocalRing/ResidueField/Ideal.lean",
+      "line": 52,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": ":\n    Ideal.ResidueField.map\u2090 I J hf x = Ideal.ResidueField.map I J _ hf x := rfl\n\nvariable {I} in\n@[simp high] -- marked `high` to override the more general `FaithfulSMul.algebraMap_eq_zero_iff`\nlemm..."
+    },
+    {
+      "file": "Mathlib/RingTheory/LocalRing/ResidueField/Ideal.lean",
+      "line": 59,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "p_eq, IsLocalRing.residue_eq_zero_iff]\n  exact IsLocalization.AtPrime.to_map_mem_maximal_iff _ _ _\n\n@[simp high] -- marked `high` to override the more general `FaithfulSMul.ker_algebraMap_eq_bot`\nlemm..."
+    },
+    {
+      "file": "Mathlib/RingTheory/GradedAlgebra/Homogeneous/Ideal.lean",
+      "line": 92,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "geneousIdeal \ud835\udc9c} (h : \u2200 i, \u2200 x \u2208 \ud835\udc9c i, x \u2208 I \u2194 x \u2208 J) :\n    I = J := HomogeneousSubmodule.ext' \ud835\udc9c \ud835\udc9c h\n\n@[simp high]\ntheorem HomogeneousIdeal.mem_iff {I : HomogeneousIdeal \ud835\udc9c} {x : A} : x \u2208 I.toIdeal \u2194 x \u2208..."
+    },
+    {
+      "file": "Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+      "line": 139,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "e_iff, Classical.not_not, setOf_mem_eq]\n\n-- The priority should be higher than `eventuallyEq_univ`.\n@[simp high]\ntheorem ae_eq_univ : s =\u1d50[\u03bc] (univ : Set \u03b1) \u2194 \u03bc s\u1d9c = 0 :=\n  eventuallyEq_univ\n\ntheorem ..."
+    },
+    {
+      "file": "Mathlib/LinearAlgebra/BilinearForm/Hom.lean",
+      "line": 172,
+      "attribute": "simp high",
+      "priority": "high",
+      "modifier": null,
+      "context_snippet": "or `comp_id_{left,right}` followed by `comp{Right,Left}_id`,\n-- Needs higher priority to be applied\n@[simp high]\ntheorem comp_id_id (B : BilinForm R M) : B.comp LinearMap.id LinearMap.id = B := by\n  e..."
+    }
+  ],
+  "files_analyzed": 6964,
+  "analysis_time": 1.2534599304199219
+}

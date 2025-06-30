@@ -96,3 +96,4 @@ docs/_templates/
 *.bak
 tmp/
 temp/
+mathlib4_analysis/
