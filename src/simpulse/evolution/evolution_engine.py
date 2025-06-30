@@ -18,6 +18,18 @@ class OptimizationResult:
     best_mutation: Optional[str] = None
     baseline_time: float = 0.0
     optimized_time: float = 0.0
+    total_generations: int = 1
+    execution_time: float = 0.0
+    modules: list = None
+    total_evaluations: int = 1
+    success: bool = False
+    best_candidate: Optional[object] = None
+    history: Optional[object] = None
+
+    def __post_init__(self):
+        if self.modules is None:
+            self.modules = []
+        self.success = self.improved
 
 
 class SimpleEvolutionEngine:

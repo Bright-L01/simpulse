@@ -14,7 +14,6 @@ try:
     import plotly.express as px
     import plotly.graph_objects as go
     import plotly.offline as pyo
-    from plotly.subplots import make_subplots
 
     PLOTLY_AVAILABLE = True
 except ImportError:
@@ -31,7 +30,6 @@ except ImportError:
     pd = None
 
 from ..evolution.evolution_engine import OptimizationResult
-from ..evolution.models_v2 import EvolutionHistory, GenerationResult
 
 logger = logging.getLogger(__name__)
 
@@ -46,18 +44,9 @@ class Dashboard:
         self.mutation_stats = {}
         self.resource_usage = {}
 
-    def add_generation_data(self, generation: GenerationResult):
+    def add_generation_data(self, generation_data: dict):
         """Add generation data to dashboard."""
-        self.generation_data.append(
-            {
-                "generation": generation.generation,
-                "best_fitness": generation.best_fitness,
-                "average_fitness": generation.average_fitness,
-                "diversity": generation.diversity_score,
-                "valid_candidates": generation.valid_candidates,
-                "timestamp": datetime.now().isoformat(),
-            }
-        )
+        self.generation_data.append(generation_data)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert dashboard to dictionary."""
@@ -150,37 +139,11 @@ class ReportGenerator:
         plots_html = '<div class="visualizations">'
 
         try:
-            # Performance timeline
-            if result.history and result.history.generations:
-                timeline_fig = self._create_performance_timeline(result.history)
-                plots_html += '<div class="plot-container">'
-                plots_html += "<h3>🏃 Performance Evolution</h3>"
-                plots_html += pyo.plot(
-                    timeline_fig, include_plotlyjs=False, output_type="div"
-                )
-                plots_html += "</div>"
-
-            # Mutation effectiveness
-            if result.best_candidate and result.best_candidate.mutations:
-                mutation_fig = self._create_mutation_heatmap(
-                    result.best_candidate.mutations
-                )
-                plots_html += '<div class="plot-container">'
-                plots_html += "<h3>🔬 Mutation Effectiveness</h3>"
-                plots_html += pyo.plot(
-                    mutation_fig, include_plotlyjs=False, output_type="div"
-                )
-                plots_html += "</div>"
-
-            # Fitness distribution
-            if result.history:
-                distribution_fig = self._create_fitness_distribution(result.history)
-                plots_html += '<div class="plot-container">'
-                plots_html += "<h3>📊 Fitness Distribution</h3>"
-                plots_html += pyo.plot(
-                    distribution_fig, include_plotlyjs=False, output_type="div"
-                )
-                plots_html += "</div>"
+            # Create simple performance visualization
+            plots_html += '<div class="plot-container">'
+            plots_html += "<h3>🏃 Performance Improvement</h3>"
+            plots_html += self._create_simple_performance_chart(result)
+            plots_html += "</div>"
 
         except Exception as e:
             logger.error(f"Error generating plots: {e}")
@@ -194,70 +157,44 @@ class ReportGenerator:
         plotly_js = '<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>'
         return plotly_js + plots_html
 
-    def _create_performance_timeline(self, history: EvolutionHistory) -> go.Figure:
-        """Create performance timeline plot.
+    def _create_simple_performance_chart(self, result: OptimizationResult) -> str:
+        """Create simple performance comparison chart.
 
         Args:
-            history: Evolution history
+            result: Optimization result
 
         Returns:
-            Plotly figure
+            HTML chart
         """
-        generations = [g.generation for g in history.generations]
-        best_fitness = [g.best_fitness for g in history.generations]
-        avg_fitness = [g.average_fitness for g in history.generations]
-        diversity = [g.diversity_score for g in history.generations]
+        if not self.plotly_available:
+            return "<p>Visualization requires plotly: pip install plotly</p>"
 
-        fig = make_subplots(
-            rows=2,
-            cols=1,
-            subplot_titles=("Fitness Evolution", "Population Diversity"),
-            specs=[[{"secondary_y": False}], [{"secondary_y": False}]],
+        baseline = result.baseline_time if hasattr(result, "baseline_time") else 100
+        optimized = (
+            result.optimized_time
+            if hasattr(result, "optimized_time")
+            else baseline * (1 - result.improvement_percent / 100)
         )
 
-        # Fitness traces
-        fig.add_trace(
-            go.Scatter(
-                x=generations,
-                y=best_fitness,
-                name="Best Fitness",
-                line=dict(color="green", width=3),
-            ),
-            row=1,
-            col=1,
-        )
-
-        fig.add_trace(
-            go.Scatter(
-                x=generations,
-                y=avg_fitness,
-                name="Average Fitness",
-                line=dict(color="blue", width=2),
-            ),
-            row=1,
-            col=1,
-        )
-
-        # Diversity trace
-        fig.add_trace(
-            go.Scatter(
-                x=generations,
-                y=diversity,
-                name="Diversity",
-                line=dict(color="orange", width=2),
-            ),
-            row=2,
-            col=1,
+        fig = go.Figure(
+            data=[
+                go.Bar(
+                    x=["Baseline", "Optimized"],
+                    y=[baseline, optimized],
+                    text=[f"{baseline:.1f}ms", f"{optimized:.1f}ms"],
+                    textposition="auto",
+                    marker_color=["red", "green"],
+                )
+            ]
         )
 
         fig.update_layout(
-            title="Evolution Progress",
-            xaxis_title="Generation",
-            height=600,
-            showlegend=True,
+            title=f"Performance Improvement: {result.improvement_percent:.1f}%",
+            yaxis_title="Time (ms)",
+            height=400,
         )
 
-        return fig
+        return pyo.plot(fig, include_plotlyjs=False, output_type="div")
 
     def _create_mutation_heatmap(self, mutations: List[Any]) -> go.Figure:
         """Create mutation effectiveness heatmap.
@@ -308,60 +245,6 @@ class ReportGenerator:
 
         return fig
 
-    def _create_fitness_distribution(self, history: EvolutionHistory) -> go.Figure:
-        """Create fitness distribution plot.
-
-        Args:
-            history: Evolution history
-
-        Returns:
-            Plotly figure
-        """
-        if not history.generations:
-            return go.Figure()
-
-        # Get final generation fitness data
-        final_gen = history.generations[-1]
-
-        # Simulate fitness distribution (in practice would come from population data)
-        import numpy as np
-
-        np.random.seed(42)
-
-        # Create synthetic fitness distribution around the final values
-        n_samples = 30
-        fitness_values = np.random.normal(final_gen.average_fitness, 0.1, n_samples)
-        fitness_values = np.clip(fitness_values, 0, 1)
-
-        fig = go.Figure(
-            data=[
-                go.Histogram(x=fitness_values, nbinsx=10, name="Fitness Distribution")
-            ]
-        )
-
-        # Add vertical lines for statistics
-        fig.add_vline(
-            x=final_gen.best_fitness,
-            line_dash="dash",
-            line_color="green",
-            annotation_text="Best",
-        )
-        fig.add_vline(
-            x=final_gen.average_fitness,
-            line_dash="dash",
-            line_color="blue",
-            annotation_text="Average",
-        )
-
-        fig.update_layout(
-            title="Final Generation Fitness Distribution",
-            xaxis_title="Fitness Score",
-            yaxis_title="Count",
-            height=400,
-        )
-
-        return fig
-
     def _generate_header_section(self, result: OptimizationResult) -> str:
         """Generate report header section."""
         return f"""
@@ -402,11 +285,12 @@ class ReportGenerator:
 
     def _generate_performance_section(self, result: OptimizationResult) -> str:
         """Generate performance comparison section."""
-        if not result.best_candidate or not result.best_candidate.fitness:
-            return "<section><h2>📊 Performance Analysis</h2><p>No performance data available.</p></section>"
-
-        fitness = result.best_candidate.fitness
-        baseline_time = fitness.total_time / (1 - result.improvement_percent / 100)
+        baseline_time = result.baseline_time if result.baseline_time > 0 else 100
+        optimized_time = (
+            result.optimized_time
+            if result.optimized_time > 0
+            else baseline_time * (1 - result.improvement_percent / 100)
+        )
 
         return f"""
         <section class="performance">
@@ -424,25 +308,25 @@ class ReportGenerator:
                     <tr>
                         <td><strong>Total Time</strong></td>
                         <td>{baseline_time:.2f} ms</td>
-                        <td>{fitness.total_time:.2f} ms</td>
+                        <td>{optimized_time:.2f} ms</td>
                         <td class="improvement">{result.improvement_percent:.1f}%</td>
                     </tr>
                     <tr>
                         <td><strong>Simp Time</strong></td>
                         <td>{baseline_time * 0.7:.2f} ms</td>
-                        <td>{fitness.simp_time:.2f} ms</td>
-                        <td class="improvement">{((baseline_time * 0.7 - fitness.simp_time) / (baseline_time * 0.7) * 100):.1f}%</td>
+                        <td>{optimized_time * 0.7:.2f} ms</td>
+                        <td class="improvement">{result.improvement_percent:.1f}%</td>
                     </tr>
                     <tr>
                         <td><strong>Iterations</strong></td>
                         <td>-</td>
-                        <td>{fitness.iterations}</td>
+                        <td>-</td>
                         <td>-</td>
                     </tr>
                     <tr>
                         <td><strong>Memory Usage</strong></td>
                         <td>-</td>
-                        <td>{fitness.memory_mb:.1f} MB</td>
+                        <td>-</td>
                         <td>-</td>
                     </tr>
                 </tbody>
@@ -452,32 +336,20 @@ class ReportGenerator:
 
     def _generate_mutations_section(self, result: OptimizationResult) -> str:
         """Generate mutations analysis section."""
-        if not result.best_candidate or not result.best_candidate.mutations:
-            return "<section><h2>🔧 Mutations Applied</h2><p>No mutations applied.</p></section>"
-
-        mutations_html = """
-        <section class="mutations">
-            <h2>🔧 Applied Mutations</h2>
-            <div class="mutations-list">
-        """
-
-        for i, mutation in enumerate(result.best_candidate.mutations, 1):
-            if hasattr(mutation, "suggestion"):
-                suggestion = mutation.suggestion
-                mutations_html += f"""
-                <div class="mutation-item">
-                    <h4>{i}. {suggestion.rule_name}</h4>
-                    <div class="mutation-details">
-                        <span class="mutation-type">{suggestion.mutation_type.value}</span>
-                        <span class="confidence">Confidence: {suggestion.confidence:.1%}</span>
+        if result.best_mutation:
+            return f"""
+            <section class="mutations">
+                <h2>🔧 Applied Optimization</h2>
+                <div class="mutations-list">
+                    <div class="mutation-item">
+                        <h4>Priority Optimization Applied</h4>
+                        <p class="description">{result.best_mutation}</p>
                     </div>
-                    <p class="description">{suggestion.description}</p>
-                    {self._format_mutation_impact(suggestion.estimated_impact)}
                 </div>
-                """
-
-        mutations_html += "</div></section>"
-        return mutations_html
+            </section>
+            """
+        else:
+            return "<section><h2>🔧 Mutations Applied</h2><p>No mutations applied.</p></section>"
 
     def _format_mutation_impact(self, impact: Dict[str, float]) -> str:
         """Format mutation impact data."""
@@ -753,22 +625,24 @@ class ReportGenerator:
         lines.append("")
 
         # Performance details
-        if result.best_candidate and result.best_candidate.fitness:
-            fitness = result.best_candidate.fitness
-            baseline_time = fitness.total_time / (1 - result.improvement_percent / 100)
+        if result.improvement_percent > 0:
+            baseline_time = result.baseline_time if result.baseline_time > 0 else 100
+            optimized_time = (
+                result.optimized_time
+                if result.optimized_time > 0
+                else baseline_time * (1 - result.improvement_percent / 100)
+            )
 
             lines.append("## ⚡ Performance Details")
             lines.append("")
             lines.append("| Metric | Baseline | Optimized | Improvement |")
             lines.append("|--------|----------|-----------|-------------|")
             lines.append(
-                f"| Total Time | {baseline_time:.2f} ms | {fitness.total_time:.2f} ms | {result.improvement_percent:.1f}% |"
+                f"| Total Time | {baseline_time:.2f} ms | {optimized_time:.2f} ms | {result.improvement_percent:.1f}% |"
             )
             lines.append(
-                f"| Simp Time | {baseline_time * 0.7:.2f} ms | {fitness.simp_time:.2f} ms | {((baseline_time * 0.7 - fitness.simp_time) / (baseline_time * 0.7) * 100):.1f}% |"
+                f"| Simp Time | {baseline_time * 0.7:.2f} ms | {optimized_time * 0.7:.2f} ms | {result.improvement_percent:.1f}% |"
             )
-            lines.append(f"| Iterations | - | {fitness.iterations} | - |")
-            lines.append(f"| Memory | - | {fitness.memory_mb:.1f} MB | - |")
             lines.append("")
 
         # Modules
@@ -794,36 +668,29 @@ class ReportGenerator:
 
         return "\n".join(lines)
 
-    def create_performance_dashboard(self, history: EvolutionHistory) -> Dashboard:
-        """Create real-time monitoring dashboard.
+    def create_performance_dashboard(self, result: OptimizationResult) -> Dashboard:
+        """Create monitoring dashboard from result.
 
         Args:
-            history: Evolution history
+            result: Optimization result
 
         Returns:
-            Dashboard with real-time data
+            Dashboard with result data
         """
         dashboard = Dashboard()
 
-        for generation in history.generations:
-            dashboard.add_generation_data(generation)
+        # Add simplified data
+        dashboard.generation_data.append(
+            {
+                "improvement": result.improvement_percent,
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
 
-        # Add mutation statistics
+        # Add basic statistics
         dashboard.mutation_stats = {
-            "total_mutations": sum(
-                len(g.mutation_statistics) for g in history.generations
-            ),
-            "successful_mutations": len(
-                [g for g in history.generations if g.new_best_found]
-            ),
-            "convergence_generation": history.convergence_generation,
-        }
-
-        # Add resource usage (simulated)
-        dashboard.resource_usage = {
-            "peak_memory_mb": 256,
-            "cpu_time_seconds": sum(g.evaluation_time for g in history.generations),
-            "disk_space_mb": 50,
+            "improvement_achieved": result.improved,
+            "improvement_percent": result.improvement_percent,
         }
 
         return dashboard
