@@ -1,38 +1,3 @@
-FROM ubuntu:22.04
-
-# Prevent interactive prompts
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    python3 \
-    python3-pip \
-    build-essential \
-    wget \
-    bc \
-    time \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Lean 4
-RUN curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain leanprover/lean4:v4.8.0
-ENV PATH="/root/.elan/bin:${PATH}"
-
-# Create working directory
-WORKDIR /validation
-
-# Clone mathlib4 for real testing
-RUN git clone --depth 1 https://github.com/leanprover-community/mathlib4.git /mathlib4
-
-# Copy entire Simpulse project
-COPY . /simpulse
-
-# Install Python dependencies
-RUN pip3 install --no-cache-dir matplotlib numpy
-
-# Create comprehensive validation script  
-RUN cat > /validation/run_validation.sh << 'EOF'
 #!/bin/bash
 set -e
 
@@ -185,9 +150,3 @@ echo "Full report available at:"
 echo "- Pattern analysis: /simpulse/SIMULATION_PROOF.md"
 echo "- Mathlib4 analysis: /simpulse/MATHLIB4_VERIFICATION_PROOF.md"
 echo "======================================"
-EOF
-
-RUN chmod +x /validation/run_validation.sh
-
-# Default command
-CMD ["/validation/run_validation.sh"]

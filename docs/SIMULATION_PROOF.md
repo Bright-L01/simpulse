@@ -10,7 +10,7 @@
 ### Default Priorities
 - Total checks: **135,709**
 - Average per expression: **13.6**
-- Time: 0.008s
+- Time: 0.009s
 
 ### Optimized Priorities  
 - Total checks: **63,079**

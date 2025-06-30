@@ -4,18 +4,47 @@ __pycache__/
 *$py.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
 env/
 venv/
+ENV/
+env.bak/
+venv.bak/
 .env
-*.egg-info/
-dist/
-*.egg
 
-# Lean
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Lean 4
 *.olean
 .lake/
 lake-manifest.json
-build/
+lake-packages/
 lean_packages/
 
 # IDE
@@ -23,60 +52,47 @@ lean_packages/
 .idea/
 *.swp
 *.swo
+*~
 
-# Project specific
-data/
-cache/
-results/
-*.prof.json
-*.trace.xml
-workspace/
-.simpulse/
-simpulse_cache/
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Logs
 *.log
 logs/
+jit_*.log
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
+# Project specific
+results/
+validation_results/
+output/
+workspace/
+.simpulse/
+simpulse_cache/
+benchmark_results/
+analyzed_repos/
+mathlib4/
 
-# OS
-.DS_Store
-Thumbs.db
+# Generated files
+demo_*.json
+demo_*.lean
+simp_priorities.json
+jit_adapter.log
+jit_demo_analysis.json
+
+# Documentation build
+docs/_build/
+docs/_static/
+docs/_templates/
 
 # Temporary
 *.tmp
 *.bak
 tmp/
 temp/
-
-# Secrets
-.env
-config/secrets.yaml
-mathlib4/
-
-# Analyzed repositories
-analyzed_repos/
-
-# Test artifacts
-test_projects/
-test_simp_perf/
-test_demo/
-demo_test/
-benchmark_results/
-health_check_results/
-case_studies/
-outreach_messages/
-leansat_optimization_results/
-
-# Data files
-candidates.json
-community_engagement.json
-outreach_report.md
-
-# Simpulse specific
-simpulse_output/
-marketing/

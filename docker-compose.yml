@@ -4,7 +4,7 @@ services:
   benchmark:
     build:
       context: .
-      dockerfile: Dockerfile.benchmark
+      dockerfile: docker/Dockerfile.benchmark
     container_name: simpulse-benchmark
     volumes:
       - ./results:/benchmark/results
@@ -12,9 +12,18 @@ services:
   validation:
     build:
       context: .
-      dockerfile: Dockerfile.validation
+      dockerfile: docker/Dockerfile.validation
     container_name: simpulse-validation
     volumes:
       - ./validation_results:/validation/validation_results
     stdin_open: true
     tty: true
+    
+  main:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.main
+    container_name: simpulse-main
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
