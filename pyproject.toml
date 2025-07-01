@@ -1,98 +1,75 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "simpulse"
-version = "1.0.0"
-description = "ML-powered optimization for Lean 4's simp tactic"
-authors = [
-    {name = "Simpulse Team", email = "hello@simpulse.dev"}
-]
-maintainers = [
-    {name = "Simpulse Team", email = "hello@simpulse.dev"}
-]
+version = "1.1.0"
+description = "High-performance optimization tool for Lean 4 simp tactics"
+authors = ["Bright Liu <bright.liu@example.com>"]
+license = "MIT"
 readme = "README.md"
-license = {text = "MIT"}
-requires-python = ">=3.8"
+repository = "https://github.com/Bright-L01/simpulse"
+documentation = "https://simpulse.readthedocs.io"
+keywords = ["lean4", "theorem-proving", "optimization", "simp", "tactics"]
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Compilers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Topic :: Scientific/Engineering :: Mathematics",
-    "Topic :: Software Development :: Code Generators",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
 ]
-keywords = ["lean4", "simp", "optimization", "theorem-proving", "machine-learning"]
+packages = [{include = "simpulse", from = "src"}]
 
-dependencies = [
-    # Core functionality uses only Python standard library
-]
+[tool.poetry.scripts]
+simpulse = "simpulse.cli:main"
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.20.0",
-    "pytest-cov>=4.0.0",
-    "black>=23.0.0",
-    "mypy>=1.0.0",
-    "flake8>=6.0.0",
-    "pre-commit>=3.0.0",
-]
-web = [
-    "fastapi>=0.100.0",
-    "uvicorn>=0.20.0",
-    "websockets>=11.0",
-]
-docs = [
-    "sphinx>=6.0.0",
-    "sphinx-rtd-theme>=1.2.0",
-    "sphinx-copybutton>=0.5.0",
-    "myst-parser>=1.0.0",
-]
-ml = [
-    "scikit-learn>=1.3.0",
-    "joblib>=1.3.0",
-]
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.7"
+rich = "^13.7.0"
+pydantic = "^2.5.0"
+typing-extensions = "^4.8.0"
 
-[project.urls]
-Homepage = "https://simpulse.dev"
-Documentation = "https://simpulse.dev/docs"
-Repository = "https://github.com/yourusername/simpulse"
-Issues = "https://github.com/yourusername/simpulse/issues"
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.12.0"
+mypy = "^1.7.1"
+ruff = "^0.1.6"
+bandit = {extras = ["toml"], version = "^1.7.5"}
+black = "^23.11.0"
+isort = "^5.12.0"
+pre-commit = "^3.5.0"
+sphinx = "^7.2.6"
+sphinx-rtd-theme = "^2.0.0"
+mkdocs-material = "^9.4.14"
+mkdocstrings = {extras = ["python"], version = "^0.24.0"}
 
-[project.scripts]
-simpulse = "simpulse.cli_v2:main"
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-packages = ["simpulse"]
-
-[tool.setuptools.package-data]
-simpulse = ["*.json", "*.yaml"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py", "*_test.py"]
-asyncio_mode = "auto"
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
+strict = true
 warn_return_any = true
 warn_unused_configs = true
-ignore_missing_imports = true
 
 [tool.black]
-line-length = 88
-target-version = ['py38']
-include = '\.pyi?$'
+line-length = 100
+target-version = ['py310']
 
-[tool.flake8]
-max-line-length = 88
-extend-ignore = ["E203", "W503"]
-exclude = [".git", "__pycache__", "build", "dist"]
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--cov=simpulse",
+    "--cov-report=term-missing",
+    "--cov-fail-under=85",
+]
+testpaths = ["tests"]

@@ -14,7 +14,7 @@ console = Console()
 
 
 @click.group()
-@click.version_option(version="1.0.0", prog_name="simpulse")
+@click.version_option(version="1.1.0", prog_name="simpulse")
 def cli():
     """Simpulse - Optimize Lean 4 simp rule priorities for better performance."""
 
@@ -155,7 +155,7 @@ def benchmark(project_path: Path, runs: int, compare: Path):
 @cli.command()
 def version():
     """Show version information."""
-    console.print("Simpulse v1.0.0")
+    console.print("Simpulse v1.1.0")
     console.print("ML-powered simp rule optimization for Lean 4")
     console.print("https://github.com/Bright-L01/simpulse")
 
