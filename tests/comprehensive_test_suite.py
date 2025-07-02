@@ -8,8 +8,8 @@ Individual test modules are organized by component.
 import asyncio
 import logging
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -297,13 +297,9 @@ def pytest_collect_file(parent, path):
 
 def pytest_configure(config):
     """Configure pytest with custom markers."""
-    config.addinivalue_line(
-        "markers", "slow: marks tests as slow (may take more than 1 second)"
-    )
+    config.addinivalue_line("markers", "slow: marks tests as slow (may take more than 1 second)")
     config.addinivalue_line("markers", "integration: marks tests as integration tests")
-    config.addinivalue_line(
-        "markers", "requires_lean: marks tests that require Lean installation"
-    )
+    config.addinivalue_line("markers", "requires_lean: marks tests that require Lean installation")
     config.addinivalue_line(
         "markers", "requires_claude: marks tests that require Claude API access"
     )
