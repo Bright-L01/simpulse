@@ -11,7 +11,7 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class RefactoringSuggestion:
     original_code: str
     suggested_code: str
     confidence: float
-    estimated_impact: Dict[str, Any]
+    estimated_impact: dict[str, Any]
 
 
 class CodeRefactor:
@@ -49,9 +49,9 @@ class CodeRefactor:
 
     def __init__(self):
         """Initialize code refactor."""
-        self.suggestions: List[RefactoringSuggestion] = []
+        self.suggestions: list[RefactoringSuggestion] = []
 
-    def analyze_file(self, file_path: Path) -> List[RefactoringSuggestion]:
+    def analyze_file(self, file_path: Path) -> list[RefactoringSuggestion]:
         """Analyze a Python file for refactoring opportunities.
 
         Args:
@@ -74,9 +74,7 @@ class CodeRefactor:
             suggestions = []
             suggestions.extend(self._find_dead_code(tree, file_path, content))
             suggestions.extend(self._find_duplicate_constants(tree, file_path, content))
-            suggestions.extend(
-                self._find_complex_conditionals(tree, file_path, content)
-            )
+            suggestions.extend(self._find_complex_conditionals(tree, file_path, content))
             suggestions.extend(self._find_unused_imports(tree, file_path, content))
             suggestions.extend(self._find_long_functions(tree, file_path, content))
 
@@ -88,7 +86,7 @@ class CodeRefactor:
 
     def _find_dead_code(
         self, tree: ast.AST, file_path: Path, content: str
-    ) -> List[RefactoringSuggestion]:
+    ) -> list[RefactoringSuggestion]:
         """Find dead code (unreachable code after return/raise).
 
         Args:
@@ -124,9 +122,7 @@ class CodeRefactor:
                                     original_code=dead_code,
                                     suggested_code="",
                                     confidence=0.95,
-                                    estimated_impact={
-                                        "lines_removed": dead_end - dead_start + 1
-                                    },
+                                    estimated_impact={"lines_removed": dead_end - dead_start + 1},
                                 )
                             )
                         break
@@ -140,7 +136,7 @@ class CodeRefactor:
 
     def _find_duplicate_constants(
         self, tree: ast.AST, file_path: Path, content: str
-    ) -> List[RefactoringSuggestion]:
+    ) -> list[RefactoringSuggestion]:
         """Find duplicate constant values that could be extracted.
 
         Args:
@@ -152,7 +148,7 @@ class CodeRefactor:
             List of suggestions
         """
         suggestions = []
-        constants: Dict[Any, List[Tuple[int, str]]] = {}
+        constants: dict[Any, list[tuple[int, str]]] = {}
 
         class ConstantFinder(ast.NodeVisitor):
             def visit_Constant(self, node):
@@ -198,9 +194,9 @@ class CodeRefactor:
                         file_path=file_path,
                         line_start=min(lines),
                         line_end=max(lines),
-                        description=f"Extract repeated value {repr(value)} to constant",
-                        original_code=f"# Value {repr(value)} appears {len(locations)} times",
-                        suggested_code=f"{const_name} = {repr(value)}",
+                        description=f"Extract repeated value {value!r} to constant",
+                        original_code=f"# Value {value!r} appears {len(locations)} times",
+                        suggested_code=f"{const_name} = {value!r}",
                         confidence=0.8,
                         estimated_impact={
                             "occurrences": len(locations),
@@ -213,7 +209,7 @@ class CodeRefactor:
 
     def _find_complex_conditionals(
         self, tree: ast.AST, file_path: Path, content: str
-    ) -> List[RefactoringSuggestion]:
+    ) -> list[RefactoringSuggestion]:
         """Find complex conditionals that could be simplified.
 
         Args:
@@ -273,7 +269,7 @@ class CodeRefactor:
 
     def _find_unused_imports(
         self, tree: ast.AST, file_path: Path, content: str
-    ) -> List[RefactoringSuggestion]:
+    ) -> list[RefactoringSuggestion]:
         """Find unused imports.
 
         Args:
@@ -338,7 +334,7 @@ class CodeRefactor:
 
     def _find_long_functions(
         self, tree: ast.AST, file_path: Path, content: str
-    ) -> List[RefactoringSuggestion]:
+    ) -> list[RefactoringSuggestion]:
         """Find functions that are too long and should be split.
 
         Args:
@@ -448,9 +444,9 @@ class CodeRefactor:
     def analyze_project(
         self,
         project_path: Path,
-        include_patterns: Optional[List[str]] = None,
-        exclude_patterns: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        include_patterns: list[str] | None = None,
+        exclude_patterns: list[str] | None = None,
+    ) -> dict[str, Any]:
         """Analyze entire project for refactoring opportunities.
 
         Args:
@@ -498,15 +494,11 @@ class CodeRefactor:
                 t.value: len(suggestions) for t, suggestions in by_type.items()
             },
             "estimated_line_reduction": total_lines_to_remove,
-            "high_confidence_suggestions": len(
-                [s for s in all_suggestions if s.confidence >= 0.8]
-            ),
+            "high_confidence_suggestions": len([s for s in all_suggestions if s.confidence >= 0.8]),
             "suggestions": all_suggestions,
         }
 
-    def generate_refactoring_report(
-        self, analysis: Dict[str, Any], output_path: Path
-    ) -> bool:
+    def generate_refactoring_report(self, analysis: dict[str, Any], output_path: Path) -> bool:
         """Generate a refactoring report.
 
         Args:

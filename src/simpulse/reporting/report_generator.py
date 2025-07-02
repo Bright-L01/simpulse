@@ -7,7 +7,7 @@ performance analytics, and interactive dashboards.
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Optional visualization dependencies
 try:
@@ -48,7 +48,7 @@ class Dashboard:
         """Add generation data to dashboard."""
         self.generation_data.append(generation_data)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert dashboard to dictionary."""
         return {
             "generation_data": self.generation_data,
@@ -62,7 +62,7 @@ class Dashboard:
 class ReportGenerator:
     """Generates comprehensive optimization reports."""
 
-    def __init__(self, template_dir: Optional[Path] = None):
+    def __init__(self, template_dir: Path | None = None):
         """Initialize report generator.
 
         Args:
@@ -147,9 +147,7 @@ class ReportGenerator:
 
         except Exception as e:
             logger.error(f"Error generating plots: {e}")
-            plots_html += (
-                f'<div class="error">Error generating visualizations: {e}</div>'
-            )
+            plots_html += f'<div class="error">Error generating visualizations: {e}</div>'
 
         plots_html += "</div>"
 
@@ -196,7 +194,7 @@ class ReportGenerator:
 
         return pyo.plot(fig, include_plotlyjs=False, output_type="div")
 
-    def _create_mutation_heatmap(self, mutations: List[Any]) -> go.Figure:
+    def _create_mutation_heatmap(self, mutations: list[Any]) -> go.Figure:
         """Create mutation effectiveness heatmap.
 
         Args:
@@ -228,7 +226,7 @@ class ReportGenerator:
                 x=types,
                 y=avg_confidence,
                 text=[
-                    f"{c:.1%} ({n} mutations)" for c, n in zip(avg_confidence, counts)
+                    f"{c:.1%} ({n} mutations)" for c, n in zip(avg_confidence, counts, strict=False)
                 ],
                 textposition="auto",
                 marker_color=avg_confidence,
@@ -351,7 +349,7 @@ class ReportGenerator:
         else:
             return "<section><h2>🔧 Mutations Applied</h2><p>No mutations applied.</p></section>"
 
-    def _format_mutation_impact(self, impact: Dict[str, float]) -> str:
+    def _format_mutation_impact(self, impact: dict[str, float]) -> str:
         """Format mutation impact data."""
         if not impact:
             return ""
@@ -598,9 +596,7 @@ class ReportGenerator:
         # Header
         lines.append("# 🧬 Simpulse Optimization Report")
         lines.append("")
-        lines.append(
-            f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}"
-        )
+        lines.append(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}")
         lines.append(f"**Improvement**: 🚀 {result.improvement_percent:.1f}%")
         lines.append("")
 
@@ -609,18 +605,14 @@ class ReportGenerator:
         lines.append("")
         lines.append("| Metric | Value |")
         lines.append("|--------|-------|")
-        lines.append(
-            f"| **Performance Improvement** | {result.improvement_percent:.1f}% |"
-        )
+        lines.append(f"| **Performance Improvement** | {result.improvement_percent:.1f}% |")
         lines.append(f"| **Generations** | {result.total_generations} |")
         lines.append(f"| **Total Evaluations** | {result.total_evaluations} |")
         lines.append(f"| **Execution Time** | {result.execution_time:.1f}s |")
         lines.append(f"| **Modules Optimized** | {len(result.modules)} |")
 
         if result.best_candidate:
-            lines.append(
-                f"| **Mutations Applied** | {len(result.best_candidate.mutations)} |"
-            )
+            lines.append(f"| **Mutations Applied** | {len(result.best_candidate.mutations)} |")
 
         lines.append("")
 

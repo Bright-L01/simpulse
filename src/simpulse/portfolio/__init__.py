@@ -21,19 +21,19 @@ except ImportError:
     train_from_mathlib = None
 
 __all__ = [
-    "GoalFeatures",
-    "extract_features",
-    "LeanGoalParser",
     "ML_AVAILABLE",
+    "GoalFeatures",
+    "LeanGoalParser",
+    "extract_features",
 ]
 
 if ML_AVAILABLE:
     __all__.extend(
         [
-            "TacticPredictor",
-            "TacticPrediction",
-            "TacticDataset",
             "LeanPortfolioInterface",
+            "TacticDataset",
+            "TacticPrediction",
+            "TacticPredictor",
             "train_from_mathlib",
         ]
     )

@@ -4,7 +4,6 @@ import statistics
 import subprocess
 import time
 from pathlib import Path
-from typing import List
 
 from pydantic import BaseModel
 
@@ -15,7 +14,7 @@ class BenchmarkResult(BaseModel):
     mean: float
     stdev: float
     runs: int
-    times: List[float]
+    times: list[float]
 
 
 class ComparisonResult(BaseModel):
@@ -39,9 +38,7 @@ class Benchmarker:
 
             # Time build
             start = time.time()
-            result = subprocess.run(
-                ["lake", "build"], cwd=project_path, capture_output=True
-            )
+            result = subprocess.run(["lake", "build"], cwd=project_path, capture_output=True)
 
             if result.returncode == 0:
                 times.append(time.time() - start)

@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 
 class SimpPriority(Enum):
@@ -60,7 +60,7 @@ class SourceLocation:
     file: Path
     line: int
     column: int = 0
-    module: Optional[str] = None
+    module: str | None = None
 
     def __str__(self) -> str:
         return f"{self.file}:{self.line}:{self.column}"
@@ -72,13 +72,13 @@ class SimpRule:
 
     name: str
     declaration: str  # Full Lean declaration
-    priority: Union[int, SimpPriority] = SimpPriority.DEFAULT
+    priority: int | SimpPriority = SimpPriority.DEFAULT
     direction: SimpDirection = SimpDirection.FORWARD
-    location: Optional[SourceLocation] = None
-    conditions: List[str] = field(default_factory=list)
-    pattern: Optional[str] = None
-    rhs: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    location: SourceLocation | None = None
+    conditions: list[str] = field(default_factory=list)
+    pattern: str | None = None
+    rhs: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def priority_numeric(self) -> int:
@@ -92,15 +92,13 @@ class SimpRule:
         else:  # DEFAULT
             return 500
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "name": self.name,
             "declaration": self.declaration,
             "priority": (
-                self.priority.value
-                if isinstance(self.priority, SimpPriority)
-                else self.priority
+                self.priority.value if isinstance(self.priority, SimpPriority) else self.priority
             ),
             "direction": self.direction.value,
             "location": str(self.location) if self.location else None,
@@ -117,11 +115,11 @@ class ModuleRules:
 
     module_name: str
     file_path: Path
-    rules: List[SimpRule]
-    imports: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    rules: list[SimpRule]
+    imports: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def get_rules_by_priority(self) -> Dict[str, List[SimpRule]]:
+    def get_rules_by_priority(self) -> dict[str, list[SimpRule]]:
         """Group rules by priority level."""
         groups = {"high": [], "default": [], "low": [], "numeric": []}
 
@@ -149,13 +147,11 @@ class MutationSuggestion:
     mutated_declaration: str
     reasoning: str
     confidence: float  # 0.0 to 1.0
-    estimated_impact: Dict[str, float] = field(
-        default_factory=dict
-    )  # time, memory, etc.
-    prerequisites: List[str] = field(default_factory=list)
-    risks: List[str] = field(default_factory=list)
+    estimated_impact: dict[str, float] = field(default_factory=dict)  # time, memory, etc.
+    prerequisites: list[str] = field(default_factory=list)
+    risks: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "rule_name": self.rule_name,
@@ -179,10 +175,10 @@ class PerformanceMetrics:
     rule_applications: int
     successful_rewrites: int
     failed_rewrites: int
-    memory_usage_mb: Optional[float] = None
-    peak_memory_mb: Optional[float] = None
-    steps_count: Optional[int] = None
-    theorem_usage: Dict[str, int] = field(default_factory=dict)
+    memory_usage_mb: float | None = None
+    peak_memory_mb: float | None = None
+    steps_count: int | None = None
+    theorem_usage: dict[str, int] = field(default_factory=dict)
 
     @property
     def success_rate(self) -> float:
@@ -193,13 +189,9 @@ class PerformanceMetrics:
     @property
     def avg_time_per_application(self) -> float:
         """Average time per rule application."""
-        return (
-            self.total_time_ms / self.rule_applications
-            if self.rule_applications > 0
-            else 0.0
-        )
+        return self.total_time_ms / self.rule_applications if self.rule_applications > 0 else 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "total_time_ms": self.total_time_ms,
@@ -223,8 +215,8 @@ class OptimizationResult:
     optimized_metrics: PerformanceMetrics
     mutation: MutationSuggestion
     success: bool
-    improvement_ratio: Dict[str, float] = field(default_factory=dict)
-    validation_errors: List[str] = field(default_factory=list)
+    improvement_ratio: dict[str, float] = field(default_factory=dict)
+    validation_errors: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
 
     def __post_init__(self):
@@ -233,8 +225,7 @@ class OptimizationResult:
             # Calculate time improvement
             if self.original_metrics.total_time_ms > 0:
                 time_ratio = (
-                    self.original_metrics.total_time_ms
-                    - self.optimized_metrics.total_time_ms
+                    self.original_metrics.total_time_ms - self.optimized_metrics.total_time_ms
                 ) / self.original_metrics.total_time_ms
                 self.improvement_ratio["time"] = time_ratio
 
@@ -245,8 +236,7 @@ class OptimizationResult:
                 and self.original_metrics.memory_usage_mb > 0
             ):
                 memory_ratio = (
-                    self.original_metrics.memory_usage_mb
-                    - self.optimized_metrics.memory_usage_mb
+                    self.original_metrics.memory_usage_mb - self.optimized_metrics.memory_usage_mb
                 ) / self.original_metrics.memory_usage_mb
                 self.improvement_ratio["memory"] = memory_ratio
 
@@ -274,7 +264,7 @@ class OptimizationResult:
 
         return total_score / total_weight if total_weight > 0 else 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "original_metrics": self.original_metrics.to_dict(),
@@ -295,24 +285,22 @@ class OptimizationSession:
     session_id: str
     module_name: str
     goal: OptimizationGoal
-    original_rules: List[SimpRule]
-    results: List[OptimizationResult] = field(default_factory=list)
+    original_rules: list[SimpRule]
+    results: list[OptimizationResult] = field(default_factory=list)
     start_time: datetime = field(default_factory=datetime.now)
-    end_time: Optional[datetime] = None
-    config: Dict[str, Any] = field(default_factory=dict)
+    end_time: datetime | None = None
+    config: dict[str, Any] = field(default_factory=dict)
 
     def add_result(self, result: OptimizationResult):
         """Add optimization result to session."""
         self.results.append(result)
 
-    def get_best_results(self, n: int = 5) -> List[OptimizationResult]:
+    def get_best_results(self, n: int = 5) -> list[OptimizationResult]:
         """Get top n results by improvement."""
         successful_results = [r for r in self.results if r.success]
-        return sorted(
-            successful_results, key=lambda r: r.overall_improvement, reverse=True
-        )[:n]
+        return sorted(successful_results, key=lambda r: r.overall_improvement, reverse=True)[:n]
 
-    def get_session_summary(self) -> Dict[str, Any]:
+    def get_session_summary(self) -> dict[str, Any]:
         """Get summary statistics for the session."""
         successful = [r for r in self.results if r.success]
 
@@ -334,13 +322,11 @@ class OptimizationSession:
             "best_improvement": max(improvements),
             "avg_improvement": sum(improvements) / len(improvements),
             "duration_minutes": (
-                (self.end_time - self.start_time).total_seconds() / 60
-                if self.end_time
-                else None
+                (self.end_time - self.start_time).total_seconds() / 60 if self.end_time else None
             ),
         }
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
             "session_id": self.session_id,

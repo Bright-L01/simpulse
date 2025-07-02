@@ -7,4 +7,4 @@ based on runtime statistics.
 
 from .runtime_adapter import AdapterConfig, RuleStatistics, RuntimeAdapter
 
-__all__ = ["RuntimeAdapter", "AdapterConfig", "RuleStatistics"]
+__all__ = ["AdapterConfig", "RuleStatistics", "RuntimeAdapter"]

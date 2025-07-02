@@ -11,10 +11,10 @@ from .learning import SelfLearningSystem
 from .search import NeuralProofSearch
 
 __all__ = [
-    "SimpNGEngine",
-    "SimpNGConfig",
-    "RuleEmbedder",
     "GoalEmbedder",
     "NeuralProofSearch",
+    "RuleEmbedder",
     "SelfLearningSystem",
+    "SimpNGConfig",
+    "SimpNGEngine",
 ]

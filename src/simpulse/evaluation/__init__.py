@@ -6,4 +6,4 @@ capabilities for simp rule optimization.
 
 from .fitness_evaluator import Candidate, FitnessEvaluator, FitnessScore
 
-__all__ = ["FitnessEvaluator", "FitnessScore", "Candidate"]
+__all__ = ["Candidate", "FitnessEvaluator", "FitnessScore"]

@@ -9,7 +9,6 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
 
 import matplotlib.pyplot as plt
 
@@ -23,7 +22,7 @@ class SimpRule:
     file_path: str
     line_number: int
     is_default: bool
-    attributes: List[str]
+    attributes: list[str]
     rule_text: str
 
 
@@ -35,8 +34,8 @@ class ModuleStats:
     total_rules: int
     default_priority_rules: int
     custom_priority_rules: int
-    priority_distribution: Dict[int, int]
-    common_patterns: List[str]
+    priority_distribution: dict[int, int]
+    common_patterns: list[str]
     file_count: int
     line_count: int
 
@@ -45,9 +44,7 @@ class Mathlib4Analyzer:
     """Comprehensive analyzer for mathlib4 simp rules."""
 
     # Regex patterns for Lean 4 syntax
-    SIMP_ATTR_PATTERN = re.compile(
-        r"@\[([^\]]*\bsimp\b[^\]]*)\]", re.MULTILINE | re.DOTALL
-    )
+    SIMP_ATTR_PATTERN = re.compile(r"@\[([^\]]*\bsimp\b[^\]]*)\]", re.MULTILINE | re.DOTALL)
 
     PRIORITY_PATTERN = re.compile(r"priority\s*:=\s*(\d+)")
 
@@ -65,10 +62,10 @@ class Mathlib4Analyzer:
     def __init__(self, mathlib_path: Path):
         """Initialize analyzer with mathlib4 path."""
         self.mathlib_path = mathlib_path
-        self.simp_rules: List[SimpRule] = []
-        self.module_stats: Dict[str, ModuleStats] = {}
+        self.simp_rules: list[SimpRule] = []
+        self.module_stats: dict[str, ModuleStats] = {}
 
-    def analyze(self, modules: Optional[List[str]] = None) -> Dict[str, any]:
+    def analyze(self, modules: list[str] | None = None) -> dict[str, any]:
         """Analyze mathlib4 modules for simp rule patterns."""
         print(f"Analyzing mathlib4 at: {self.mathlib_path}")
 
@@ -157,7 +154,7 @@ class Mathlib4Analyzer:
 
                 self.simp_rules.append(rule)
 
-    def _compute_statistics(self) -> Dict[str, any]:
+    def _compute_statistics(self) -> dict[str, any]:
         """Compute comprehensive statistics."""
         total_rules = len(self.simp_rules)
         default_priority_rules = sum(1 for r in self.simp_rules if r.is_default)
@@ -221,20 +218,16 @@ class Mathlib4Analyzer:
 
         return stats
 
-    def _generate_report(self, stats: Dict[str, any]):
+    def _generate_report(self, stats: dict[str, any]):
         """Generate detailed analysis report."""
         print("\n" + "=" * 70)
         print("MATHLIB4 SIMP RULE ANALYSIS REPORT")
         print("=" * 70)
 
         print(f"\nTotal simp rules found: {stats['total_rules']:,}")
-        print(
-            f"Rules with default priority (1000): {stats['default_priority_rules']:,}"
-        )
+        print(f"Rules with default priority (1000): {stats['default_priority_rules']:,}")
         print(f"Rules with custom priority: {stats['custom_priority_rules']:,}")
-        print(
-            f"Default priority percentage: {stats['default_priority_percentage']:.1f}%"
-        )
+        print(f"Default priority percentage: {stats['default_priority_percentage']:.1f}%")
 
         print(f"\nUnique priority values used: {stats['unique_priorities']}")
 
@@ -258,12 +251,9 @@ class Mathlib4Analyzer:
 
         print("\nTop Modules by Rule Count:")
         module_counts = [
-            (name, stat.total_rules)
-            for name, stat in stats["module_statistics"].items()
+            (name, stat.total_rules) for name, stat in stats["module_statistics"].items()
         ]
-        for module, count in sorted(module_counts, key=lambda x: x[1], reverse=True)[
-            :10
-        ]:
+        for module, count in sorted(module_counts, key=lambda x: x[1], reverse=True)[:10]:
             stat = stats["module_statistics"][module]
             default_pct = (
                 (stat.default_priority_rules / stat.total_rules * 100)
@@ -280,9 +270,7 @@ class Mathlib4Analyzer:
             "total_files_analyzed": len({r.file_path for r in self.simp_rules}),
             "total_rules": len(self.simp_rules),
             "default_priority_count": sum(1 for r in self.simp_rules if r.is_default),
-            "custom_priority_count": sum(
-                1 for r in self.simp_rules if not r.is_default
-            ),
+            "custom_priority_count": sum(1 for r in self.simp_rules if not r.is_default),
             "sample_rules": [
                 {
                     "name": r.name,
@@ -335,10 +323,8 @@ class Mathlib4Analyzer:
             module = rule.file_path.split("/")[0]
             module_counts[module] += 1
 
-        top_modules = sorted(module_counts.items(), key=lambda x: x[1], reverse=True)[
-            :10
-        ]
-        modules, counts = zip(*top_modules)
+        top_modules = sorted(module_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+        modules, counts = zip(*top_modules, strict=False)
 
         plt.bar(modules, counts)
         plt.xlabel("Module")
@@ -359,7 +345,7 @@ class Mathlib4Analyzer:
             for p in pattern_data:
                 pattern_counts[p] += 1
 
-            patterns, counts = zip(*pattern_counts.items())
+            patterns, counts = zip(*pattern_counts.items(), strict=False)
             plt.bar(patterns, counts)
             plt.xlabel("Pattern Type")
             plt.ylabel("Occurrences")

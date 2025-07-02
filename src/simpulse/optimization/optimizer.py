@@ -1,7 +1,6 @@
 """Simp rule optimizer."""
 
 from pathlib import Path
-from typing import List
 
 from pydantic import BaseModel
 
@@ -25,7 +24,7 @@ class OptimizationResult(BaseModel):
     project_path: Path
     rules_changed: int
     estimated_improvement: int
-    changes: List[OptimizationChange]
+    changes: list[OptimizationChange]
 
     def save(self, path: Path):
         """Save optimization plan."""
@@ -93,8 +92,6 @@ class SimpOptimizer:
                 content = file_path.read_text()
                 # Apply the change
                 old_pattern = f"@[simp] theorem {change.rule_name}"
-                new_pattern = (
-                    f"@[simp {change.new_priority}] theorem {change.rule_name}"
-                )
+                new_pattern = f"@[simp {change.new_priority}] theorem {change.rule_name}"
                 content = content.replace(old_pattern, new_pattern)
                 file_path.write_text(content)

@@ -11,7 +11,7 @@ import tempfile
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 # Import security validators
 from ..security.validators import validate_command_args, validate_file_path
@@ -35,7 +35,7 @@ class LeanResult:
     stderr: str
     returncode: int
     elapsed_time: float
-    output_files: Dict[str, Path] = None
+    output_files: dict[str, Path] = None
 
     @property
     def success(self) -> bool:
@@ -50,7 +50,7 @@ class LeanRunner:
         self,
         lake_path: str = "lake",
         lean_path: str = "lean",
-        working_dir: Optional[Path] = None,
+        working_dir: Path | None = None,
     ):
         """Initialize Lean runner.
 
@@ -67,10 +67,10 @@ class LeanRunner:
     async def run_lean(
         self,
         file_path: Path,
-        trace_flags: Optional[List[str]] = None,
+        trace_flags: list[str] | None = None,
         timeout: float = 300.0,
         mode: LeanExecutionMode = LeanExecutionMode.NORMAL,
-        extra_args: Optional[List[str]] = None,
+        extra_args: list[str] | None = None,
     ) -> LeanResult:
         """Execute Lean on a file with configurable flags.
 
@@ -152,8 +152,8 @@ class LeanRunner:
             raise
 
     async def profile_module(
-        self, module_name: str, options: Optional[Dict[str, Any]] = None
-    ) -> Tuple[LeanResult, Optional[Dict]]:
+        self, module_name: str, options: dict[str, Any] | None = None
+    ) -> tuple[LeanResult, dict | None]:
         """Profile a Lean module and return structured results.
 
         Args:
@@ -212,9 +212,9 @@ class LeanRunner:
     def get_trace_command(
         self,
         file_path: Path,
-        output_file: Optional[Path] = None,
-        trace_flags: Optional[List[str]] = None,
-    ) -> List[str]:
+        output_file: Path | None = None,
+        trace_flags: list[str] | None = None,
+    ) -> list[str]:
         """Generate command for running Lean with trace output.
 
         Args:
@@ -245,7 +245,7 @@ class LeanRunner:
 
     async def get_simp_diagnostics(
         self, file_path: Path, timeout: float = 300.0
-    ) -> Tuple[LeanResult, Optional[Dict]]:
+    ) -> tuple[LeanResult, dict | None]:
         """Run Lean with simp diagnostics enabled.
 
         Args:
@@ -275,7 +275,7 @@ class LeanRunner:
 
         return result, diagnostics
 
-    def _parse_simp_diagnostics(self, stderr: str) -> Optional[Dict]:
+    def _parse_simp_diagnostics(self, stderr: str) -> dict | None:
         """Parse simp diagnostics from stderr output.
 
         Args:
@@ -319,7 +319,7 @@ class LeanRunner:
         if not str(path).endswith(".lean"):
             raise ValueError(f"File must be a Lean file: {path}")
 
-    def _validate_command_args(self, args: List[str]) -> List[str]:
+    def _validate_command_args(self, args: list[str]) -> list[str]:
         """Validate and sanitize command arguments.
 
         Args:

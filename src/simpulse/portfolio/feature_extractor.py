@@ -6,7 +6,6 @@ Analyzes goal structure and extracts features for ML-based tactic selection.
 
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 
 @dataclass
@@ -19,7 +18,7 @@ class GoalFeatures:
     num_subgoals: int
 
     # Operators and patterns
-    operators: Dict[str, int]  # Operator counts
+    operators: dict[str, int]  # Operator counts
     has_arithmetic: bool
     has_algebra: bool
     has_linear: bool
@@ -52,9 +51,9 @@ class GoalFeatures:
     involves_set: bool
 
     # Historical hint (if available)
-    previous_tactics: List[str] = None
+    previous_tactics: list[str] = None
 
-    def to_vector(self) -> List[float]:
+    def to_vector(self) -> list[float]:
         """Convert features to numerical vector for ML."""
         vector = []
 
@@ -209,7 +208,7 @@ class LeanGoalParser:
 
         return features
 
-    def _tokenize(self, text: str) -> List[str]:
+    def _tokenize(self, text: str) -> list[str]:
         """Tokenize Lean goal text."""
         # Simple tokenization - can be improved with proper Lean parser
         # Replace common symbols with spaced versions
@@ -253,7 +252,7 @@ class LeanGoalParser:
 
         return tokens
 
-    def _analyze_structure(self, tokens: List[str]) -> Dict:
+    def _analyze_structure(self, tokens: list[str]) -> dict:
         """Analyze AST structure from tokens."""
         depth = 0
         max_depth = 0
@@ -273,13 +272,7 @@ class LeanGoalParser:
                 subgoal_count += 1
 
             # Track operators
-            if (
-                token
-                in self.ARITHMETIC_OPS
-                | self.COMPARISON_OPS
-                | self.LOGICAL_OPS
-                | self.SET_OPS
-            ):
+            if token in self.ARITHMETIC_OPS | self.COMPARISON_OPS | self.LOGICAL_OPS | self.SET_OPS:
                 self.operators[token] = self.operators.get(token, 0) + 1
 
             # Simple heuristic for variables/constants/functions
@@ -298,7 +291,7 @@ class LeanGoalParser:
             "subgoals": subgoal_count,
         }
 
-    def _detect_patterns(self, text: str, tokens: List[str]) -> Dict[str, bool]:
+    def _detect_patterns(self, text: str, tokens: list[str]) -> dict[str, bool]:
         """Detect specific patterns in the goal."""
         token_set = set(tokens)
 
@@ -310,31 +303,25 @@ class LeanGoalParser:
             "logic": bool(token_set & self.LOGICAL_OPS),
             "sets": bool(token_set & self.SET_OPS),
             "is_equation": "=" in tokens or "eq" in tokens,
-            "is_inequality": any(
-                op in tokens for op in ["<", ">", "≤", "≥", "le", "lt"]
-            ),
+            "is_inequality": any(op in tokens for op in ["<", ">", "≤", "≥", "le", "lt"]),
         }
 
         return patterns
 
-    def _is_linear_expression(self, tokens: List[str]) -> bool:
+    def _is_linear_expression(self, tokens: list[str]) -> bool:
         """Check if expression appears to be linear."""
         # Simple heuristic: has addition/subtraction but no multiplication between variables
         has_add_sub = any(op in tokens for op in ["+", "-", "add", "sub"])
 
         # Check for non-linear patterns
         for i, token in enumerate(tokens[:-1]):
-            if (
-                token in self.variables
-                and tokens[i + 1] in ["*", "mul"]
-                and i + 2 < len(tokens)
-            ):
+            if token in self.variables and tokens[i + 1] in ["*", "mul"] and i + 2 < len(tokens):
                 if tokens[i + 2] in self.variables:
                     return False  # Variable * Variable = non-linear
 
         return has_add_sub
 
-    def _detect_types(self, text: str) -> Dict[str, bool]:
+    def _detect_types(self, text: str) -> dict[str, bool]:
         """Detect type information in the goal."""
         types = {}
 
@@ -343,7 +330,7 @@ class LeanGoalParser:
 
         return types
 
-    def _classify_goal_type(self, text: str, patterns: Dict[str, bool]) -> str:
+    def _classify_goal_type(self, text: str, patterns: dict[str, bool]) -> str:
         """Classify the overall goal type."""
         if patterns["is_equation"]:
             if patterns["linear"] and not patterns["algebra"]:
@@ -369,12 +356,12 @@ class FeatureCache:
     """Cache for computed goal features."""
 
     def __init__(self, max_size: int = 1000):
-        self.cache: Dict[str, GoalFeatures] = {}
+        self.cache: dict[str, GoalFeatures] = {}
         self.max_size = max_size
         self.hits = 0
         self.misses = 0
 
-    def get(self, goal_text: str) -> Optional[GoalFeatures]:
+    def get(self, goal_text: str) -> GoalFeatures | None:
         """Get cached features if available."""
         if goal_text in self.cache:
             self.hits += 1
@@ -398,9 +385,7 @@ class FeatureCache:
         return self.hits / total if total > 0 else 0.0
 
 
-def extract_features(
-    goal_text: str, cache: Optional[FeatureCache] = None
-) -> GoalFeatures:
+def extract_features(goal_text: str, cache: FeatureCache | None = None) -> GoalFeatures:
     """Main entry point for feature extraction."""
     # Check cache
     if cache:

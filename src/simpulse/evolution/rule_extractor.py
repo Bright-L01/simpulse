@@ -7,7 +7,6 @@ simp rule declarations with their metadata.
 import logging
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 from .models import ModuleRules, SimpDirection, SimpPriority, SimpRule, SourceLocation
 
@@ -28,13 +27,9 @@ class RuleExtractor:
 
     # Pattern for declarations that can have simp attributes
     DECLARATION_PATTERNS = {
-        "theorem": re.compile(
-            r"^(theorem|lemma)\s+([a-zA-Z_][a-zA-Z0-9_\']*)", re.MULTILINE
-        ),
+        "theorem": re.compile(r"^(theorem|lemma)\s+([a-zA-Z_][a-zA-Z0-9_\']*)", re.MULTILINE),
         "def": re.compile(r"^def\s+([a-zA-Z_][a-zA-Z0-9_\']*)", re.MULTILINE),
-        "instance": re.compile(
-            r"^instance\s+([a-zA-Z_][a-zA-Z0-9_\']*)?", re.MULTILINE
-        ),
+        "instance": re.compile(r"^instance\s+([a-zA-Z_][a-zA-Z0-9_\']*)?", re.MULTILINE),
         "axiom": re.compile(r"^axiom\s+([a-zA-Z_][a-zA-Z0-9_\']*)", re.MULTILINE),
     }
 
@@ -46,7 +41,7 @@ class RuleExtractor:
 
     def __init__(self):
         """Initialize rule extractor."""
-        self._cache: Dict[Path, ModuleRules] = {}
+        self._cache: dict[Path, ModuleRules] = {}
 
     def extract_rules_from_file(self, file_path: Path) -> ModuleRules:
         """Extract simp rules from a single Lean file.
@@ -63,18 +58,14 @@ class RuleExtractor:
 
         if not file_path.exists():
             logger.warning(f"File not found: {file_path}")
-            return ModuleRules(
-                module_name=file_path.stem, file_path=file_path, rules=[]
-            )
+            return ModuleRules(module_name=file_path.stem, file_path=file_path, rules=[])
 
         try:
             with open(file_path, encoding="utf-8") as f:
                 content = f.read()
         except Exception as e:
             logger.error(f"Failed to read file {file_path}: {e}")
-            return ModuleRules(
-                module_name=file_path.stem, file_path=file_path, rules=[]
-            )
+            return ModuleRules(module_name=file_path.stem, file_path=file_path, rules=[])
 
         # Extract module info
         module_name = self._extract_module_name(content, file_path)
@@ -142,19 +133,17 @@ class RuleExtractor:
         # Fall back to file name
         return file_path.stem
 
-    def _extract_imports(self, content: str) -> List[str]:
+    def _extract_imports(self, content: str) -> list[str]:
         """Extract import statements from file content."""
         imports = []
-        import_pattern = re.compile(
-            r"^import\s+([a-zA-Z_][a-zA-Z0-9_\.]*)", re.MULTILINE
-        )
+        import_pattern = re.compile(r"^import\s+([a-zA-Z_][a-zA-Z0-9_\.]*)", re.MULTILINE)
 
         for match in import_pattern.finditer(content):
             imports.append(match.group(1))
 
         return imports
 
-    def _extract_simp_rules(self, content: str, file_path: Path) -> List[SimpRule]:
+    def _extract_simp_rules(self, content: str, file_path: Path) -> list[SimpRule]:
         """Extract simp rules from file content.
 
         Args:
@@ -172,20 +161,16 @@ class RuleExtractor:
 
         # For each simp attribute, find the associated declaration
         for attr_line, attr_info in simp_locations:
-            declaration = self._find_declaration_after_attribute(
-                lines, attr_line, attr_info
-            )
+            declaration = self._find_declaration_after_attribute(lines, attr_line, attr_info)
 
             if declaration:
-                rule = self._create_simp_rule(
-                    declaration, attr_info, file_path, attr_line + 1
-                )
+                rule = self._create_simp_rule(declaration, attr_info, file_path, attr_line + 1)
                 if rule:
                     rules.append(rule)
 
         return rules
 
-    def _find_simp_attributes(self, content: str) -> List[Tuple[int, Dict]]:
+    def _find_simp_attributes(self, content: str) -> list[tuple[int, dict]]:
         """Find all simp attributes and their metadata.
 
         Returns:
@@ -196,9 +181,7 @@ class RuleExtractor:
 
         for i, line in enumerate(lines):
             # Check for simp attributes
-            simp_match = re.search(
-                r"@\[simp(?:\s+(high|low|\d+))?(?:\s*([↓←]))?\]", line
-            )
+            simp_match = re.search(r"@\[simp(?:\s+(high|low|\d+))?(?:\s*([↓←]))?\]", line)
             if simp_match:
                 priority_str = simp_match.group(1)
                 direction_str = simp_match.group(2)
@@ -229,8 +212,8 @@ class RuleExtractor:
         return locations
 
     def _find_declaration_after_attribute(
-        self, lines: List[str], attr_line: int, attr_info: Dict
-    ) -> Optional[Dict]:
+        self, lines: list[str], attr_line: int, attr_info: dict
+    ) -> dict | None:
         """Find the declaration following a simp attribute.
 
         Args:
@@ -265,7 +248,7 @@ class RuleExtractor:
 
         return None
 
-    def _extract_full_declaration(self, lines: List[str], start_line: int) -> str:
+    def _extract_full_declaration(self, lines: list[str], start_line: int) -> str:
         """Extract the complete declaration starting from a line.
 
         Args:
@@ -298,11 +281,8 @@ class RuleExtractor:
                     and paren_count == 0
                     and (
                         stripped.endswith(":=")
-                        or stripped.startswith(
-                            ("theorem", "lemma", "def", "instance", "@[")
-                        )
-                        or stripped == ""
-                        and i > start_line
+                        or stripped.startswith(("theorem", "lemma", "def", "instance", "@["))
+                        or (stripped == "" and i > start_line)
                     )
                 ):
                     break
@@ -310,8 +290,8 @@ class RuleExtractor:
         return "\n".join(decl_lines)
 
     def _create_simp_rule(
-        self, declaration: Dict, attr_info: Dict, file_path: Path, line_num: int
-    ) -> Optional[SimpRule]:
+        self, declaration: dict, attr_info: dict, file_path: Path, line_num: int
+    ) -> SimpRule | None:
         """Create a SimpRule object from extracted information.
 
         Args:
@@ -325,9 +305,7 @@ class RuleExtractor:
         """
         try:
             # Parse the declaration to extract pattern and RHS
-            pattern, rhs = self._parse_declaration_components(
-                declaration["declaration"]
-            )
+            pattern, rhs = self._parse_declaration_components(declaration["declaration"])
 
             # Extract conditions (type class constraints, etc.)
             conditions = self._extract_conditions(declaration["declaration"])
@@ -360,9 +338,7 @@ class RuleExtractor:
             )
             return None
 
-    def _parse_declaration_components(
-        self, declaration: str
-    ) -> Tuple[Optional[str], Optional[str]]:
+    def _parse_declaration_components(self, declaration: str) -> tuple[str | None, str | None]:
         """Parse declaration to extract pattern and RHS.
 
         Args:
@@ -388,7 +364,7 @@ class RuleExtractor:
 
         return None, None
 
-    def _extract_conditions(self, declaration: str) -> List[str]:
+    def _extract_conditions(self, declaration: str) -> list[str]:
         """Extract type class constraints and other conditions.
 
         Args:
@@ -413,7 +389,7 @@ class RuleExtractor:
 
         return conditions
 
-    def get_rules_by_priority(self, rules: List[SimpRule]) -> Dict[str, List[SimpRule]]:
+    def get_rules_by_priority(self, rules: list[SimpRule]) -> dict[str, list[SimpRule]]:
         """Group rules by priority level.
 
         Args:
@@ -432,9 +408,7 @@ class RuleExtractor:
 
         return groups
 
-    def find_rules_by_pattern(
-        self, rules: List[SimpRule], pattern: str
-    ) -> List[SimpRule]:
+    def find_rules_by_pattern(self, rules: list[SimpRule], pattern: str) -> list[SimpRule]:
         """Find rules matching a specific pattern.
 
         Args:

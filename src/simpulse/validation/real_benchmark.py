@@ -10,7 +10,6 @@ import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,7 +26,7 @@ class BenchmarkResult:
     simp_calls: int
     optimized_rules: int
     compilation_success: bool
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
 
 @dataclass
@@ -35,9 +34,9 @@ class ModuleProfile:
     """Profiling data for a module."""
 
     module_name: str
-    simp_rule_usage: Dict[str, int]  # Rule name -> usage count
-    hot_paths: List[str]  # Frequently executed proof paths
-    bottlenecks: List[Tuple[str, float]]  # (location, time)
+    simp_rule_usage: dict[str, int]  # Rule name -> usage count
+    hot_paths: list[str]  # Frequently executed proof paths
+    bottlenecks: list[tuple[str, float]]  # (location, time)
 
 
 class RealWorldBenchmark:
@@ -47,7 +46,7 @@ class RealWorldBenchmark:
         """Initialize benchmark with paths."""
         self.lean_project = lean_project
         self.simpulse_path = simpulse_path
-        self.results: List[BenchmarkResult] = []
+        self.results: list[BenchmarkResult] = []
 
         # Ensure we have Lean 4
         self._check_lean_installation()
@@ -55,16 +54,14 @@ class RealWorldBenchmark:
     def _check_lean_installation(self):
         """Verify Lean 4 is installed and accessible."""
         try:
-            result = subprocess.run(
-                ["lean", "--version"], capture_output=True, text=True
-            )
+            result = subprocess.run(["lean", "--version"], capture_output=True, text=True)
             if result.returncode != 0:
                 raise RuntimeError("Lean 4 not found. Please install Lean 4.")
             print(f"Found Lean: {result.stdout.strip()}")
         except FileNotFoundError:
             raise RuntimeError("Lean 4 not found in PATH. Please install Lean 4.")
 
-    def benchmark_modules(self, modules: List[str]) -> Dict[str, BenchmarkResult]:
+    def benchmark_modules(self, modules: list[str]) -> dict[str, BenchmarkResult]:
         """Benchmark specified modules with and without optimization."""
         print(f"Benchmarking {len(modules)} modules...")
         print("=" * 70)
@@ -126,9 +123,7 @@ class RealWorldBenchmark:
             optimized_time=optimized_time,
             improvement_percent=improvement,
             simp_calls=len(profile.simp_rule_usage),
-            optimized_rules=len(
-                [r for r, c in profile.simp_rule_usage.items() if c > 10]
-            ),
+            optimized_rules=len([r for r, c in profile.simp_rule_usage.items() if c > 10]),
             compilation_success=True,
         )
 
@@ -241,9 +236,7 @@ class RealWorldBenchmark:
         if successful_results:
             avg_baseline = np.mean([r.baseline_time for r in successful_results])
             avg_optimized = np.mean([r.optimized_time for r in successful_results])
-            avg_improvement = np.mean(
-                [r.improvement_percent for r in successful_results]
-            )
+            avg_improvement = np.mean([r.improvement_percent for r in successful_results])
 
             print("\n" + "=" * 70)
             print("BENCHMARK SUMMARY")

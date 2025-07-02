@@ -9,7 +9,7 @@ import logging
 import statistics
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ..evolution.models import PerformanceMetrics
 from ..profiling import LeanRunner, TraceParser
@@ -29,15 +29,14 @@ class FitnessScore:
     composite_score: float
     is_valid: bool
     baseline_improvement: float = 0.0
-    individual_scores: Dict[str, float] = field(default_factory=dict)
-    error_message: Optional[str] = None
+    individual_scores: dict[str, float] = field(default_factory=dict)
+    error_message: str | None = None
 
     def __post_init__(self):
         """Calculate individual component scores."""
         if self.is_valid:
             self.individual_scores = {
-                "time_score": 1.0
-                / (1.0 + self.total_time / 1000.0),  # Normalize by seconds
+                "time_score": 1.0 / (1.0 + self.total_time / 1000.0),  # Normalize by seconds
                 "simp_score": 1.0 / (1.0 + self.simp_time / 1000.0),
                 "iteration_score": 1.0 / (1.0 + self.iterations / 100.0),
                 "depth_score": 1.0 / (1.0 + self.max_depth / 10.0),
@@ -50,10 +49,10 @@ class Candidate:
     """Represents a mutation candidate for evaluation."""
 
     id: str
-    mutations: List[Any]  # Will be AppliedMutation when implemented
-    fitness: Optional[FitnessScore] = None
+    mutations: list[Any]  # Will be AppliedMutation when implemented
+    fitness: FitnessScore | None = None
     generation: int = 0
-    parent_ids: List[str] = field(default_factory=list)
+    parent_ids: list[str] = field(default_factory=list)
     evaluation_time: float = 0.0
 
     @property
@@ -94,11 +93,11 @@ class FitnessEvaluator:
             "memory": memory_weight / total_weight,
         }
 
-        self.baseline_metrics: Optional[PerformanceMetrics] = None
-        self._evaluation_cache: Dict[str, FitnessScore] = {}
+        self.baseline_metrics: PerformanceMetrics | None = None
+        self._evaluation_cache: dict[str, FitnessScore] = {}
 
     async def evaluate_candidate(
-        self, candidate: Candidate, modules: List[str], timeout: float = 300.0
+        self, candidate: Candidate, modules: list[str], timeout: float = 300.0
     ) -> FitnessScore:
         """Evaluate fitness of a single candidate.
 
@@ -175,11 +174,11 @@ class FitnessEvaluator:
 
     async def parallel_evaluate(
         self,
-        population: List[Candidate],
-        modules: List[str],
+        population: list[Candidate],
+        modules: list[str],
         max_workers: int = 4,
         timeout: float = 300.0,
-    ) -> List[FitnessScore]:
+    ) -> list[FitnessScore]:
         """Evaluate multiple candidates in parallel.
 
         Args:
@@ -206,9 +205,7 @@ class FitnessEvaluator:
         baseline_candidates = [c for c in population if c.is_baseline]
         if baseline_candidates and self.baseline_metrics is None:
             logger.info("Evaluating baseline candidate first")
-            baseline_score = await self.evaluate_candidate(
-                baseline_candidates[0], modules, timeout
-            )
+            baseline_score = await self.evaluate_candidate(baseline_candidates[0], modules, timeout)
             if baseline_score.is_valid:
                 self.baseline_metrics = PerformanceMetrics(
                     total_time_ms=baseline_score.total_time,
@@ -226,9 +223,7 @@ class FitnessEvaluator:
         results = []
         for i, result in enumerate(fitness_scores):
             if isinstance(result, Exception):
-                logger.error(
-                    f"Exception evaluating candidate {population[i].id}: {result}"
-                )
+                logger.error(f"Exception evaluating candidate {population[i].id}: {result}")
                 results.append(
                     FitnessScore(
                         total_time=float("inf"),
@@ -245,7 +240,7 @@ class FitnessEvaluator:
                 results.append(result)
 
         # Update candidate fitness scores
-        for candidate, fitness in zip(population, results):
+        for candidate, fitness in zip(population, results, strict=False):
             candidate.fitness = fitness
 
         valid_scores = [f for f in results if f.is_valid]
@@ -256,7 +251,7 @@ class FitnessEvaluator:
         return results
 
     def calculate_fitness(
-        self, metrics: PerformanceMetrics, baseline: Optional[PerformanceMetrics] = None
+        self, metrics: PerformanceMetrics, baseline: PerformanceMetrics | None = None
     ) -> FitnessScore:
         """Calculate multi-objective fitness score.
 
@@ -299,8 +294,8 @@ class FitnessEvaluator:
         )
 
     async def _run_performance_test(
-        self, candidate: Candidate, modules: List[str], timeout: float
-    ) -> Optional[PerformanceMetrics]:
+        self, candidate: Candidate, modules: list[str], timeout: float
+    ) -> PerformanceMetrics | None:
         """Run performance test for a candidate.
 
         Args:
@@ -344,7 +339,7 @@ class FitnessEvaluator:
             logger.error(f"Performance test failed for candidate {candidate.id}: {e}")
             return None
 
-    def _get_cache_key(self, candidate: Candidate, modules: List[str]) -> str:
+    def _get_cache_key(self, candidate: Candidate, modules: list[str]) -> str:
         """Generate cache key for candidate evaluation.
 
         Args:
@@ -370,8 +365,8 @@ class FitnessEvaluator:
         return f"{candidate.id}_{mutations_hash}_{modules_hash}"
 
     async def establish_baseline(
-        self, modules: List[str], timeout: float = 300.0
-    ) -> Optional[PerformanceMetrics]:
+        self, modules: list[str], timeout: float = 300.0
+    ) -> PerformanceMetrics | None:
         """Establish baseline performance metrics.
 
         Args:
@@ -387,9 +382,7 @@ class FitnessEvaluator:
         baseline_candidate = Candidate(id="baseline", mutations=[])
 
         # Evaluate baseline
-        baseline_score = await self.evaluate_candidate(
-            baseline_candidate, modules, timeout
-        )
+        baseline_score = await self.evaluate_candidate(baseline_candidate, modules, timeout)
 
         if baseline_score.is_valid:
             self.baseline_metrics = PerformanceMetrics(
@@ -408,7 +401,7 @@ class FitnessEvaluator:
             logger.error("Failed to establish baseline metrics")
             return None
 
-    def get_fitness_statistics(self, population: List[Candidate]) -> Dict[str, float]:
+    def get_fitness_statistics(self, population: list[Candidate]) -> dict[str, float]:
         """Calculate fitness statistics for a population.
 
         Args:
@@ -437,9 +430,7 @@ class FitnessEvaluator:
             "mean_fitness": statistics.mean(fitness_scores),
             "max_fitness": max(fitness_scores),
             "min_fitness": min(fitness_scores),
-            "std_fitness": (
-                statistics.stdev(fitness_scores) if len(fitness_scores) > 1 else 0.0
-            ),
+            "std_fitness": (statistics.stdev(fitness_scores) if len(fitness_scores) > 1 else 0.0),
             "mean_improvement": statistics.mean(improvements) if improvements else 0.0,
         }
 

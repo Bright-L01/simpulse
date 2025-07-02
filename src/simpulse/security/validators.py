@@ -9,10 +9,10 @@ import os
 import re
 import shlex
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 
-def is_safe_path(path: Path, base_dir: Optional[Path] = None) -> bool:
+def is_safe_path(path: Path, base_dir: Path | None = None) -> bool:
     """Validate that a path is safe and doesn't escape the base directory.
 
     Args:
@@ -42,8 +42,7 @@ def is_safe_path(path: Path, base_dir: Optional[Path] = None) -> bool:
             # Check for suspicious patterns
             str_path = str(path)
             if any(
-                pattern in str_path
-                for pattern in ["..", "~/", "/etc/", "/usr/", "/bin/", "/sbin/"]
+                pattern in str_path for pattern in ["..", "~/", "/etc/", "/usr/", "/bin/", "/sbin/"]
             ):
                 return False
 
@@ -88,7 +87,7 @@ def validate_module_name(name: str) -> bool:
     return bool(re.match(pattern, name))
 
 
-def validate_file_path(path: Union[str, Path]) -> Path:
+def validate_file_path(path: str | Path) -> Path:
     """Validate and sanitize a file path.
 
     Args:
@@ -114,7 +113,7 @@ def validate_file_path(path: Union[str, Path]) -> Path:
     return path
 
 
-def validate_command_args(args: List[str]) -> List[str]:
+def validate_command_args(args: list[str]) -> list[str]:
     """Validate command arguments for subprocess execution.
 
     Args:
@@ -204,7 +203,7 @@ def validate_json_structure(data: Any) -> bool:
         "$regex",
     ]
 
-    def check_dict(d: Dict[str, Any]) -> bool:
+    def check_dict(d: dict[str, Any]) -> bool:
         """Recursively check dictionary for dangerous keys."""
         for key, value in d.items():
             if key in dangerous_keys:
@@ -298,7 +297,7 @@ def validate_api_key(key: str) -> None:
         raise ValueError("Invalid API key: invalid format")
 
 
-def get_safe_env_vars() -> Dict[str, str]:
+def get_safe_env_vars() -> dict[str, str]:
     """Get environment variables with sensitive values masked.
 
     Returns:
@@ -379,7 +378,7 @@ class RateLimiter:
         """
         self.max_calls = max_calls
         self.window_seconds = window_seconds
-        self.calls: List[float] = []
+        self.calls: list[float] = []
 
     def check_rate_limit(self) -> bool:
         """Check if rate limit is exceeded.

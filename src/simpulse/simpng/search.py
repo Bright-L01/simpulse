@@ -9,7 +9,7 @@ import logging
 import time
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .embeddings import GoalEmbedder, RuleEmbedder
 
@@ -19,8 +19,8 @@ class SearchNode:
     """Node in the proof search tree."""
 
     goal: str
-    applied_rules: List[str]
-    rule_sequence: List[Dict[str, Any]]
+    applied_rules: list[str]
+    rule_sequence: list[dict[str, Any]]
     score: float
     depth: int
     parent: Optional["SearchNode"] = None
@@ -73,9 +73,9 @@ class NeuralProofSearch:
     def search(
         self,
         initial_state,
-        available_rules: List[Dict[str, Any]],
-        rule_embeddings: Optional[List[List[float]]] = None,
-    ) -> Dict[str, Any]:
+        available_rules: list[dict[str, Any]],
+        rule_embeddings: list[list[float]] | None = None,
+    ) -> dict[str, Any]:
         """
         Main search entry point.
 
@@ -159,10 +159,10 @@ class NeuralProofSearch:
     def search_with_embeddings(
         self,
         initial_state,
-        available_rules: List[Dict[str, Any]],
-        rule_embeddings: List[List[float]],
-        goal_embedding: List[float],
-    ) -> Dict[str, Any]:
+        available_rules: list[dict[str, Any]],
+        rule_embeddings: list[list[float]],
+        goal_embedding: list[float],
+    ) -> dict[str, Any]:
         """
         Search with pre-computed embeddings for efficiency.
         """
@@ -179,11 +179,11 @@ class NeuralProofSearch:
     def _expand_node(
         self,
         node: SearchNode,
-        context: List[str],
-        available_rules: List[Dict[str, Any]],
-        rule_embeddings: List[List[float]],
+        context: list[str],
+        available_rules: list[dict[str, Any]],
+        rule_embeddings: list[list[float]],
         stats: SearchStatistics,
-    ) -> List[SearchNode]:
+    ) -> list[SearchNode]:
         """
         Expand a node by finding applicable rules using embeddings.
         """
@@ -196,7 +196,7 @@ class NeuralProofSearch:
 
         # Find similar rules
         rule_scores = []
-        for i, (rule, rule_emb) in enumerate(zip(available_rules, rule_embeddings)):
+        for i, (rule, rule_emb) in enumerate(zip(available_rules, rule_embeddings, strict=False)):
             similarity = self.goal_embedder.compute_similarity(goal_embedding, rule_emb)
 
             if similarity >= self.similarity_threshold:
@@ -237,7 +237,7 @@ class NeuralProofSearch:
         return children
 
     def _compute_rule_score(
-        self, rule: Dict[str, Any], similarity: float, node: SearchNode
+        self, rule: dict[str, Any], similarity: float, node: SearchNode
     ) -> float:
         """
         Compute adjusted score for rule application.
@@ -269,7 +269,7 @@ class NeuralProofSearch:
 
         return score
 
-    def _apply_rule_simulation(self, goal: str, rule: Dict[str, Any]) -> str:
+    def _apply_rule_simulation(self, goal: str, rule: dict[str, Any]) -> str:
         """
         Simulate rule application for demonstration.
 
@@ -322,7 +322,7 @@ class NeuralProofSearch:
 
     def _build_result(
         self, final_node: SearchNode, stats: SearchStatistics, time_taken: float
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Build search result dictionary."""
         # Reconstruct proof path
         path = []
@@ -362,17 +362,13 @@ class NeuralProofSearch:
             self.global_stats["max_depth_seen"], stats.max_depth_reached
         )
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get search statistics."""
         stats = dict(self.global_stats)
 
         if stats["searches"] > 0:
-            stats["avg_nodes_per_search"] = (
-                stats["total_nodes_explored"] / stats["searches"]
-            )
-            stats["avg_embeddings_per_search"] = (
-                stats["total_embeddings"] / stats["searches"]
-            )
+            stats["avg_nodes_per_search"] = stats["total_nodes_explored"] / stats["searches"]
+            stats["avg_embeddings_per_search"] = stats["total_embeddings"] / stats["searches"]
             stats["pruning_ratio"] = stats["total_nodes_pruned"] / (
                 stats["total_nodes_explored"] + stats["total_nodes_pruned"]
             )

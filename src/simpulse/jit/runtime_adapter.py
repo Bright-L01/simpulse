@@ -10,7 +10,6 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Optional, Tuple
 
 # import numpy as np  # Not needed for this implementation
 
@@ -51,7 +50,7 @@ class AdapterConfig:
 
     stats_file: str = "simp_stats.json"
     priority_file: str = "simp_priorities.json"
-    log_file: Optional[str] = "jit_adapter.log"
+    log_file: str | None = "jit_adapter.log"
 
     # Optimization parameters
     adaptation_interval: int = 100  # Analyze every N simp calls
@@ -59,7 +58,7 @@ class AdapterConfig:
     min_samples: int = 10  # Minimum attempts before optimization
 
     # Priority calculation
-    priority_range: Tuple[int, int] = (100, 5000)
+    priority_range: tuple[int, int] = (100, 5000)
     boost_factor: float = 2.0
 
     # Performance thresholds
@@ -70,9 +69,9 @@ class AdapterConfig:
 class RuntimeAdapter:
     """Runtime adapter for JIT priority optimization."""
 
-    def __init__(self, config: Optional[AdapterConfig] = None):
+    def __init__(self, config: AdapterConfig | None = None):
         self.config = config or AdapterConfig()
-        self.statistics: Dict[str, RuleStatistics] = {}
+        self.statistics: dict[str, RuleStatistics] = {}
         self.call_count = 0
         self.last_optimization = time.time()
 
@@ -146,9 +145,7 @@ class RuntimeAdapter:
 
         # Remove rules with too few samples after decay
         self.statistics = {
-            name: stats
-            for name, stats in self.statistics.items()
-            if stats.attempts >= 1
+            name: stats for name, stats in self.statistics.items() if stats.attempts >= 1
         }
 
     def calculate_priority(self, stats: RuleStatistics) -> int:
@@ -164,24 +161,18 @@ class RuntimeAdapter:
 
         # Frequency component (how often it's attempted)
         total_attempts = sum(s.attempts for s in self.statistics.values())
-        frequency_component = (
-            stats.attempts / total_attempts if total_attempts > 0 else 0
-        )
+        frequency_component = stats.attempts / total_attempts if total_attempts > 0 else 0
 
         # Combined score with weights
-        score = (
-            0.5 * success_component + 0.3 * speed_component + 0.2 * frequency_component
-        )
+        score = 0.5 * success_component + 0.3 * speed_component + 0.2 * frequency_component
 
         # Apply boost factor and map to priority range
         min_prio, max_prio = self.config.priority_range
-        priority = int(
-            min_prio + score * self.config.boost_factor * (max_prio - min_prio)
-        )
+        priority = int(min_prio + score * self.config.boost_factor * (max_prio - min_prio))
 
         return max(min_prio, min(priority, max_prio))
 
-    def optimize_priorities(self) -> Dict[str, int]:
+    def optimize_priorities(self) -> dict[str, int]:
         """Optimize priorities based on current statistics."""
         self._log(f"Optimizing priorities (call count: {self.call_count})")
 
@@ -198,13 +189,9 @@ class RuntimeAdapter:
 
                 # Log significant changes
                 if stats.success_rate > self.config.high_success_threshold:
-                    self._log(
-                        f"High performer: {rule_name} ({stats.success_rate:.1%} success)"
-                    )
+                    self._log(f"High performer: {rule_name} ({stats.success_rate:.1%} success)")
                 elif stats.success_rate < self.config.low_success_threshold:
-                    self._log(
-                        f"Low performer: {rule_name} ({stats.success_rate:.1%} success)"
-                    )
+                    self._log(f"Low performer: {rule_name} ({stats.success_rate:.1%} success)")
 
         # Save priorities
         self.save_priorities(priorities)
@@ -214,7 +201,7 @@ class RuntimeAdapter:
 
         return priorities
 
-    def save_priorities(self, priorities: Dict[str, int]) -> None:
+    def save_priorities(self, priorities: dict[str, int]) -> None:
         """Save optimized priorities to file."""
         try:
             with open(self.config.priority_file, "w") as f:
@@ -223,7 +210,7 @@ class RuntimeAdapter:
         except Exception as e:
             self._log(f"Error saving priorities: {e}")
 
-    def load_priorities(self) -> Dict[str, int]:
+    def load_priorities(self) -> dict[str, int]:
         """Load saved priorities from file."""
         if not os.path.exists(self.config.priority_file):
             return {}
@@ -244,9 +231,7 @@ class RuntimeAdapter:
         total_successes = sum(s.successes for s in self.statistics.values())
 
         # Sort by attempts
-        sorted_stats = sorted(
-            self.statistics.items(), key=lambda x: x[1].attempts, reverse=True
-        )
+        sorted_stats = sorted(self.statistics.items(), key=lambda x: x[1].attempts, reverse=True)
 
         summary = [
             "=== JIT Runtime Adapter Statistics ===",
@@ -314,9 +299,7 @@ class RuntimeAdapter:
                 f.write(f"[{timestamp}] {message}\n")
 
 
-def monitor_lean_process(
-    adapter: RuntimeAdapter, stats_file: str, interval: float = 1.0
-):
+def monitor_lean_process(adapter: RuntimeAdapter, stats_file: str, interval: float = 1.0):
     """Monitor Lean process and update adapter with new statistics."""
     import watchdog.events
     import watchdog.observers

@@ -11,7 +11,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +23,8 @@ class ProfileEntry:
     name: str
     elapsed_ms: float
     count: int = 1
-    children: List["ProfileEntry"] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    children: list["ProfileEntry"] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def total_time_ms(self) -> float:
@@ -46,32 +46,28 @@ class SimpRewriteInfo:
     target_before: str
     target_after: str
     success: bool
-    time_ms: Optional[float] = None
-    location: Optional[str] = None
+    time_ms: float | None = None
+    location: str | None = None
 
 
 @dataclass
 class ProfileReport:
     """Complete profiling report."""
 
-    entries: List[ProfileEntry]
+    entries: list[ProfileEntry]
     total_time_ms: float
     timestamp: datetime
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    simp_rewrites: List[SimpRewriteInfo] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    simp_rewrites: list[SimpRewriteInfo] = field(default_factory=list)
 
-    def get_top_entries(self, n: int = 10, by: str = "elapsed") -> List[ProfileEntry]:
+    def get_top_entries(self, n: int = 10, by: str = "elapsed") -> list[ProfileEntry]:
         """Get top n entries by specified metric."""
         if by == "elapsed":
-            sorted_entries = sorted(
-                self.entries, key=lambda e: e.elapsed_ms, reverse=True
-            )
+            sorted_entries = sorted(self.entries, key=lambda e: e.elapsed_ms, reverse=True)
         elif by == "count":
             sorted_entries = sorted(self.entries, key=lambda e: e.count, reverse=True)
         elif by == "total":
-            sorted_entries = sorted(
-                self.entries, key=lambda e: e.total_time_ms, reverse=True
-            )
+            sorted_entries = sorted(self.entries, key=lambda e: e.total_time_ms, reverse=True)
         else:
             raise ValueError(f"Unknown sort key: {by}")
         return sorted_entries[:n]
@@ -88,14 +84,12 @@ class TraceParser:
         r"(?P<before>.+?)\s*==>\s*(?P<after>.+?)(?:\s+\((?P<status>\w+)\))?"
     )
 
-    JSON_PROFILE_PATTERN = re.compile(
-        r'^\s*\{.*"profiler".*\}\s*$', re.MULTILINE | re.DOTALL
-    )
+    JSON_PROFILE_PATTERN = re.compile(r'^\s*\{.*"profiler".*\}\s*$', re.MULTILINE | re.DOTALL)
 
     def __init__(self):
         """Initialize trace parser."""
-        self._entry_stack: List[ProfileEntry] = []
-        self._current_entries: List[ProfileEntry] = []
+        self._entry_stack: list[ProfileEntry] = []
+        self._current_entries: list[ProfileEntry] = []
 
     def parse_file(self, file_path: Path) -> ProfileReport:
         """Parse a trace file and return profile report.
@@ -147,7 +141,7 @@ class TraceParser:
             # Fall back to text parsing
             return self._parse_text_format(content)
 
-    def _convert_json_to_entries(self, json_data: Dict) -> List[ProfileEntry]:
+    def _convert_json_to_entries(self, json_data: dict) -> list[ProfileEntry]:
         """Convert JSON profiler data to ProfileEntry objects."""
         entries = []
 
@@ -211,7 +205,7 @@ class TraceParser:
             simp_rewrites=simp_rewrites,
         )
 
-    def _aggregate_entries(self, entries: List[ProfileEntry]) -> List[ProfileEntry]:
+    def _aggregate_entries(self, entries: list[ProfileEntry]) -> list[ProfileEntry]:
         """Aggregate profile entries by name."""
         aggregated = defaultdict(lambda: {"time": 0.0, "count": 0})
 
@@ -222,13 +216,11 @@ class TraceParser:
 
         result = []
         for name, data in aggregated.items():
-            result.append(
-                ProfileEntry(name=name, elapsed_ms=data["time"], count=data["count"])
-            )
+            result.append(ProfileEntry(name=name, elapsed_ms=data["time"], count=data["count"]))
 
         return result
 
-    def parse_simp_trace(self, content: str) -> Dict[str, Any]:
+    def parse_simp_trace(self, content: str) -> dict[str, Any]:
         """Parse simp-specific trace output.
 
         Args:
@@ -251,9 +243,7 @@ class TraceParser:
             match = self.SIMP_REWRITE_PATTERN.search(line)
             if match:
                 theorem = match.group("theorem")
-                success = (
-                    match.group("status") != "failed" if match.group("status") else True
-                )
+                success = match.group("status") != "failed" if match.group("status") else True
 
                 stats["total_rewrites"] += 1
                 if success:
@@ -278,9 +268,7 @@ class TraceParser:
 
         # Sort most used theorems
         stats["most_used_theorems"] = dict(
-            sorted(
-                stats["most_used_theorems"].items(), key=lambda x: x[1], reverse=True
-            )
+            sorted(stats["most_used_theorems"].items(), key=lambda x: x[1], reverse=True)
         )
 
         return stats
@@ -305,13 +293,9 @@ class TraceParser:
         lines.append("Top 10 by elapsed time:")
         for i, entry in enumerate(report.get_top_entries(10, by="elapsed"), 1):
             percentage = (
-                (entry.elapsed_ms / report.total_time_ms) * 100
-                if report.total_time_ms > 0
-                else 0
+                (entry.elapsed_ms / report.total_time_ms) * 100 if report.total_time_ms > 0 else 0
             )
-            lines.append(
-                f"  {i:2d}. {entry.name}: {entry.elapsed_ms:.2f} ms ({percentage:.1f}%)"
-            )
+            lines.append(f"  {i:2d}. {entry.name}: {entry.elapsed_ms:.2f} ms ({percentage:.1f}%)")
 
         # Simp statistics if available
         if report.simp_rewrites:

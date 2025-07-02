@@ -6,7 +6,6 @@ Provides integration mechanisms for transparent activation.
 
 import subprocess
 from pathlib import Path
-from typing import Optional
 
 from .runtime_adapter import AdapterConfig, RuntimeAdapter
 
@@ -14,7 +13,7 @@ from .runtime_adapter import AdapterConfig, RuntimeAdapter
 class LeanJITBridge:
     """Bridge for integrating JIT profiler with Lean projects."""
 
-    def __init__(self, project_path: str, config: Optional[AdapterConfig] = None):
+    def __init__(self, project_path: str, config: AdapterConfig | None = None):
         self.project_path = Path(project_path)
         self.config = config or AdapterConfig()
         self.adapter = RuntimeAdapter(config)
@@ -28,9 +27,7 @@ class LeanJITBridge:
         """Set up Simpulse JIT as a Lean extension."""
         try:
             # Check if lake is available
-            result = subprocess.run(
-                ["lake", "--version"], capture_output=True, text=True
-            )
+            result = subprocess.run(["lake", "--version"], capture_output=True, text=True)
             if result.returncode != 0:
                 print("Error: lake not found. Please install Lean 4.")
                 return False
@@ -184,8 +181,7 @@ require «simpulse-jit» from git
 
                         # Check if optimization needed
                         if (
-                            self.bridge.adapter.call_count
-                            % self.bridge.config.adaptation_interval
+                            self.bridge.adapter.call_count % self.bridge.config.adaptation_interval
                             == 0
                         ):
                             priorities = self.bridge.adapter.optimize_priorities()
@@ -257,9 +253,7 @@ def setup_jit_for_project(project_path: str) -> None:
 
     print("\nSetup complete!")
     print(f"Run 'lake build' in {project_path} to start profiling")
-    print(
-        f"Use 'python -m simpulse.jit monitor {project_path}' to monitor and optimize"
-    )
+    print(f"Use 'python -m simpulse.jit monitor {project_path}' to monitor and optimize")
 
 
 if __name__ == "__main__":

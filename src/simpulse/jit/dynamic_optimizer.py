@@ -12,7 +12,7 @@ import time
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -25,7 +25,7 @@ class RuleStats:
     total_time: float = 0.0
     recent_times: deque = field(default_factory=lambda: deque(maxlen=100))
     last_used: float = field(default_factory=time.time)
-    contexts: Dict[str, int] = field(default_factory=dict)  # Context -> usage count
+    contexts: dict[str, int] = field(default_factory=dict)  # Context -> usage count
 
     @property
     def success_rate(self) -> float:
@@ -58,7 +58,7 @@ class OptimizationContext:
     module_name: str
     goal_type: str  # arithmetic, list, logic, etc.
     proof_depth: int
-    previous_tactics: List[str]
+    previous_tactics: list[str]
 
 
 class DynamicSimpOptimizer:
@@ -72,7 +72,7 @@ class DynamicSimpOptimizer:
     ):
         """Initialize dynamic optimizer."""
         # Runtime statistics
-        self.rule_stats: Dict[str, RuleStats] = {}
+        self.rule_stats: dict[str, RuleStats] = {}
         self.global_attempts = 0
 
         # Configuration
@@ -82,11 +82,11 @@ class DynamicSimpOptimizer:
         self.last_decay = 0
 
         # Priority cache
-        self.priority_cache: Dict[str, int] = {}
+        self.priority_cache: dict[str, int] = {}
         self.cache_size = cache_size
 
         # Context-aware optimization
-        self.context_priorities: Dict[str, Dict[str, int]] = defaultdict(dict)
+        self.context_priorities: dict[str, dict[str, int]] = defaultdict(dict)
 
         # Performance tracking
         self.baseline_time = 0.0
@@ -94,11 +94,11 @@ class DynamicSimpOptimizer:
         self.improvements: deque = deque(maxlen=1000)
 
         # Hot path detection
-        self.hot_paths: Dict[str, int] = defaultdict(int)
-        self.compiled_paths: Dict[str, Any] = {}
+        self.hot_paths: dict[str, int] = defaultdict(int)
+        self.compiled_paths: dict[str, Any] = {}
 
     def instrument_simp_attempt(
-        self, rule_name: str, context: Optional[OptimizationContext] = None
+        self, rule_name: str, context: OptimizationContext | None = None
     ) -> "InstrumentedAttempt":
         """Instrument a simp rule attempt."""
         return InstrumentedAttempt(self, rule_name, context)
@@ -108,7 +108,7 @@ class DynamicSimpOptimizer:
         rule_name: str,
         success: bool,
         duration: float,
-        context: Optional[OptimizationContext] = None,
+        context: OptimizationContext | None = None,
     ):
         """Record statistics for a rule attempt."""
         # Initialize stats if needed
@@ -131,9 +131,7 @@ class DynamicSimpOptimizer:
             stats.contexts[context_key] = stats.contexts.get(context_key, 0) + 1
 
             # Track hot paths
-            path_key = (
-                f"{context.module_name}:{'.'.join(context.previous_tactics[-3:])}"
-            )
+            path_key = f"{context.module_name}:{'.'.join(context.previous_tactics[-3:])}"
             self.hot_paths[path_key] += 1
 
         self.global_attempts += 1
@@ -156,11 +154,7 @@ class DynamicSimpOptimizer:
         for rule_name, stats in self.rule_stats.items():
             # Multi-factor scoring
             success_score = stats.success_rate * 100
-            speed_score = (
-                1.0 / (stats.recent_avg_time + 0.001)
-                if stats.recent_avg_time > 0
-                else 0
-            )
+            speed_score = 1.0 / (stats.recent_avg_time + 0.001) if stats.recent_avg_time > 0 else 0
             frequency_score = stats.attempts / max(self.global_attempts, 1) * 100
             recency_score = 1.0 / (time.time() - stats.last_used + 1.0)
 
@@ -201,9 +195,7 @@ class DynamicSimpOptimizer:
 
         self.last_decay = self.global_attempts
 
-    def get_priority(
-        self, rule_name: str, context: Optional[OptimizationContext] = None
-    ) -> int:
+    def get_priority(self, rule_name: str, context: OptimizationContext | None = None) -> int:
         """Get current priority for a rule."""
         # Check context-specific priority
         if context:
@@ -223,9 +215,7 @@ class DynamicSimpOptimizer:
             "statistics": {
                 "total_attempts": self.global_attempts,
                 "unique_rules": len(self.rule_stats),
-                "avg_improvement": (
-                    statistics.mean(self.improvements) if self.improvements else 0
-                ),
+                "avg_improvement": (statistics.mean(self.improvements) if self.improvements else 0),
             },
             "priorities": self.priority_cache,
             "hot_paths": dict(self.hot_paths),
@@ -283,9 +273,7 @@ class DynamicSimpOptimizer:
     def _compile_hot_paths(self):
         """Compile frequently executed proof paths."""
         # Identify top hot paths
-        top_paths = sorted(self.hot_paths.items(), key=lambda x: x[1], reverse=True)[
-            :10
-        ]
+        top_paths = sorted(self.hot_paths.items(), key=lambda x: x[1], reverse=True)[:10]
 
         for path_key, count in top_paths:
             if count > 50:  # Threshold for compilation
@@ -296,7 +284,7 @@ class DynamicSimpOptimizer:
                     "rules": self._get_path_rules(path_key),
                 }
 
-    def _get_path_rules(self, path_key: str) -> List[str]:
+    def _get_path_rules(self, path_key: str) -> list[str]:
         """Get frequently used rules for a path."""
         # Extract rules used in this context
         module, tactics = path_key.split(":", 1)
@@ -323,9 +311,7 @@ def optimizedPriorities : List (Name × Nat) := ["""
 
         # Add top 50 rules with custom priorities
         rules = []
-        for rule, priority in sorted(self.priority_cache.items(), key=lambda x: x[1])[
-            :50
-        ]:
+        for rule, priority in sorted(self.priority_cache.items(), key=lambda x: x[1])[:50]:
             rules.append(f"  (`{rule}, {priority})")
 
         lean_code += ",\n".join(rules)
@@ -357,7 +343,7 @@ class InstrumentedAttempt:
         self,
         optimizer: DynamicSimpOptimizer,
         rule_name: str,
-        context: Optional[OptimizationContext] = None,
+        context: OptimizationContext | None = None,
     ):
         self.optimizer = optimizer
         self.rule_name = rule_name
@@ -373,9 +359,7 @@ class InstrumentedAttempt:
         duration = time.time() - self.start_time
         # If no exception, consider it successful
         self.success = exc_type is None
-        self.optimizer.record_attempt(
-            self.rule_name, self.success, duration, self.context
-        )
+        self.optimizer.record_attempt(self.rule_name, self.success, duration, self.context)
 
     def mark_success(self):
         """Explicitly mark attempt as successful."""

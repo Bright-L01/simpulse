@@ -12,7 +12,6 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from .dynamic_optimizer import DynamicSimpOptimizer, OptimizationContext
 
@@ -25,7 +24,7 @@ class SimpAttemptMessage:
     module_name: str
     goal_type: str
     proof_depth: int
-    previous_tactics: List[str]
+    previous_tactics: list[str]
     timestamp: float
 
 
@@ -43,7 +42,7 @@ class SimpResultMessage:
 class PriorityQueryMessage:
     """Query for rule priorities."""
 
-    rules: List[str]
+    rules: list[str]
     context_module: str
     context_goal_type: str
 
@@ -52,7 +51,7 @@ class PriorityQueryMessage:
 class PriorityResponseMessage:
     """Response with rule priorities."""
 
-    priorities: Dict[str, int]
+    priorities: dict[str, int]
 
 
 class LeanJITServer:
@@ -132,7 +131,7 @@ class LeanJITServer:
                 handler.daemon = True
                 handler.start()
 
-            except socket.timeout:
+            except TimeoutError:
                 # Periodic maintenance
                 self._periodic_maintenance()
                 continue
@@ -166,7 +165,7 @@ class LeanJITServer:
         finally:
             conn.close()
 
-    def _process_message(self, message: Dict) -> Optional[Dict]:
+    def _process_message(self, message: dict) -> dict | None:
         """Process incoming message from Lean."""
         msg_type = message.get("type")
 
@@ -250,7 +249,7 @@ class LeanJITClient:
         module_name: str,
         goal_type: str,
         proof_depth: int = 0,
-        previous_tactics: List[str] = None,
+        previous_tactics: list[str] = None,
     ) -> bool:
         """Notify JIT optimizer of simp attempt."""
         message = {
@@ -276,8 +275,8 @@ class LeanJITClient:
         return self._send_message(message)
 
     def get_priorities(
-        self, rules: List[str], context_module: str = "", context_goal_type: str = ""
-    ) -> Dict[str, int]:
+        self, rules: list[str], context_module: str = "", context_goal_type: str = ""
+    ) -> dict[str, int]:
         """Get current priorities for rules."""
         message = {
             "type": "priority_query",
@@ -294,7 +293,7 @@ class LeanJITClient:
         # Default priorities if server unavailable
         return {rule: 1000 for rule in rules}
 
-    def get_stats(self) -> Dict[str, any]:
+    def get_stats(self) -> dict[str, any]:
         """Get current optimization statistics."""
         message = {"type": "get_stats"}
         response = self._send_message(message, expect_response=True)
@@ -304,7 +303,7 @@ class LeanJITClient:
 
         return {}
 
-    def _send_message(self, message: Dict, expect_response: bool = False) -> any:
+    def _send_message(self, message: dict, expect_response: bool = False) -> any:
         """Send message to JIT server."""
         try:
             # Connect to server

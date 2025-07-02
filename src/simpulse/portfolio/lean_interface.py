@@ -8,7 +8,6 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from .tactic_predictor import TacticDataset, TacticPredictor
 
@@ -27,7 +26,7 @@ class ProofStep:
 class LeanPortfolioInterface:
     """Interface for portfolio tactic integration."""
 
-    def __init__(self, lean_project: str, model_path: Optional[str] = None):
+    def __init__(self, lean_project: str, model_path: str | None = None):
         self.lean_project = Path(lean_project)
         self.model_path = model_path or "tactic_portfolio_model.pkl"
         self.predictor = TacticPredictor(self.model_path)
@@ -46,7 +45,7 @@ class LeanPortfolioInterface:
 
         print(f"Portfolio interface ready at {self.lean_project}")
 
-    def predict_tactic(self, goal_text: str) -> Dict[str, any]:
+    def predict_tactic(self, goal_text: str) -> dict[str, any]:
         """Predict best tactic for a goal."""
         try:
             prediction = self.predictor.predict(goal_text)
@@ -92,7 +91,7 @@ class LeanPortfolioInterface:
             )
             f.write("\n")
 
-    def extract_training_data(self, lean_file: Path) -> List[ProofStep]:
+    def extract_training_data(self, lean_file: Path) -> list[ProofStep]:
         """Extract proof steps from a Lean file."""
         proof_steps = []
 
@@ -106,9 +105,7 @@ class LeanPortfolioInterface:
             by_proof_pattern = re.compile(r":=\s*by\s+(\w+)(?:\s|$)", re.MULTILINE)
 
             # Pattern for tactic mode proofs
-            tactic_pattern = re.compile(
-                r"^\s*(\w+)(?:\s+\[.*?\])?(?:\s+.*?)?$", re.MULTILINE
-            )
+            tactic_pattern = re.compile(r"^\s*(\w+)(?:\s+\[.*?\])?(?:\s+.*?)?$", re.MULTILINE)
 
             # Pattern for goals (simplified)
             goal_pattern = re.compile(r"⊢\s+(.+?)(?=\n|$)", re.MULTILINE)
@@ -140,7 +137,7 @@ class LeanPortfolioInterface:
 
         return proof_steps
 
-    def analyze_tactic_usage(self, mathlib_path: Path) -> Dict[str, int]:
+    def analyze_tactic_usage(self, mathlib_path: Path) -> dict[str, int]:
         """Analyze tactic usage frequency in mathlib4."""
         tactic_counts = {}
 
@@ -260,7 +257,7 @@ def train_from_mathlib(
     predictor = TacticPredictor()
     metrics = predictor.train(balanced)
 
-    print(f"\nTraining complete!")
+    print("\nTraining complete!")
     print(f"Metrics: {metrics}")
 
     # Save model

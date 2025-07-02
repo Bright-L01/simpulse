@@ -8,11 +8,11 @@ from .lean_runner import LeanExecutionMode, LeanResult, LeanRunner
 from .trace_parser import ProfileEntry, ProfileReport, SimpRewriteInfo, TraceParser
 
 __all__ = [
-    "LeanRunner",
-    "LeanResult",
     "LeanExecutionMode",
-    "TraceParser",
-    "ProfileReport",
+    "LeanResult",
+    "LeanRunner",
     "ProfileEntry",
+    "ProfileReport",
     "SimpRewriteInfo",
+    "TraceParser",
 ]

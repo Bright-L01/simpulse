@@ -11,7 +11,6 @@ import re
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
 
 from .models import MutationSuggestion, MutationType, SimpRule
 
@@ -27,9 +26,9 @@ class AppliedMutation:
     modified_content: str
     backup_content: str
     file_path: Path
-    line_numbers: Tuple[int, int]  # (start, end)
+    line_numbers: tuple[int, int]  # (start, end)
     success: bool = True
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
     def rollback(self) -> bool:
         """Rollback the mutation by restoring original content."""
@@ -46,10 +45,10 @@ class AppliedMutation:
 class MutationSet:
     """Collection of mutations applied together."""
 
-    mutations: List[AppliedMutation]
+    mutations: list[AppliedMutation]
     workspace_path: Path
     success: bool = True
-    validation_errors: List[str] = field(default_factory=list)
+    validation_errors: list[str] = field(default_factory=list)
 
     def rollback_all(self) -> bool:
         """Rollback all mutations in the set."""
@@ -60,7 +59,7 @@ class MutationSet:
         return success
 
     @property
-    def modified_files(self) -> Set[Path]:
+    def modified_files(self) -> set[Path]:
         """Get set of files modified by this mutation set."""
         return {m.file_path for m in self.mutations}
 
@@ -77,13 +76,11 @@ class MutationApplicator:
         self.preserve_formatting = preserve_formatting
         self._simp_attr_patterns = self._compile_patterns()
 
-    def _compile_patterns(self) -> Dict[str, re.Pattern]:
+    def _compile_patterns(self) -> dict[str, re.Pattern]:
         """Compile regex patterns for simp attribute matching."""
         return {
             # Match @[simp] with optional priority and direction
-            "full_attr": re.compile(
-                r"@\[simp(?:\s+(high|low|\d+))?(?:\s*([↓←]))?\]", re.MULTILINE
-            ),
+            "full_attr": re.compile(r"@\[simp(?:\s+(high|low|\d+))?(?:\s*([↓←]))?\]", re.MULTILINE),
             # Match just the simp part for replacement
             "simp_content": re.compile(r"simp(?:\s+(high|low|\d+))?(?:\s*([↓←]))?"),
             # Find declaration after attribute
@@ -158,7 +155,7 @@ class MutationApplicator:
 
     def _apply_mutation_to_content(
         self, content: str, rule: SimpRule, suggestion: MutationSuggestion
-    ) -> Tuple[str, Tuple[int, int]]:
+    ) -> tuple[str, tuple[int, int]]:
         """Apply mutation to file content.
 
         Args:
@@ -184,22 +181,16 @@ class MutationApplicator:
         if suggestion.mutation_type == MutationType.PRIORITY_CHANGE:
             lines[attr_line] = self._apply_priority_change(lines[attr_line], suggestion)
         elif suggestion.mutation_type == MutationType.DIRECTION_CHANGE:
-            lines[attr_line] = self._apply_direction_change(
-                lines[attr_line], suggestion
-            )
+            lines[attr_line] = self._apply_direction_change(lines[attr_line], suggestion)
         elif suggestion.mutation_type == MutationType.CONDITION_ADD:
             # Condition changes require modifying the declaration, not just the attribute
             decl_line = self._find_declaration_line(lines, attr_line)
             if decl_line is not None:
-                lines[decl_line] = self._apply_condition_add(
-                    lines[decl_line], suggestion
-                )
+                lines[decl_line] = self._apply_condition_add(lines[decl_line], suggestion)
         elif suggestion.mutation_type == MutationType.CONDITION_REMOVE:
             decl_line = self._find_declaration_line(lines, attr_line)
             if decl_line is not None:
-                lines[decl_line] = self._apply_condition_remove(
-                    lines[decl_line], suggestion
-                )
+                lines[decl_line] = self._apply_condition_remove(lines[decl_line], suggestion)
         elif suggestion.mutation_type == MutationType.RULE_DISABLE:
             # Comment out the @[simp] attribute
             lines[attr_line] = f"-- {lines[attr_line]}"
@@ -212,8 +203,8 @@ class MutationApplicator:
         return modified_content, line_numbers
 
     def _find_simp_attribute_line(
-        self, lines: List[str], rule_line: int, rule_name: str
-    ) -> Optional[int]:
+        self, lines: list[str], rule_line: int, rule_name: str
+    ) -> int | None:
         """Find the line containing the @[simp] attribute for a rule.
 
         Args:
@@ -236,7 +227,7 @@ class MutationApplicator:
 
         return None
 
-    def _find_declaration_line(self, lines: List[str], attr_line: int) -> Optional[int]:
+    def _find_declaration_line(self, lines: list[str], attr_line: int) -> int | None:
         """Find the declaration line after an attribute.
 
         Args:
@@ -419,8 +410,8 @@ class MutationApplicator:
 
     async def apply_mutation_set(
         self,
-        mutations: List[MutationSuggestion],
-        rules: List[SimpRule],
+        mutations: list[MutationSuggestion],
+        rules: list[SimpRule],
         workspace: Path,
     ) -> MutationSet:
         """Apply multiple mutations atomically.
@@ -442,7 +433,7 @@ class MutationApplicator:
 
         try:
             # Apply all mutations
-            for mutation, rule in zip(mutations, rules):
+            for mutation, rule in zip(mutations, rules, strict=False):
                 applied = await self.apply_mutation(rule, mutation)
                 applied_mutations.append(applied)
 
@@ -483,7 +474,7 @@ class MutationApplicator:
             validation_errors=validation_errors,
         )
 
-    async def _validate_syntax(self, workspace: Path) -> List[str]:
+    async def _validate_syntax(self, workspace: Path) -> list[str]:
         """Validate syntax of modified files using lean check.
 
         Args:
@@ -516,9 +507,7 @@ class MutationApplicator:
 
         return errors
 
-    def generate_patch(
-        self, original: str, mutated: str, filename: str = "file"
-    ) -> str:
+    def generate_patch(self, original: str, mutated: str, filename: str = "file") -> str:
         """Generate git-compatible patch.
 
         Args:
@@ -542,9 +531,7 @@ class MutationApplicator:
 
         return "".join(diff)
 
-    def backup_files(
-        self, file_paths: List[Path], backup_dir: Path
-    ) -> Dict[Path, Path]:
+    def backup_files(self, file_paths: list[Path], backup_dir: Path) -> dict[Path, Path]:
         """Create backups of files before modification.
 
         Args:
@@ -567,7 +554,7 @@ class MutationApplicator:
 
         return backup_mapping
 
-    def restore_from_backups(self, backup_mapping: Dict[Path, Path]) -> bool:
+    def restore_from_backups(self, backup_mapping: dict[Path, Path]) -> bool:
         """Restore files from backups.
 
         Args:

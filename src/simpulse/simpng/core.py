@@ -8,7 +8,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .embeddings import GoalEmbedder, RuleEmbedder
 from .learning import SelfLearningSystem
@@ -25,8 +25,8 @@ class SimpNGConfig:
     learning_rate: float = 0.001
     cache_embeddings: bool = True
     enable_self_learning: bool = True
-    proof_corpus_path: Optional[Path] = None
-    model_checkpoint_path: Optional[Path] = None
+    proof_corpus_path: Path | None = None
+    model_checkpoint_path: Path | None = None
 
 
 @dataclass
@@ -34,8 +34,8 @@ class ProofState:
     """Represents a proof state during simplification."""
 
     goal: str
-    context: List[str]
-    applied_rules: List[str] = field(default_factory=list)
+    context: list[str]
+    applied_rules: list[str] = field(default_factory=list)
     score: float = 0.0
     depth: int = 0
 
@@ -45,8 +45,8 @@ class SimplificationResult:
     """Result of SimpNG simplification."""
 
     simplified_goal: str
-    applied_rules: List[str]
-    proof_steps: List[Dict[str, Any]]
+    applied_rules: list[str]
+    proof_steps: list[dict[str, Any]]
     confidence: float
     time_taken: float
     embeddings_used: int
@@ -60,7 +60,7 @@ class SimpNGEngine:
     simplification, using transformer embeddings and neural search.
     """
 
-    def __init__(self, config: Optional[SimpNGConfig] = None):
+    def __init__(self, config: SimpNGConfig | None = None):
         """Initialize SimpNG with configuration."""
         self.config = config or SimpNGConfig()
         self.logger = logging.getLogger(__name__)
@@ -95,7 +95,7 @@ class SimpNGEngine:
         self.stats = defaultdict(int)
 
     def simplify(
-        self, goal: str, context: List[str], available_rules: List[Dict[str, Any]]
+        self, goal: str, context: list[str], available_rules: list[dict[str, Any]]
     ) -> SimplificationResult:
         """
         Simplify a goal using neural proof search.
@@ -151,10 +151,10 @@ class SimpNGEngine:
 
     def batch_simplify(
         self,
-        goals: List[str],
-        context: List[str],
-        available_rules: List[Dict[str, Any]],
-    ) -> List[SimplificationResult]:
+        goals: list[str],
+        context: list[str],
+        available_rules: list[dict[str, Any]],
+    ) -> list[SimplificationResult]:
         """
         Simplify multiple goals efficiently using batched embeddings.
         """
@@ -233,15 +233,13 @@ class SimpNGEngine:
         if self.learning_system and "learning_system_state" in checkpoint:
             self.learning_system.load_state(checkpoint["learning_system_state"])
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get engine statistics."""
         stats = dict(self.stats)
 
         if stats["simplifications"] > 0:
             stats["avg_time"] = stats["total_time"] / stats["simplifications"]
-            stats["avg_embeddings"] = (
-                stats["embeddings_used"] / stats["simplifications"]
-            )
+            stats["avg_embeddings"] = stats["embeddings_used"] / stats["simplifications"]
 
         # Add component statistics
         stats["rule_embedder"] = self.rule_embedder.get_statistics()
@@ -253,7 +251,7 @@ class SimpNGEngine:
 
         return stats
 
-    def explain_simplification(self, result: SimplificationResult) -> Dict[str, Any]:
+    def explain_simplification(self, result: SimplificationResult) -> dict[str, Any]:
         """
         Provide interpretable explanation of simplification decisions.
         """
@@ -276,7 +274,7 @@ class SimpNGEngine:
 
         return explanation
 
-    def _generate_rationale(self, step: Dict[str, Any]) -> str:
+    def _generate_rationale(self, step: dict[str, Any]) -> str:
         """Generate human-readable rationale for a proof step."""
         rule = step["rule"]
         confidence = step["confidence"]

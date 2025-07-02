@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from ..profiling.lean_runner import LeanRunner
 from .mutation_applicator import MutationApplicator
@@ -15,7 +14,7 @@ class OptimizationResult:
 
     improved: bool
     improvement_percent: float = 0.0
-    best_mutation: Optional[str] = None
+    best_mutation: str | None = None
     baseline_time: float = 0.0
     optimized_time: float = 0.0
     total_generations: int = 1
@@ -23,8 +22,8 @@ class OptimizationResult:
     modules: list = None
     total_evaluations: int = 1
     success: bool = False
-    best_candidate: Optional[object] = None
-    history: Optional[object] = None
+    best_candidate: object | None = None
+    history: object | None = None
 
     def __post_init__(self):
         if self.modules is None:
@@ -42,7 +41,6 @@ class SimpleEvolutionEngine:
 
     async def optimize_file(self, lean_file: Path) -> OptimizationResult:
         """Try simple priority optimizations."""
-
         # Extract rules
         module_rules = self.extractor.extract_rules_from_file(lean_file)
         rules = module_rules.rules
@@ -65,9 +63,7 @@ class SimpleEvolutionEngine:
 
                 # Apply and test
                 try:
-                    mutated_file = self.applicator.apply_simple_swap(
-                        lean_file, rules[i], rules[j]
-                    )
+                    mutated_file = self.applicator.apply_simple_swap(lean_file, rules[i], rules[j])
 
                     result = await self.runner.profile_file(mutated_file)
                     time = result.get("total_time", float("inf"))

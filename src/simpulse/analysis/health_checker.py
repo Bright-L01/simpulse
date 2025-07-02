@@ -2,7 +2,6 @@
 
 import re
 from pathlib import Path
-from typing import List
 
 from pydantic import BaseModel
 
@@ -26,7 +25,7 @@ class HealthCheckResult(BaseModel):
     default_priority_percentage: float
     score: int
     estimated_improvement: int
-    recommendations: List[str]
+    recommendations: list[str]
 
 
 class HealthChecker:

@@ -12,7 +12,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ..evolution.models import OptimizationResult
 
@@ -91,14 +91,10 @@ class ProductivityImpact:
 
         # Focus improvement based on compilation wait time reduction
         if self.compilation_time_savings_seconds > 10:
-            self.focus_improvement_percent = min(
-                25, self.compilation_time_savings_seconds / 2
-            )
+            self.focus_improvement_percent = min(25, self.compilation_time_savings_seconds / 2)
 
         # Frustration reduction (subjective metric)
-        self.frustration_reduction_score = min(
-            10, self.compilation_time_savings_seconds / 5
-        )
+        self.frustration_reduction_score = min(10, self.compilation_time_savings_seconds / 5)
 
 
 @dataclass
@@ -160,7 +156,7 @@ class ImpactReport:
     # Meta information
     analysis_timestamp: datetime = field(default_factory=datetime.now)
     confidence_level: float = 0.8
-    assumptions: List[str] = field(default_factory=list)
+    assumptions: list[str] = field(default_factory=list)
 
     def generate_executive_summary(self) -> str:
         """Generate executive summary of impact."""
@@ -228,7 +224,7 @@ class AdoptionMetrics:
 class ImpactAnalyzer:
     """Analyze real-world impact of optimizations."""
 
-    def __init__(self, storage_dir: Optional[Path] = None):
+    def __init__(self, storage_dir: Path | None = None):
         """Initialize impact analyzer.
 
         Args:
@@ -252,7 +248,7 @@ class ImpactAnalyzer:
     async def analyze_optimization_impact(
         self,
         result: OptimizationResult,
-        project_params: Optional[Dict[str, Any]] = None,
+        project_params: dict[str, Any] | None = None,
     ) -> ImpactReport:
         """Comprehensive impact analysis.
 
@@ -263,9 +259,7 @@ class ImpactAnalyzer:
         Returns:
             Comprehensive impact report
         """
-        logger.info(
-            f"Analyzing impact for {result.improvement_percent:.1f}% optimization"
-        )
+        logger.info(f"Analyzing impact for {result.improvement_percent:.1f}% optimization")
 
         # Merge project parameters with defaults
         params = {**self.default_params, **(project_params or {})}
@@ -304,7 +298,7 @@ class ImpactAnalyzer:
         return report
 
     def _calculate_time_savings(
-        self, result: OptimizationResult, params: Dict[str, Any]
+        self, result: OptimizationResult, params: dict[str, Any]
     ) -> TimeSavingsProjection:
         """Calculate time savings projections."""
         improvement_ratio = result.improvement_percent / 100.0
@@ -317,9 +311,7 @@ class ImpactAnalyzer:
         compilations_per_day = params["compilations_per_dev_per_day"]
 
         # Developer time savings
-        daily_savings_per_dev = (
-            time_saved_per_compilation * compilations_per_day / 60
-        )  # minutes
+        daily_savings_per_dev = time_saved_per_compilation * compilations_per_day / 60  # minutes
         total_daily_savings = daily_savings_per_dev * developers
 
         # CI/CD time savings
@@ -341,7 +333,7 @@ class ImpactAnalyzer:
         )
 
     def _calculate_energy_impact(
-        self, result: OptimizationResult, params: Dict[str, Any]
+        self, result: OptimizationResult, params: dict[str, Any]
     ) -> EnergyImpact:
         """Calculate energy usage impact."""
         improvement_ratio = result.improvement_percent / 100.0
@@ -354,14 +346,9 @@ class ImpactAnalyzer:
 
         # Carbon footprint calculation
         annual_compilation_hours = (
-            params["compilations_per_dev_per_day"]
-            * params["developers_per_project"]
-            * 365
-            / 60
+            params["compilations_per_dev_per_day"] * params["developers_per_project"] * 365 / 60
         )
-        kwh_saved_per_year = (
-            (baseline_watts - optimized_watts) * annual_compilation_hours / 1000
-        )
+        kwh_saved_per_year = (baseline_watts - optimized_watts) * annual_compilation_hours / 1000
 
         carbon_intensity = params["carbon_intensity_kg_co2_per_kwh"]
         carbon_saved = kwh_saved_per_year * carbon_intensity
@@ -376,7 +363,7 @@ class ImpactAnalyzer:
         )
 
     def _calculate_productivity_impact(
-        self, result: OptimizationResult, params: Dict[str, Any]
+        self, result: OptimizationResult, params: dict[str, Any]
     ) -> ProductivityImpact:
         """Calculate developer productivity impact."""
         improvement_ratio = result.improvement_percent / 100.0
@@ -394,7 +381,7 @@ class ImpactAnalyzer:
     def _calculate_cost_savings(
         self,
         result: OptimizationResult,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         time_savings: TimeSavingsProjection,
     ) -> CostSavings:
         """Calculate cost savings."""
@@ -404,11 +391,10 @@ class ImpactAnalyzer:
             avg_developer_cost_per_hour_usd=params["developer_cost_per_hour_usd"],
             developer_hours_saved_per_year=time_savings.annual_savings_hours,
             cloud_compute_cost_per_hour_usd=params["cloud_compute_cost_per_hour_usd"],
-            compute_hours_saved_per_year=time_savings.annual_savings_hours
-            * 2,  # CI + development
+            compute_hours_saved_per_year=time_savings.annual_savings_hours * 2,  # CI + development
         )
 
-    def _generate_assumptions(self, params: Dict[str, Any]) -> List[str]:
+    def _generate_assumptions(self, params: dict[str, Any]) -> list[str]:
         """Generate list of analysis assumptions."""
         return [
             f"Average of {params['developers_per_project']} developers per project",
@@ -477,9 +463,7 @@ class ImpactAnalyzer:
         except Exception as e:
             logger.warning(f"Failed to store impact report: {e}")
 
-    def generate_case_study(
-        self, project: str, results: List[OptimizationResult]
-    ) -> str:
+    def generate_case_study(self, project: str, results: list[OptimizationResult]) -> str:
         """Create publishable case study.
 
         Args:
@@ -592,15 +576,13 @@ confidently without risk of breaking existing proofs or introducing regressions.
 
         return case_study
 
-    def _format_results_table(self, results: List[OptimizationResult]) -> str:
+    def _format_results_table(self, results: list[OptimizationResult]) -> str:
         """Format results as a markdown table."""
         table = "| Run | Improvement | Modules | Mutations | Time | Success |\n"
         table += "|-----|-------------|---------|-----------|------|----------|\n"
 
         for i, result in enumerate(results[:10], 1):  # Show first 10 results
-            mutations = (
-                len(result.best_candidate.mutations) if result.best_candidate else 0
-            )
+            mutations = len(result.best_candidate.mutations) if result.best_candidate else 0
             table += f"| {i} | {result.improvement_percent:.1f}% | {len(result.modules)} | {mutations} | {result.execution_time:.0f}s | {'✅' if result.success else '❌'} |\n"
 
         if len(results) > 10:
@@ -609,7 +591,7 @@ confidently without risk of breaking existing proofs or introducing regressions.
 
         return table
 
-    def _analyze_mutation_patterns(self, results: List[OptimizationResult]) -> str:
+    def _analyze_mutation_patterns(self, results: list[OptimizationResult]) -> str:
         """Analyze common mutation patterns across results."""
         mutation_types = defaultdict(int)
         successful_mutations = []
@@ -624,9 +606,7 @@ confidently without risk of breaking existing proofs or introducing regressions.
         for mutation_type, count in sorted(
             mutation_types.items(), key=lambda x: x[1], reverse=True
         ):
-            percentage = (
-                (count / len(successful_mutations)) * 100 if successful_mutations else 0
-            )
+            percentage = (count / len(successful_mutations)) * 100 if successful_mutations else 0
             analysis += f"- **{mutation_type.replace('_', ' ').title()}**: {count} occurrences ({percentage:.1f}%)\n"
 
         return analysis
@@ -663,9 +643,7 @@ confidently without risk of breaking existing proofs or introducing regressions.
         )
         return metrics
 
-    async def generate_roi_analysis(
-        self, reports: List[ImpactReport]
-    ) -> Dict[str, Any]:
+    async def generate_roi_analysis(self, reports: list[ImpactReport]) -> dict[str, Any]:
         """Generate return on investment analysis.
 
         Args:
@@ -689,13 +667,9 @@ confidently without risk of breaking existing proofs or introducing regressions.
         annual_maintenance = 2000  # Annual maintenance
 
         # Calculate ROI
-        annual_roi = (total_savings - annual_maintenance) / (
-            deployment_cost + annual_maintenance
-        )
+        annual_roi = (total_savings - annual_maintenance) / (deployment_cost + annual_maintenance)
         payback_months = (
-            deployment_cost / (total_savings / 12)
-            if total_savings > 0
-            else float("inf")
+            deployment_cost / (total_savings / 12) if total_savings > 0 else float("inf")
         )
 
         roi_analysis = {
@@ -712,39 +686,27 @@ confidently without risk of breaking existing proofs or introducing regressions.
                 "net_annual_benefit_usd": total_savings - annual_maintenance,
             },
             "risk_assessment": {
-                "confidence_level": statistics.mean(
-                    r.confidence_level for r in reports
-                ),
+                "confidence_level": statistics.mean(r.confidence_level for r in reports),
                 "implementation_risk": "Low - automated and safe",
                 "maintenance_risk": "Low - self-managing system",
             },
-            "recommendations": self._generate_roi_recommendations(
-                annual_roi, payback_months
-            ),
+            "recommendations": self._generate_roi_recommendations(annual_roi, payback_months),
         }
 
         return roi_analysis
 
-    def _generate_roi_recommendations(
-        self, annual_roi: float, payback_months: float
-    ) -> List[str]:
+    def _generate_roi_recommendations(self, annual_roi: float, payback_months: float) -> list[str]:
         """Generate ROI-based recommendations."""
         recommendations = []
 
         if annual_roi > 2.0:  # 200% ROI
-            recommendations.append(
-                "✅ Excellent ROI - Immediate deployment recommended"
-            )
+            recommendations.append("✅ Excellent ROI - Immediate deployment recommended")
         elif annual_roi > 1.0:  # 100% ROI
             recommendations.append("✅ Strong ROI - Deployment recommended")
         elif annual_roi > 0.5:  # 50% ROI
-            recommendations.append(
-                "⚠️ Moderate ROI - Consider deployment based on other factors"
-            )
+            recommendations.append("⚠️ Moderate ROI - Consider deployment based on other factors")
         else:
-            recommendations.append(
-                "❌ Low ROI - Consider optimization parameters or project scope"
-            )
+            recommendations.append("❌ Low ROI - Consider optimization parameters or project scope")
 
         if payback_months < 6:
             recommendations.append("⚡ Very fast payback period - High priority")

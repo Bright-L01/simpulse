@@ -12,7 +12,7 @@ import time
 from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from .embeddings import GoalEmbedder, RuleEmbedder
 
@@ -23,8 +23,8 @@ class ProofExample:
 
     initial_goal: str
     final_goal: str
-    applied_rules: List[str]
-    rule_sequence: List[Dict[str, Any]]
+    applied_rules: list[str]
+    rule_sequence: list[dict[str, Any]]
     success_score: float
     timestamp: float = field(default_factory=time.time)
 
@@ -38,7 +38,7 @@ class RuleLearning:
     failure_count: int = 0
     total_time: float = 0.0
     avg_position: float = 0.0  # Average position in successful proofs
-    co_occurrence: Dict[str, int] = field(default_factory=dict)
+    co_occurrence: dict[str, int] = field(default_factory=dict)
     recent_scores: deque = field(default_factory=lambda: deque(maxlen=100))
 
     @property
@@ -50,11 +50,7 @@ class RuleLearning:
     @property
     def avg_score(self) -> float:
         """Average recent score."""
-        return (
-            sum(self.recent_scores) / len(self.recent_scores)
-            if self.recent_scores
-            else 0.5
-        )
+        return sum(self.recent_scores) / len(self.recent_scores) if self.recent_scores else 0.5
 
     def update_score(self, score: float):
         """Update with new score."""
@@ -98,7 +94,7 @@ class SelfLearningSystem:
         self.stats = defaultdict(int)
 
     def learn_from_proof(
-        self, initial_goal: str, final_goal: str, proof_steps: List[Dict[str, Any]]
+        self, initial_goal: str, final_goal: str, proof_steps: list[dict[str, Any]]
     ):
         """
         Learn from a successful proof.
@@ -133,8 +129,8 @@ class SelfLearningSystem:
         self._update_domain_model(domain, example)
 
     def suggest_rules(
-        self, goal: str, context: List[str], available_rules: List[Dict[str, Any]]
-    ) -> List[Tuple[Dict[str, Any], float]]:
+        self, goal: str, context: list[str], available_rules: list[dict[str, Any]]
+    ) -> list[tuple[dict[str, Any], float]]:
         """
         Suggest rules based on learned knowledge.
 
@@ -149,9 +145,7 @@ class SelfLearningSystem:
         # Score each available rule
         scored_rules = []
         for rule in available_rules:
-            score = self._score_rule_for_goal(
-                rule, goal, context, similar_proofs, pattern_rules
-            )
+            score = self._score_rule_for_goal(rule, goal, context, similar_proofs, pattern_rules)
             scored_rules.append((rule, score))
 
         # Sort by score
@@ -159,7 +153,7 @@ class SelfLearningSystem:
 
         return scored_rules
 
-    def _compute_proof_score(self, proof_steps: List[Dict[str, Any]]) -> float:
+    def _compute_proof_score(self, proof_steps: list[dict[str, Any]]) -> float:
         """
         Compute quality score for a proof.
 
@@ -175,9 +169,7 @@ class SelfLearningSystem:
         length_score = 1.0 / (1 + len(proof_steps) * 0.1)
 
         # Average confidence
-        avg_confidence = sum(step.get("confidence", 0.5) for step in proof_steps) / len(
-            proof_steps
-        )
+        avg_confidence = sum(step.get("confidence", 0.5) for step in proof_steps) / len(proof_steps)
 
         # Combined score
         return length_score * avg_confidence
@@ -191,17 +183,13 @@ class SelfLearningSystem:
 
             stats = self.rule_stats[rule_name]
             stats.success_count += 1
-            stats.avg_position = (
-                stats.avg_position * 0.9 + i * 0.1  # Exponential average
-            )
+            stats.avg_position = stats.avg_position * 0.9 + i * 0.1  # Exponential average
             stats.update_score(example.success_score)
 
             # Update co-occurrence
             for other_rule in example.applied_rules:
                 if other_rule != rule_name:
-                    stats.co_occurrence[other_rule] = (
-                        stats.co_occurrence.get(other_rule, 0) + 1
-                    )
+                    stats.co_occurrence[other_rule] = stats.co_occurrence.get(other_rule, 0) + 1
 
     def _learn_patterns(self, example: ProofExample):
         """Learn goal patterns and effective rules."""
@@ -265,8 +253,8 @@ class SelfLearningSystem:
             model["rule_weights"][rule] += example.success_score
 
     def _find_similar_proofs(
-        self, goal: str, context: List[str], max_results: int = 10
-    ) -> List[ProofExample]:
+        self, goal: str, context: list[str], max_results: int = 10
+    ) -> list[ProofExample]:
         """Find similar proofs from memory."""
         if not self.proof_memory:
             return []
@@ -282,9 +270,7 @@ class SelfLearningSystem:
                 proof.initial_goal, []  # No context stored
             )
 
-            similarity = self.goal_embedder.compute_similarity(
-                goal_embedding, proof_embedding
-            )
+            similarity = self.goal_embedder.compute_similarity(goal_embedding, proof_embedding)
 
             scored_proofs.append((similarity, proof))
 
@@ -292,7 +278,7 @@ class SelfLearningSystem:
         scored_proofs.sort(reverse=True)
         return [proof for _, proof in scored_proofs[:max_results]]
 
-    def _get_pattern_suggestions(self, goal: str) -> Dict[str, float]:
+    def _get_pattern_suggestions(self, goal: str) -> dict[str, float]:
         """Get rule suggestions based on goal pattern."""
         pattern = self._extract_goal_pattern(goal)
 
@@ -303,11 +289,11 @@ class SelfLearningSystem:
 
     def _score_rule_for_goal(
         self,
-        rule: Dict[str, Any],
+        rule: dict[str, Any],
         goal: str,
-        context: List[str],
-        similar_proofs: List[ProofExample],
-        pattern_rules: Dict[str, float],
+        context: list[str],
+        similar_proofs: list[ProofExample],
+        pattern_rules: dict[str, float],
     ) -> float:
         """
         Score a rule for a specific goal using learned knowledge.
@@ -327,9 +313,7 @@ class SelfLearningSystem:
             score *= 1 + pattern_score * 0.4
 
         # Factor 3: Similar proof evidence
-        similar_uses = sum(
-            1 for proof in similar_proofs if rule_name in proof.applied_rules
-        )
+        similar_uses = sum(1 for proof in similar_proofs if rule_name in proof.applied_rules)
         if similar_uses > 0:
             score *= 1 + similar_uses / len(similar_proofs) * 0.5
 
@@ -424,7 +408,7 @@ class SelfLearningSystem:
         self.domain_models = model_data["domain_models"]
         self.stats = defaultdict(int, model_data["stats"])
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get learning system statistics."""
         stats = dict(self.stats)
 
@@ -449,6 +433,6 @@ class SelfLearningSystem:
 
         return stats
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         """Get state for checkpointing."""
         return {"stats": dict(self.stats), "memory_size": len(self.proof_memory)}

@@ -7,7 +7,6 @@ Uses Random Forest for interpretability and trains on mathlib4 proof data.
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import joblib
 from sklearn.ensemble import RandomForestClassifier
@@ -23,8 +22,8 @@ class TacticPrediction:
 
     tactic: str
     confidence: float
-    alternatives: List[Tuple[str, float]]  # (tactic, confidence) pairs
-    features_used: Optional[Dict[str, float]] = None  # Feature importance
+    alternatives: list[tuple[str, float]]  # (tactic, confidence) pairs
+    features_used: dict[str, float] | None = None  # Feature importance
 
 
 class TacticPredictor:
@@ -44,8 +43,8 @@ class TacticPredictor:
         "exact",
     ]
 
-    def __init__(self, model_path: Optional[str] = None):
-        self.model: Optional[RandomForestClassifier] = None
+    def __init__(self, model_path: str | None = None):
+        self.model: RandomForestClassifier | None = None
         self.label_encoder = LabelEncoder()
         self.feature_names = self._get_feature_names()
         self.model_path = model_path
@@ -71,7 +70,7 @@ class TacticPredictor:
         # Initialize label encoder with supported tactics
         self.label_encoder.fit(self.SUPPORTED_TACTICS)
 
-    def _get_feature_names(self) -> List[str]:
+    def _get_feature_names(self) -> list[str]:
         """Get feature names for interpretability."""
         return [
             # Binary features
@@ -116,8 +115,8 @@ class TacticPredictor:
         ]
 
     def train(
-        self, training_data: List[Tuple[str, str]], validation_split: float = 0.2
-    ) -> Dict[str, float]:
+        self, training_data: list[tuple[str, str]], validation_split: float = 0.2
+    ) -> dict[str, float]:
         """Train the model on goal-tactic pairs."""
         if not training_data:
             raise ValueError("No training data provided")
@@ -178,7 +177,7 @@ class TacticPredictor:
             "n_features": len(self.feature_names),
         }
 
-        print(f"Training complete!")
+        print("Training complete!")
         print(f"Train accuracy: {train_score:.3f}")
         print(f"Validation accuracy: {val_score:.3f}")
         print(f"Cross-validation: {cv_scores.mean():.3f} (+/- {cv_scores.std():.3f})")
@@ -211,7 +210,7 @@ class TacticPredictor:
         if hasattr(self.model, "feature_importances_"):
             importance_dict = {}
             for fname, importance in zip(
-                self.feature_names, self.model.feature_importances_
+                self.feature_names, self.model.feature_importances_, strict=False
             ):
                 if importance > 0.01:  # Only include significant features
                     importance_dict[fname] = float(importance)
@@ -228,7 +227,7 @@ class TacticPredictor:
             features_used=feature_importance,
         )
 
-    def predict_batch(self, goal_texts: List[str]) -> List[TacticPrediction]:
+    def predict_batch(self, goal_texts: list[str]) -> list[TacticPrediction]:
         """Predict tactics for multiple goals efficiently."""
         # Extract all features
         feature_vectors = []
@@ -269,7 +268,7 @@ class TacticPredictor:
 
         return predictions
 
-    def explain_prediction(self, goal_text: str) -> Dict[str, any]:
+    def explain_prediction(self, goal_text: str) -> dict[str, any]:
         """Explain why a particular tactic was chosen."""
         # Get prediction
         prediction = self.predict(goal_text)
@@ -339,7 +338,7 @@ class TacticDataset:
     """Dataset for training tactic predictor."""
 
     def __init__(self):
-        self.examples: List[Tuple[str, str]] = []
+        self.examples: list[tuple[str, str]] = []
 
     def add_example(self, goal: str, tactic: str):
         """Add a training example."""
@@ -354,7 +353,7 @@ class TacticDataset:
             if "goal" in example and "tactic" in example:
                 self.add_example(example["goal"], example["tactic"])
 
-    def create_synthetic_examples(self) -> List[Tuple[str, str]]:
+    def create_synthetic_examples(self) -> list[tuple[str, str]]:
         """Create synthetic training examples for initial model."""
         examples = []
 
@@ -427,7 +426,7 @@ class TacticDataset:
 
         return examples
 
-    def get_balanced_dataset(self) -> List[Tuple[str, str]]:
+    def get_balanced_dataset(self) -> list[tuple[str, str]]:
         """Get a balanced dataset with equal examples per tactic."""
         from collections import defaultdict
 
