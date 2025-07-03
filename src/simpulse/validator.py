@@ -100,7 +100,17 @@ class OptimizationValidator:
                     text=True,
                     timeout=self.timeout,
                 )
-                return result.returncode == 0
+
+                if result.returncode == 0:
+                    return True
+
+                # If this is not the last attempt, continue to retry
+                if attempt < self.max_retries - 1:
+                    time.sleep(1)  # Brief pause before retry
+                    continue
+
+                # Last attempt failed
+                return False
 
             except subprocess.TimeoutExpired:
                 if attempt == self.max_retries - 1:

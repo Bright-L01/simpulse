@@ -1,0 +1,26 @@
+{
+  "file": "lean4/Benchmark/TestSimp.lean",
+  "optimizations_requested": 2,
+  "optimizations_applied": 2,
+  "num_runs": 5,
+  "success": true,
+  "error": null,
+  "before": {
+    "avg_time_s": 0.4680168151855469,
+    "std_dev_s": 0.02454193867824244,
+    "simp_time_ms": 24.6,
+    "num_theorems": 16
+  },
+  "after": {
+    "avg_time_s": 0.44957942962646485,
+    "std_dev_s": 0.035149522214587246,
+    "simp_time_ms": 20.5,
+    "num_theorems": 16
+  },
+  "improvement": {
+    "total_time_percent": 3.939470754223321,
+    "total_time_saved_s": 0.01843738555908203,
+    "is_significant": false,
+    "noise_threshold_s": 0.07029904442917449
+  }
+}

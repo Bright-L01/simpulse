@@ -1,0 +1,56 @@
+[
+  {
+    "file": "lean4/Benchmark/TestSimp.lean",
+    "optimizations_requested": 2,
+    "optimizations_applied": 2,
+    "num_runs": 3,
+    "success": true,
+    "error": null,
+    "before": {
+      "avg_time_s": 0.5035173098246256,
+      "std_dev_s": 0.04367523520133642,
+      "simp_time_ms": 24.9,
+      "num_theorems": 16
+    },
+    "after": {
+      "avg_time_s": 0.42885629336039227,
+      "std_dev_s": 0.017536623489099915,
+      "simp_time_ms": 20.1,
+      "num_theorems": 16
+    },
+    "improvement": {
+      "total_time_percent": 14.827894693478893,
+      "total_time_saved_s": 0.07466101646423334,
+      "is_significant": false,
+      "noise_threshold_s": 0.08735047040267284
+    },
+    "test_name": "Simple test file"
+  },
+  {
+    "file": "lean4/Benchmark/SimpIntensive.lean",
+    "optimizations_requested": 6,
+    "optimizations_applied": 6,
+    "num_runs": 3,
+    "success": true,
+    "error": null,
+    "before": {
+      "avg_time_s": 0.5304539998372396,
+      "std_dev_s": 0.04178164034960173,
+      "simp_time_ms": 26.9,
+      "num_theorems": 16
+    },
+    "after": {
+      "avg_time_s": 0.5186709562937418,
+      "std_dev_s": 0.0170049048351676,
+      "simp_time_ms": 26.5,
+      "num_theorems": 16
+    },
+    "improvement": {
+      "total_time_percent": 2.2213129785265475,
+      "total_time_saved_s": 0.011783043543497795,
+      "is_significant": false,
+      "noise_threshold_s": 0.08356328069920346
+    },
+    "test_name": "Simp-intensive file"
+  }
+]

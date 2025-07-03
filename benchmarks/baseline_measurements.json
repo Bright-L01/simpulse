@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-07-02 23:25:48",
+  "lean_version": "Lean (version 4.20.0-rc5, arm64-apple-darwin23.6.0, commit 81b85203c904, Release)",
+  "benchmarks": [
+    {
+      "file": "BasicAlgebra.lean",
+      "success": false,
+      "compile_time": 4.23156213760376,
+      "error": "import took 506ms\ncumulative profiling times:\n\tattribute application 0.794ms\n\telaboration 248ms\n\tfix level params 0.188ms\n\timport 506ms\n\tinitialization 44.5ms\n\tinstantiate metavars 0.183ms\n\tinterpretation 115ms\n\tlinting 7.24ms\n\tparsing 7.86ms\n\tprocess pre-definitions 42.7ms\n\tshare common exprs 1.21ms\n\tsimp 66.9ms\n\ttactic execution 5.47ms\n\ttype checking 12.1ms\n\ttypeclass inference 204ms\n",
+      "simp_stats": {}
+    },
+    {
+      "file": "BasicNat.lean",
+      "success": false,
+      "compile_time": 6.197868824005127,
+      "error": "import took 1.12s\ncumulative profiling times:\n\tattribute application 0.616ms\n\tblocked (unaccounted) 3.68ms\n\telaboration 94ms\n\tfix level params 0.76ms\n\timport 1.12s\n\tinitialization 159ms\n\tinstantiate metavars 0.198ms\n\tinterpretation 24.9ms\n\tlinting 12ms\n\tparsing 19.6ms\n\tprocess pre-definitions 11ms\n\tshare common exprs 9.88ms\n\tsimp 118ms\n\ttactic execution 92.6ms\n\ttype checking 171ms\n\ttypeclass inference 226ms\n",
+      "simp_stats": {}
+    },
+    {
+      "file": "LogicProofs.lean",
+      "success": false,
+      "compile_time": 5.766257286071777,
+      "error": "import took 1.07s\ncumulative profiling times:\n\tattribute application 0.015ms\n\telaboration 8.12ms\n\tfix level params 0.0132ms\n\timport 1.07s\n\tinitialization 143ms\n\tinstantiate metavars 0.00625ms\n\tinterpretation 159ms\n\tlinting 0.511ms\n\tparsing 4.32ms\n\tprocess pre-definitions 0.131ms\n\tshare common exprs 0.0396ms\n\tsimp 0.766ms\n\ttactic execution 0.18ms\n\ttype checking 0.577ms\n\ttypeclass inference 0.155ms\n",
+      "simp_stats": {}
+    },
+    {
+      "file": "Main.lean",
+      "success": false,
+      "compile_time": 6.065813779830933,
+      "error": "import took 371ms\ncumulative profiling times:\n\timport 371ms\n\tinitialization 668ms\n",
+      "simp_stats": {}
+    },
+    {
+      "file": "SimpleEq.lean",
+      "success": false,
+      "compile_time": 12.31326675415039,
+      "error": "import took 4.05s\ncumulative profiling times:\n\tattribute application 0.0673ms\n\telaboration 111ms\n\tfix level params 0.0785ms\n\timport 4.05s\n\tinitialization 303ms\n\tinstantiate metavars 0.0864ms\n\tinterpretation 55.3ms\n\tlinting 19.6ms\n\tparsing 28.3ms\n\tprocess pre-definitions 10.6ms\n\tshare common exprs 0.184ms\n\tsimp 15.3ms\n\ttactic execution 26.9ms\n\ttype checking 0.905ms\n\ttypeclass inference 495ms\n",
+      "simp_stats": {}
+    },
+    {
+      "file": "SimpleLists.lean",
+      "success": false,
+      "compile_time": 8.054841041564941,
+      "error": "import took 1.61s\ncumulative profiling times:\n\tattribute application 0.484ms\n\telaboration 433ms\n\tfix level params 0.849ms\n\timport 1.61s\n\tinitialization 92.8ms\n\tinstantiate metavars 1.16ms\n\tinterpretation 25.2ms\n\tlinting 7.88ms\n\tparsing 125ms\n\tprocess pre-definitions 26.1ms\n\tshare common exprs 1.14ms\n\tsimp 390ms\n\ttactic execution 53.2ms\n\ttype checking 48.7ms\n\ttypeclass inference 297ms\n",
+      "simp_stats": {}
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 """Unit tests for the optimizer module."""
 
 from pathlib import Path
-from unittest.mock import mock_open, patch
+from unittest.mock import patch
 
 from simpulse.analyzer import SimpRule
 from simpulse.optimizer import OptimizationSuggestion, PriorityOptimizer
@@ -188,9 +188,10 @@ class TestPriorityOptimizer:
 
         assert confidence == "low"
 
-    @patch("builtins.open", new_callable=mock_open)
+    @patch("pathlib.Path.write_text")
+    @patch("pathlib.Path.read_text")
     @patch("pathlib.Path.exists", return_value=True)
-    def test_apply_optimization_to_file(self, mock_exists, mock_file):
+    def test_apply_optimization_to_file(self, mock_exists, mock_read_text, mock_write_text):
         """Test applying optimization to a single file."""
         optimizer = PriorityOptimizer()
 
@@ -199,7 +200,7 @@ class TestPriorityOptimizer:
 @[simp] theorem test_rule : true = true := rfl
 @[simp] theorem another_rule : false = false := rfl
 """
-        mock_file.return_value.read.return_value = original_content
+        mock_read_text.return_value = original_content
 
         suggestion = OptimizationSuggestion(
             rule_name="test_rule",
@@ -214,7 +215,8 @@ class TestPriorityOptimizer:
         result = optimizer._apply_optimization_to_file(Path("test.lean"), [suggestion])
 
         assert result is True
-        mock_file.assert_called()
+        mock_read_text.assert_called_once()
+        mock_write_text.assert_called_once()
 
     @patch("shutil.copy2")
     def test_create_backup(self, mock_copy):

@@ -88,6 +88,60 @@ class TestLeanAnalyzer:
         assert rules[1].name == "with_params"
         assert rules[1].priority == 200
 
+    def test_extract_simp_rules_real_patterns(self):
+        """Test extraction with real mathlib4 patterns."""
+        analyzer = LeanAnalyzer()
+        content = """
+        -- Test various real @[simp] patterns from mathlib4
+        @[simp] theorem basic_simp : true = true := rfl
+        
+        @[simp 1100, nolint simpNF]
+        theorem high_direct_priority : 1 = 1 := rfl
+        
+        @[simp, high_priority] 
+        lemma keyword_priority : 2 = 2 := rfl
+        
+        @[simp default+1]
+        theorem default_modified : 3 = 3 := rfl
+        
+        @[simp, priority := 100]
+        theorem explicit_priority : 4 = 4 := rfl
+        
+        -- This should be ignored
+        -- @[simp] theorem commented_out : 5 = 5 := rfl
+        
+        @[simp]
+        theorem _root_.Qualified.Name.theorem_name : 6 = 6 := rfl
+        """
+
+        rules = analyzer.extract_simp_rules(content)
+
+        assert len(rules) == 6
+
+        # Check each rule
+        rule_dict = {rule.name: rule for rule in rules}
+
+        assert "basic_simp" in rule_dict
+        assert rule_dict["basic_simp"].priority is None
+
+        assert "high_direct_priority" in rule_dict
+        assert rule_dict["high_direct_priority"].priority == 1100
+
+        assert "keyword_priority" in rule_dict
+        assert rule_dict["keyword_priority"].priority == 1500
+
+        assert "default_modified" in rule_dict
+        assert rule_dict["default_modified"].priority == 1001
+
+        assert "explicit_priority" in rule_dict
+        assert rule_dict["explicit_priority"].priority == 100
+
+        assert "_root_.Qualified.Name.theorem_name" in rule_dict
+        assert rule_dict["_root_.Qualified.Name.theorem_name"].priority is None
+
+        # Commented rule should not be extracted
+        assert "commented_out" not in rule_dict
+
     def test_analyze_file_success(self, sample_lean_file):
         """Test successful file analysis."""
         analyzer = LeanAnalyzer()
@@ -95,9 +149,9 @@ class TestLeanAnalyzer:
         result = analyzer.analyze_file(sample_lean_file)
 
         assert result is not None
-        assert "simp_rules" in result
-        assert "file_path" in result
-        assert len(result["simp_rules"]) > 0
+        assert hasattr(result, "simp_rules")
+        assert hasattr(result, "file_path")
+        assert len(result.simp_rules) > 0
 
     def test_analyze_file_not_found(self):
         """Test file analysis with non-existent file."""

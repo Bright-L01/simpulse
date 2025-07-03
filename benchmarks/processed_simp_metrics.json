@@ -1,0 +1,77 @@
+{
+  "timestamp": "2025-07-02 23:25:48",
+  "lean_version": "Lean (version 4.20.0-rc5, arm64-apple-darwin23.6.0, commit 81b85203c904, Release)",
+  "summary": {
+    "total_simp_time_ms": 590.966,
+    "total_compile_time_s": 36.563796043395996,
+    "average_simp_time_per_file_ms": 118.1932,
+    "simp_percentage_of_total": 1.6162599728392748
+  },
+  "file_details": [
+    {
+      "file": "BasicAlgebra.lean",
+      "compile_time_s": 4.23156213760376,
+      "timing_breakdown": {
+        "simp_time_ms": 66.9,
+        "tactic_execution_time_ms": 5.47,
+        "elaboration_time_ms": 248.0,
+        "total_import_time_ms": 506000.0,
+        "typeclass_inference_time_ms": 204.0,
+        "parsing_time_ms": 7.86,
+        "type_checking_time_ms": 12.1
+      }
+    },
+    {
+      "file": "BasicNat.lean",
+      "compile_time_s": 6.197868824005127,
+      "timing_breakdown": {
+        "simp_time_ms": 118.0,
+        "tactic_execution_time_ms": 92.6,
+        "elaboration_time_ms": 94.0,
+        "total_import_time_ms": 1120.0,
+        "typeclass_inference_time_ms": 226.0,
+        "parsing_time_ms": 19.6,
+        "type_checking_time_ms": 171.0
+      }
+    },
+    {
+      "file": "LogicProofs.lean",
+      "compile_time_s": 5.766257286071777,
+      "timing_breakdown": {
+        "simp_time_ms": 0.766,
+        "tactic_execution_time_ms": 0.18,
+        "elaboration_time_ms": 8.12,
+        "total_import_time_ms": 1070.0,
+        "typeclass_inference_time_ms": 0.155,
+        "parsing_time_ms": 4.32,
+        "type_checking_time_ms": 0.577
+      }
+    },
+    {
+      "file": "SimpleEq.lean",
+      "compile_time_s": 12.31326675415039,
+      "timing_breakdown": {
+        "simp_time_ms": 15.3,
+        "tactic_execution_time_ms": 26.9,
+        "elaboration_time_ms": 111.0,
+        "total_import_time_ms": 4050.0,
+        "typeclass_inference_time_ms": 495.0,
+        "parsing_time_ms": 28.3,
+        "type_checking_time_ms": 0.905
+      }
+    },
+    {
+      "file": "SimpleLists.lean",
+      "compile_time_s": 8.054841041564941,
+      "timing_breakdown": {
+        "simp_time_ms": 390.0,
+        "tactic_execution_time_ms": 53.2,
+        "elaboration_time_ms": 433.0,
+        "total_import_time_ms": 1610.0,
+        "typeclass_inference_time_ms": 297.0,
+        "parsing_time_ms": 125.0,
+        "type_checking_time_ms": 48.7
+      }
+    }
+  ]
+}

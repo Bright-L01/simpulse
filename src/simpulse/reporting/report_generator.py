@@ -11,7 +11,6 @@ from typing import Any
 
 # Optional visualization dependencies
 try:
-    import plotly.express as px
     import plotly.graph_objects as go
     import plotly.offline as pyo
 
@@ -19,15 +18,6 @@ try:
 except ImportError:
     PLOTLY_AVAILABLE = False
     go = None
-    px = None
-
-try:
-    import pandas as pd
-
-    PANDAS_AVAILABLE = True
-except ImportError:
-    PANDAS_AVAILABLE = False
-    pd = None
 
 from ..evolution.evolution_engine import OptimizationResult
 

@@ -156,19 +156,26 @@ class RuntimeAdapter:
         # Success rate component (0-1)
         success_component = stats.success_rate
 
-        # Speed component (inverse of avg time, normalized)
-        speed_component = 1.0 / (stats.avg_time + 0.001)
+        # Speed component (normalized, faster is better)
+        # Normalize based on expected time range (0.001 to 1.0 seconds)
+        avg_time = stats.avg_time
+        if avg_time <= 0.001:
+            speed_component = 1.0
+        elif avg_time >= 1.0:
+            speed_component = 0.0
+        else:
+            speed_component = 1.0 - (avg_time - 0.001) / (1.0 - 0.001)
 
         # Frequency component (how often it's attempted)
         total_attempts = sum(s.attempts for s in self.statistics.values())
         frequency_component = stats.attempts / total_attempts if total_attempts > 0 else 0
 
-        # Combined score with weights
+        # Combined score with weights (0-1 range)
         score = 0.5 * success_component + 0.3 * speed_component + 0.2 * frequency_component
 
-        # Apply boost factor and map to priority range
+        # Map to priority range
         min_prio, max_prio = self.config.priority_range
-        priority = int(min_prio + score * self.config.boost_factor * (max_prio - min_prio))
+        priority = int(min_prio + score * (max_prio - min_prio))
 
         return max(min_prio, min(priority, max_prio))
 

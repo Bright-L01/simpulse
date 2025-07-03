@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-07-03T11:06:13.075715",
+  "test_project": "/Users/brightliu/Coding_Projects/simpulse/lean4/integration_test",
+  "strategy_results": {
+    "Conservative": {
+      "rules_analyzed": 0,
+      "rules_changed": 0,
+      "estimated_improvement": 0,
+      "time": 0.0007350444793701172
+    },
+    "Frequency-based": {
+      "rules_analyzed": 0,
+      "rules_changed": 0,
+      "estimated_improvement": 0,
+      "time": 0.0012710094451904297
+    },
+    "Balanced": {
+      "rules_analyzed": 0,
+      "rules_changed": 0,
+      "estimated_improvement": 0,
+      "time": 0.0005271434783935547
+    },
+    "Performance-focused": {
+      "rules_analyzed": 0,
+      "rules_changed": 0,
+      "estimated_improvement": 0,
+      "time": 0.0004830360412597656
+    },
+    "Smart Pattern": {
+      "rules_analyzed": 0,
+      "rules_changed": 0,
+      "estimated_improvement": 0,
+      "time": 1.5360932350158691,
+      "insights": 1
+    }
+  },
+  "best_improvement": "Conservative",
+  "best_speed": "Performance-focused"
+}

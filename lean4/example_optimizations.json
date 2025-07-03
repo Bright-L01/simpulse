@@ -1,0 +1,28 @@
+{
+  "suggestions": [
+    {
+      "ruleName": "Nat.add_zero",
+      "currentPriority": 1000,
+      "suggestedPriority": 900,
+      "reason": "Frequently used in arithmetic simplifications",
+      "performanceGain": 0.15
+    },
+    {
+      "ruleName": "Nat.mul_one",
+      "currentPriority": 1000,
+      "suggestedPriority": 850,
+      "reason": "Often applied after add_zero",
+      "performanceGain": 0.12
+    },
+    {
+      "ruleName": "Nat.zero_add",
+      "currentPriority": 1000,
+      "suggestedPriority": 920,
+      "reason": "Common in normalization",
+      "performanceGain": 0.10
+    }
+  ],
+  "timestamp": "2025-01-03T15:30:00",
+  "analysisVersion": "1.0.0",
+  "stats": null
+}

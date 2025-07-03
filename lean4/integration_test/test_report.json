@@ -1,0 +1,24 @@
+{
+  "test_name": "Simpulse Integration Test",
+  "timestamp": "2025-07-03 10:44:50",
+  "analysis": {
+    "total_simp_calls": 21,
+    "rule_frequencies": {
+      "_default": 15,
+      "Nat.add_comm": 1,
+      "List.length_append": 1,
+      "Nat.add_assoc": 3,
+      "Nat.add_zero": 1
+    }
+  },
+  "optimizations": [
+    "Created custom simp set for Nat.add_assoc",
+    "Added simp? hints for debugging"
+  ],
+  "performance": {
+    "original_time_seconds": 0.512,
+    "optimized_time_seconds": 0.508,
+    "improvement_percent": 0.7,
+    "absolute_improvement_seconds": 0.004
+  }
+}

@@ -54,12 +54,48 @@ class Benchmarker:
         self, project_path: Path, optimization_plan: Path, runs: int = 3
     ) -> ComparisonResult:
         """Compare baseline vs optimized performance."""
-        # Would implement full comparison logic
-        baseline = self.benchmark(project_path, runs)
-        # Apply optimization and benchmark again
-        optimized = baseline  # Placeholder
+        import json
+        import shutil
+        import tempfile
 
-        improvement = ((baseline.mean - optimized.mean) / baseline.mean) * 100
+        # Benchmark baseline performance
+        baseline = self.benchmark(project_path, runs)
+
+        # Create temporary copy of project for optimization
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_project = Path(temp_dir) / "optimized_project"
+            shutil.copytree(
+                project_path, temp_project, ignore=shutil.ignore_patterns("*.bak", "build", ".lake")
+            )
+
+            # Apply optimizations
+            try:
+                if optimization_plan.exists():
+                    # Load optimization plan
+                    with open(optimization_plan) as f:
+                        plan_data = json.load(f)
+
+                    # Apply changes to temporary project
+                    for change in plan_data.get("changes", []):
+                        file_path = temp_project / change["file_path"]
+                        if file_path.exists():
+                            content = file_path.read_text()
+                            # Apply optimization change
+                            old_pattern = f"@[simp] theorem {change['rule_name']}"
+                            new_pattern = f"@[simp, priority := {change['new_priority']}] theorem {change['rule_name']}"
+                            content = content.replace(old_pattern, new_pattern)
+                            file_path.write_text(content)
+
+                # Benchmark optimized performance
+                optimized = self.benchmark(temp_project, runs)
+
+            except Exception:
+                # Fallback if optimization fails
+                optimized = baseline
+
+        improvement = (
+            ((baseline.mean - optimized.mean) / baseline.mean) * 100 if baseline.mean > 0 else 0
+        )
 
         return ComparisonResult(
             baseline_mean=baseline.mean,

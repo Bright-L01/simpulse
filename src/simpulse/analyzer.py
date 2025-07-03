@@ -42,9 +42,26 @@ class LeanAnalyzer:
             lean_executable: Path to Lean 4 executable.
         """
         self.lean_executable = lean_executable
-        self._simp_rule_pattern = re.compile(
-            r"@\[simp(?:,\s*priority\s*:=\s*(\d+))?\]\s*theorem\s+(\w+)", re.MULTILINE
-        )
+        # Pattern to match @[simp] with various options
+        # This will match the entire @[...] attribute
+        self._simp_attr_pattern = re.compile(r"@\[[^\]]*\bsimp\b[^\]]*\]", re.MULTILINE)
+        # Pattern to extract priority information from the attribute
+        self._priority_patterns = [
+            (
+                re.compile(r"\bsimp\s+(\d+)(?:\s*,|\s*\])"),
+                lambda m: int(m.group(1)),
+            ),  # @[simp 1100, ...]
+            (re.compile(r"priority\s*:=\s*(\d+)"), lambda m: int(m.group(1))),  # priority := 500
+            (re.compile(r"\bhigh_priority\b"), lambda m: 1500),  # high_priority
+            (re.compile(r"\blow_priority\b"), lambda m: 100),  # low_priority
+            (
+                re.compile(r"\bdefault([\+\-])(\d+)"),
+                lambda m: 1000 + int(m.group(1) + m.group(2)),
+            ),  # default+1
+        ]
+        # Pattern to match theorem/lemma declarations
+        # Also matches qualified names like _root_.Function.Involutive.exists_mem_and_apply_eq_iff
+        self._theorem_pattern = re.compile(r"^\s*(theorem|lemma)\s+([\w\._]+)", re.MULTILINE)
 
     def extract_simp_rules(self, content: str) -> list[SimpRule]:
         """Extract simp rules from Lean code content.
@@ -58,18 +75,48 @@ class LeanAnalyzer:
         rules = []
         lines = content.split("\n")
 
-        for line_num, line in enumerate(lines, 1):
-            match = self._simp_rule_pattern.search(line)
-            if match:
-                priority_str, rule_name = match.groups()
-                priority = int(priority_str) if priority_str else None
+        # Find all @[simp] attributes in the content
+        for match in self._simp_attr_pattern.finditer(content):
+            # Get the position of the match
+            start_pos = match.start()
+            line_num = content[:start_pos].count("\n") + 1
+
+            # Skip if this is in a comment
+            line_start = content.rfind("\n", 0, start_pos) + 1
+            line_content = content[line_start:start_pos].strip()
+            if line_content.startswith("--"):
+                continue
+
+            # Get the full @[simp] attribute text
+            attr_text = match.group(0)
+
+            # Extract priority from the attribute text
+            priority = None
+            for pattern, extractor in self._priority_patterns:
+                priority_match = pattern.search(attr_text)
+                if priority_match:
+                    priority = extractor(priority_match)
+                    break
+
+            # Now find the theorem/lemma after this @[simp] attribute
+            # Search from the match position onward
+            search_text = content[match.end() :]
+            theorem_match = self._theorem_pattern.search(search_text)
+
+            if theorem_match:
+                theorem_type = theorem_match.group(1)  # "theorem" or "lemma"
+                theorem_name = theorem_match.group(2)
+
+                # Calculate the line number of the theorem
+                theorem_offset = match.end() + theorem_match.start()
+                theorem_line = content[:theorem_offset].count("\n") + 1
 
                 rule = SimpRule(
-                    name=rule_name,
+                    name=theorem_name,
                     file_path=Path(""),  # Will be set by caller
-                    line_number=line_num,
+                    line_number=theorem_line,
                     priority=priority,
-                    pattern=line.strip(),
+                    pattern=attr_text,
                 )
                 rules.append(rule)
 
@@ -217,3 +264,17 @@ class LeanAnalyzer:
                 opportunities.append(rule)
 
         return opportunities
+
+
+# Helper function for command line usage
+def extract_simp_rules(content: str) -> list[SimpRule]:
+    """Extract simp rules from Lean code content.
+
+    Args:
+        content: Lean code content to analyze.
+
+    Returns:
+        List of SimpRule objects found in the content.
+    """
+    analyzer = LeanAnalyzer()
+    return analyzer.extract_simp_rules(content)

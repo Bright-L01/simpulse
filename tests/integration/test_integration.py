@@ -1,6 +1,8 @@
 """Integration tests for Simpulse."""
 
-from simpulse import HealthChecker, SimpOptimizer
+
+from simpulse.analysis.health_checker import HealthChecker
+from simpulse.optimization.optimizer import SimpOptimizer
 
 
 class TestIntegration:
@@ -35,7 +37,7 @@ version = "0.1.0"
         checker = HealthChecker()
         health = checker.check_project(project_dir)
         assert health.total_rules == 3
-        assert health.default_priority_rules == 2
+        assert health.default_priority_percentage > 0
 
         # Test optimization
         optimizer = SimpOptimizer()

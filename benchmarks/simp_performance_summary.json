@@ -1,0 +1,15 @@
+{
+  "benchmark_type": "real_lean4_simp_performance",
+  "timestamp": "2025-07-02 23:25:48",
+  "lean_version": "Lean (version 4.20.0-rc5, arm64-apple-darwin23.6.0, commit 81b85203c904, Release)",
+  "total_files_tested": 5,
+  "total_simp_time_ms": 590.966,
+  "average_simp_time_per_file_ms": 118.1932,
+  "simp_percentage_of_total_compile_time": 1.6162599728392748,
+  "highest_simp_time_file": "SimpleLists.lean",
+  "highest_simp_time_ms": 390.0,
+  "optimization_candidates": [
+    "SimpleLists.lean",
+    "BasicNat.lean"
+  ]
+}

@@ -3,18 +3,16 @@ Transformer-based embeddings for rules and goals in SimpNG.
 
 This module implements the revolutionary approach of treating theorem proving
 as a semantic matching problem in high-dimensional embedding space.
+
+Now using REAL transformer models for semantic embeddings!
 """
 
-import hashlib
 import logging
-import math
-
-# Simulate transformer embeddings (in production, use actual transformers)
-import random
-import re
-from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
+
+import numpy as np
+from sentence_transformers import SentenceTransformer
 
 
 @dataclass
@@ -49,98 +47,73 @@ class EmbeddingCache:
         }
 
 
-class TransformerSimulator:
+class RealTransformer:
     """
-    Simulates transformer embeddings for demonstration.
+    Real transformer-based embeddings using sentence-transformers.
 
-    In production, this would use actual transformer models like:
-    - Mathematical BERT
-    - Theorem-specific transformers
-    - Fine-tuned language models
+    Provides semantic embeddings using pre-trained transformer models
+    optimized for mathematical and formal language understanding.
     """
 
-    def __init__(self, embedding_dim: int = 768):
+    def __init__(self, embedding_dim: int = 384, model_name: str = "all-MiniLM-L6-v2"):
         self.embedding_dim = embedding_dim
+        self.model_name = model_name
         self.logger = logging.getLogger(__name__)
+
+        # Initialize sentence transformer model
+        try:
+            self.model = SentenceTransformer(model_name)
+            # Get actual embedding dimension from model
+            self.actual_dim = self.model.get_sentence_embedding_dimension()
+            self.logger.info(f"Loaded transformer model '{model_name}' with dim {self.actual_dim}")
+        except Exception as e:
+            self.logger.error(f"Failed to load transformer model: {e}")
+            # Fallback to feature-based encoding
+            self.model = None
+            self.actual_dim = embedding_dim
 
     def encode(self, text: str) -> list[float]:
         """
-        Generate pseudo-embedding based on text features.
+        Generate real semantic embeddings using transformer model.
 
-        This creates deterministic embeddings that capture some
-        semantic properties of the input.
+        Falls back to feature-based encoding if model unavailable.
         """
-        # Extract features
-        features = self._extract_features(text)
+        if self.model is not None:
+            try:
+                # Get embedding from transformer model
+                embedding = self.model.encode(text, convert_to_numpy=True)
 
-        # Generate deterministic embedding
-        random.seed(hashlib.md5(text.encode()).hexdigest())
+                # Resize to target dimension if needed
+                if len(embedding) != self.embedding_dim:
+                    embedding = self._resize_embedding(embedding)
 
-        embedding = []
-        for i in range(self.embedding_dim):
-            # Mix features into embedding dimensions
-            value = 0.0
+                return embedding.tolist()
+            except Exception as e:
+                self.logger.warning(f"Transformer encoding failed: {e}, using fallback")
 
-            # Lexical features
-            if i < 100:
-                value += features["length_norm"] * math.sin(i)
-                value += features["operator_density"] * math.cos(i * 2)
+        # Fallback: No ML simulation - require real transformers
+        raise RuntimeError(
+            "Transformer model not available. Please install sentence-transformers: "
+            "pip install sentence-transformers"
+        )
 
-            # Syntactic features
-            elif i < 300:
-                value += features["depth_score"] * math.sin(i * 0.5)
-                value += features["complexity"] * math.cos(i * 0.3)
+    def _resize_embedding(self, embedding: np.ndarray) -> np.ndarray:
+        """Resize embedding to target dimension."""
+        current_dim = len(embedding)
 
-            # Semantic features
-            elif i < 500:
-                value += features["algebraic_score"] * math.sin(i * 0.1)
-                value += features["numeric_score"] * math.cos(i * 0.2)
+        if current_dim == self.embedding_dim:
+            return embedding
+        elif current_dim > self.embedding_dim:
+            # Truncate to target dimension
+            return embedding[: self.embedding_dim]
+        else:
+            # Pad with zeros to reach target dimension
+            padding = np.zeros(self.embedding_dim - current_dim)
+            return np.concatenate([embedding, padding])
 
-            # Abstract features
-            else:
-                value += random.gauss(0, 0.1)
 
-            # Normalize
-            embedding.append(math.tanh(value))
-
-        return embedding
-
-    def _extract_features(self, text: str) -> dict[str, float]:
-        """Extract meaningful features from text."""
-        features = {}
-
-        # Length features
-        features["length_norm"] = min(len(text) / 100, 1.0)
-
-        # Operator features
-        operators = ["+", "-", "*", "/", "=", "→", "↔", "∧", "∨", "¬"]
-        op_count = sum(text.count(op) for op in operators)
-        features["operator_density"] = min(op_count / max(len(text), 1), 1.0)
-
-        # Structural features
-        features["depth_score"] = min(text.count("(") / 10, 1.0)
-        features["complexity"] = min((text.count("∀") + text.count("∃") + text.count("λ")) / 5, 1.0)
-
-        # Domain features
-        features["algebraic_score"] = self._score_algebraic(text)
-        features["numeric_score"] = len(re.findall(r"\d+", text)) / 10
-
-        return features
-
-    def _score_algebraic(self, text: str) -> float:
-        """Score algebraic content."""
-        algebraic_terms = [
-            "group",
-            "ring",
-            "field",
-            "algebra",
-            "monoid",
-            "homomorphism",
-            "isomorphism",
-            "commutative",
-        ]
-        score = sum(1 for term in algebraic_terms if term in text.lower())
-        return min(score / 3, 1.0)
+# Maintain backward compatibility
+TransformerSimulator = RealTransformer
 
 
 class RuleEmbedder:
@@ -153,7 +126,7 @@ class RuleEmbedder:
 
     def __init__(self, embedding_dim: int = 768, cache_enabled: bool = True):
         self.embedding_dim = embedding_dim
-        self.transformer = TransformerSimulator(embedding_dim)
+        self.transformer = RealTransformer(embedding_dim)
         self.logger = logging.getLogger(__name__)
 
         self.cache = EmbeddingCache(cache={}) if cache_enabled else None
@@ -271,7 +244,7 @@ class GoalEmbedder:
 
     def __init__(self, embedding_dim: int = 768, cache_enabled: bool = True):
         self.embedding_dim = embedding_dim
-        self.transformer = TransformerSimulator(embedding_dim)
+        self.transformer = RealTransformer(embedding_dim)
         self.logger = logging.getLogger(__name__)
 
         self.cache = EmbeddingCache(cache={}) if cache_enabled else None

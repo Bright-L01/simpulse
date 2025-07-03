@@ -1,0 +1,18 @@
+{
+  "frequency": {
+    "rules_changed": 0,
+    "estimated_improvement": 0,
+    "time": 0.0011107921600341797
+  },
+  "smart": {
+    "rules_changed": 0,
+    "estimated_improvement": 0,
+    "time": 1.1931300163269043,
+    "insights": 1
+  },
+  "summary": {
+    "improvement_gain": 0,
+    "time_difference": 1.1920192241668701,
+    "recommendation": "Use frequency optimization"
+  }
+}

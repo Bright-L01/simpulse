@@ -3,8 +3,10 @@
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from .analyzer import SimpRule
+from .validator.correctness import CorrectnessValidator, ValidationResult
 
 
 @dataclass
@@ -31,13 +33,16 @@ class OptimizationSuggestion:
 class PriorityOptimizer:
     """Optimizes simp rule priorities based on usage patterns."""
 
-    def __init__(self, min_frequency_threshold: int = 5):
+    def __init__(self, min_frequency_threshold: int = 5, validate_correctness: bool = True):
         """Initialize the optimizer.
 
         Args:
             min_frequency_threshold: Minimum frequency to consider for optimization.
+            validate_correctness: Whether to validate correctness of optimizations.
         """
         self.min_frequency_threshold = min_frequency_threshold
+        self.validate_correctness = validate_correctness
+        self.validator = CorrectnessValidator() if validate_correctness else None
 
     def calculate_priority(self, rule: SimpRule) -> int:
         """Calculate optimal priority for a simp rule based on frequency.
@@ -270,3 +275,128 @@ if __name__ == "__main__":
 
         output_path.write_text(script_content)
         output_path.chmod(0o755)  # Make executable
+
+    def apply_optimizations_with_validation(
+        self, file_path: Path, suggestions: List[OptimizationSuggestion]
+    ) -> Optional[ValidationResult]:
+        """Apply optimizations with correctness validation.
+
+        Args:
+            file_path: Path to the Lean file to optimize.
+            suggestions: List of optimization suggestions.
+
+        Returns:
+            ValidationResult if validation is enabled, None otherwise.
+        """
+        if not self.validator:
+            # Apply without validation
+            self._apply_optimization_to_file(file_path, suggestions)
+            return None
+
+        # Convert suggestions to optimizer format
+        optimizations = []
+        with open(file_path) as f:
+            lines = f.readlines()
+
+        for suggestion in suggestions:
+            # Find the line containing the theorem
+            for i, line in enumerate(lines):
+                if f"theorem {suggestion.rule_name}" in line:
+                    original = f"@[simp] theorem {suggestion.rule_name}"
+                    replacement = f"@[simp, priority := {suggestion.suggested_priority}] theorem {suggestion.rule_name}"
+
+                    optimizations.append(
+                        {
+                            "rule": suggestion.rule_name,
+                            "location": f"line {i+1}",
+                            "line": i + 1,
+                            "original": original,
+                            "replacement": replacement,
+                            "priority": suggestion.suggested_priority,
+                        }
+                    )
+                    break
+
+        # Validate optimizations
+        return self.validator.validate_file(file_path, optimizations)
+
+    def optimize_with_safety_check(
+        self, analysis_result: Dict[str, Any], output_dir: Optional[Path] = None
+    ) -> Dict[str, Any]:
+        """Optimize project with safety validation.
+
+        Args:
+            analysis_result: Project analysis results from LeanAnalyzer.
+            output_dir: Optional directory to save reports.
+
+        Returns:
+            Optimization report with safety information.
+        """
+        suggestions = self.optimize_project(analysis_result)
+
+        if not self.validator:
+            return {
+                "total_suggestions": len(suggestions),
+                "validation_enabled": False,
+                "suggestions": [vars(s) for s in suggestions],
+            }
+
+        # Group suggestions by file
+        suggestions_by_file = {}
+        for suggestion in suggestions:
+            file_path = Path(suggestion.file_path)
+            if file_path not in suggestions_by_file:
+                suggestions_by_file[file_path] = []
+            suggestions_by_file[file_path].append(suggestion)
+
+        # Validate each file
+        validation_results = []
+        for file_path, file_suggestions in suggestions_by_file.items():
+            result = self.apply_optimizations_with_validation(file_path, file_suggestions)
+            if result:
+                validation_results.append(result)
+
+        # Generate safety report
+        safety_report = self.validator.generate_safety_report(validation_results)
+
+        # Generate batch report
+        batch_report = self.validator.validate_batch(
+            [(fp, self._suggestions_to_optimizations(s)) for fp, s in suggestions_by_file.items()]
+        )
+
+        # Save reports if output directory provided
+        if output_dir:
+            output_dir.mkdir(exist_ok=True)
+
+            import json
+
+            with open(output_dir / "safety_report.json", "w") as f:
+                json.dump(safety_report, f, indent=2)
+
+            with open(output_dir / "batch_validation_report.json", "w") as f:
+                json.dump(batch_report, f, indent=2)
+
+        return {
+            "total_suggestions": len(suggestions),
+            "validation_enabled": True,
+            "safety_report": safety_report,
+            "batch_report": batch_report,
+            "suggestions": [vars(s) for s in suggestions],
+        }
+
+    def _suggestions_to_optimizations(
+        self, suggestions: List[OptimizationSuggestion]
+    ) -> List[Dict[str, Any]]:
+        """Convert suggestions to optimization format for validator."""
+        optimizations = []
+        for suggestion in suggestions:
+            optimizations.append(
+                {
+                    "rule": suggestion.rule_name,
+                    "location": "unknown",  # Would need line number extraction
+                    "original": f"@[simp] theorem {suggestion.rule_name}",
+                    "replacement": f"@[simp, priority := {suggestion.suggested_priority}] theorem {suggestion.rule_name}",
+                    "priority": suggestion.suggested_priority,
+                }
+            )
+        return optimizations

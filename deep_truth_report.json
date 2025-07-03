@@ -1,0 +1,288 @@
+{
+  "summary": {
+    "total_functions": 426,
+    "placeholders": 0,
+    "random_based": 4,
+    "simulations": 0,
+    "unimplemented": 0,
+    "hardcoded": 0,
+    "empty": 0,
+    "deceptive": 4,
+    "working": 6,
+    "untested": 393,
+    "placeholder_percentage": 0.0,
+    "random_percentage": 0.9389671361502347,
+    "working_percentage": 1.4084507042253522
+  },
+  "details": {
+    "placeholders": [],
+    "random_based": [
+      {
+        "function": "src.simpulse.simpng.embeddings._feature_based_encode",
+        "file": "/src/simpulse/simpng/embeddings.py",
+        "line": 116,
+        "issues": [
+          "Uses random module",
+          "Uses random module"
+        ],
+        "actual_behavior": null,
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.simpng.search._apply_rule_simulation",
+        "file": "/src/simpulse/simpng/search.py",
+        "line": 272,
+        "issues": [
+          "Uses random module",
+          "Uses random module"
+        ],
+        "actual_behavior": null,
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.jit.dynamic_optimizer.create_benchmark_scenario",
+        "file": "/src/simpulse/jit/dynamic_optimizer.py",
+        "line": 369,
+        "issues": [
+          "Returns same value for different inputs",
+          "Uses random module"
+        ],
+        "actual_behavior": "Sample output: None",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.evaluation.fitness_evaluator._run_performance_test",
+        "file": "/src/simpulse/evaluation/fitness_evaluator.py",
+        "line": 296,
+        "issues": [
+          "Uses random module",
+          "Uses random module",
+          "Uses random module",
+          "Uses random module"
+        ],
+        "actual_behavior": null,
+        "execution_error": null
+      }
+    ],
+    "deceptive": [
+      {
+        "function": "src.simpulse.simpng.embeddings._feature_based_encode",
+        "file": "/src/simpulse/simpng/embeddings.py",
+        "line": 116,
+        "issues": [
+          "Uses random module",
+          "Uses random module"
+        ],
+        "actual_behavior": null,
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.simpng.search._apply_rule_simulation",
+        "file": "/src/simpulse/simpng/search.py",
+        "line": 272,
+        "issues": [
+          "Uses random module",
+          "Uses random module"
+        ],
+        "actual_behavior": null,
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.jit.dynamic_optimizer.create_benchmark_scenario",
+        "file": "/src/simpulse/jit/dynamic_optimizer.py",
+        "line": 369,
+        "issues": [
+          "Returns same value for different inputs",
+          "Uses random module"
+        ],
+        "actual_behavior": "Sample output: None",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.evaluation.fitness_evaluator._run_performance_test",
+        "file": "/src/simpulse/evaluation/fitness_evaluator.py",
+        "line": 296,
+        "issues": [
+          "Uses random module",
+          "Uses random module",
+          "Uses random module",
+          "Uses random module"
+        ],
+        "actual_behavior": null,
+        "execution_error": null
+      }
+    ],
+    "working": [
+      {
+        "function": "src.simpulse.analyzer.__hash__",
+        "file": "/src/simpulse/analyzer.py",
+        "line": 20,
+        "issues": [
+          "Returns same value for different inputs"
+        ],
+        "actual_behavior": "Sample output: 298656812",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.security.validators.is_safe_path",
+        "file": "/src/simpulse/security/validators.py",
+        "line": 15,
+        "issues": [
+          "Returns same value for different inputs"
+        ],
+        "actual_behavior": "Sample output: False",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.security.validators.validate_json_structure",
+        "file": "/src/simpulse/security/validators.py",
+        "line": 181,
+        "issues": [
+          "Returns same value for different inputs"
+        ],
+        "actual_behavior": "Sample output: True",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.security.validators.sanitize_json_input",
+        "file": "/src/simpulse/security/validators.py",
+        "line": 230,
+        "issues": [
+          "Returns same value for different inputs"
+        ],
+        "actual_behavior": "Sample output: test",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.security.validators.get_safe_env_vars",
+        "file": "/src/simpulse/security/validators.py",
+        "line": 300,
+        "issues": [
+          "Returns same value for different inputs"
+        ],
+        "actual_behavior": "Sample output: {'MallocNanoZone': '0', 'USER': 'brightliu', 'COMMAND_MODE': 'unix2003', '__CFBundleIdentifier': 'com.microsoft.VSCode', 'PATH': '/Users/brightliu/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin:/Users/brightliu/.elan/bin:/Users/brightliu/.npm-global/bin:/Users/brightliu/miniconda3/envs/cs109b/bin:/Users/brightliu/miniconda3/condabin:/Users/brightliu/.elan/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/brightliu/google-cloud-sdk/bin:/Users/brightliu/.elan/bin:/Users/brightliu/.npm-global/bin:/Users/brightliu/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin:/Users/brightliu/.elan/bin:/Users/brightliu/.npm-global/bin:/Users/brightliu/miniconda3/bin:/Users/brightliu/miniconda3/condabin:/Users/brightliu/.elan/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/brightliu/google-cloud-sdk/bin:/Users/brightliu/.elan/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/brightliu/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin:/Users/brightliu/.elan/bin:/Users/brightliu/.npm-global/bin:/Users/brightliu/miniconda3/envs/cs109b/bin:/Users/brightliu/miniconda3/condabin:/Users/brightliu/google-cloud-sdk/bin', 'LOGNAME': 'brightliu', 'SSH_AUTH_SOCK': '/pri*******************************************ners', 'HOME': '/Users/brightliu', 'SHELL': '/bin/zsh', 'TMPDIR': '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/', '__CF_USER_TEXT_ENCODING': '0x1F5:0x0:0x0', 'XPC_SERVICE_NAME': '0', 'XPC_FLAGS': '0x0', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'undefined', 'TERM_PROGRAM': 'vscode', 'TERM_PROGRAM_VERSION': '1.101.2', 'LANG': 'en_US.UTF-8', 'COLORTERM': 'truecolor', 'CLAUDE_CODE_SSE_PORT': '33212', 'ENABLE_IDE_INTEGRATION': 'true', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/Users/brightliu/.vscode/extensions/ms-python.debugpy-2025.8.0-darwin-arm64/.noConfigDebugAdapterEndpoints/endpoint-e1f68c2f55e53f19.txt', 'BUNDLED_DEBUGPY_PATH': '/Users/brightliu/.vscode/extensions/ms-python.debugpy-2025.8.0-darwin-arm64/bundled/libs/debugpy', 'GIT_ASKPASS': '/Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass.sh', 'VSCODE_GIT_ASKPASS_NODE': '/Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Plugin).app/Contents/MacOS/Code Helper (Plugin)', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'VSCODE_GIT_ASKPASS_MAIN': '/Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_IPC_HANDLE': '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/vscode-git-9a42201f14.sock', 'CONDA_SHLVL': '2', 'CONDA_PROMPT_MODIFIER': '(cs109b) ', '_CE_CONDA': '', 'CONDA_PREFIX_1': '/Users/brightliu/miniconda3', 'CONDA_ROOT': '/Users/brightliu/miniconda3', 'CONDA_PREFIX': '/Users/brightliu/miniconda3/envs/cs109b', 'SE_MANAGER_PATH': '/Users/brightliu/miniconda3/envs/cs109b/bin/selenium-manager', '_CE_M': '', 'CONDA_DEFAULT_ENV': 'cs109b', 'VSCODE_INJECTION': '1', 'ZDOTDIR': '/Users/brightliu', 'USER_ZDOTDIR': '/Users/brightliu', 'PWD': '/Users/brightliu/Coding_Projects/simpulse', 'TERM': 'xterm-256color', 'SHLVL': '2', 'OLDPWD': '/Users/brightliu/Coding_Projects/simpulse', 'VSCODE_PROFILE_INITIALIZED': '1', 'HOMEBREW_PREFIX': '/opt/homebrew', 'HOMEBREW_CELLAR': '/opt/homebrew/Cellar', 'HOMEBREW_REPOSITORY': '/opt/homebrew', 'INFOPATH': '/opt/homebrew/share/info:/opt/homebrew/share/info:', 'CONDA_EXE': '/Users/brightliu/miniconda3/bin/conda', 'CONDA_PYTHON_EXE': '/Users/brightliu/miniconda3/bin/python', 'CONDA_BACKUP_CLANGXX': 'arm64-apple-darwin20.0.0-clang++', 'CONDA_BACKUP_CXX': 'arm64-apple-darwin20.0.0-clang++', 'CONDA_BACKUP_CXX_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang++', 'CONDA_BACKUP_CXXFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -stdlib=libc++ -fvisibility-inlines-hidden -fmessage-length=0 -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'CONDA_BACKUP_DEBUG_CXXFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -stdlib=libc++ -fvisibility-inlines-hidden -fmessage-length=0 -Og -g -Wall -Wextra -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'CONDA_BACKUP_HOST': 'arm64-apple-darwin20.0.0', 'CONDA_BACKUP_CONDA_TOOLCHAIN_HOST': 'arm64-apple-darwin20.0.0', 'CONDA_BACKUP_CONDA_TOOLCHAIN_BUILD': 'arm64-apple-darwin20.0.0', 'CONDA_BACKUP_AR': 'arm64-apple-darwin20.0.0-ar', 'CONDA_BACKUP_AS': 'arm64-apple-darwin20.0.0-as', 'CONDA_BACKUP_CHECKSYMS': 'arm64-apple-darwin20.0.0-checksyms', 'CONDA_BACKUP_INSTALL_NAME_TOOL': 'arm64-apple-darwin20.0.0-install_name_tool', 'CONDA_BACKUP_LIBTOOL': 'arm64-apple-darwin20.0.0-libtool', 'CONDA_BACKUP_LIPO': 'arm64-apple-darwin20.0.0-lipo', 'CONDA_BACKUP_NM': 'arm64-apple-darwin20.0.0-nm', 'CONDA_BACKUP_NMEDIT': 'arm64-apple-darwin20.0.0-nmedit', 'CONDA_BACKUP_OTOOL': 'arm64-apple-darwin20.0.0-otool', 'CONDA_BACKUP_PAGESTUFF': 'arm64-apple-darwin20.0.0-pagestuff', 'CONDA_BACKUP_RANLIB': 'arm64-apple-darwin20.0.0-ranlib', 'CONDA_BACKUP_REDO_PREBINDING': 'arm64-apple-darwin20.0.0-redo_prebinding', 'CONDA_BACKUP_SEG_ADDR_TABLE': 'arm64-apple-darwin20.0.0-seg_addr_table', 'CONDA_BACKUP_SEG_HACK': 'arm64-apple-darwin20.0.0-seg_hack', 'CONDA_BACKUP_SEGEDIT': 'arm64-apple-darwin20.0.0-segedit', 'CONDA_BACKUP_SIZE': 'arm64-apple-darwin20.0.0-size', 'CONDA_BACKUP_STRINGS': 'arm64-apple-darwin20.0.0-strings', 'CONDA_BACKUP_STRIP': 'arm64-apple-darwin20.0.0-strip', 'CONDA_BACKUP_CLANG': 'arm64-apple-darwin20.0.0-clang', 'CONDA_BACKUP_LD': 'arm64-apple-darwin20.0.0-ld', 'CONDA_BACKUP_CC': 'arm64-apple-darwin20.0.0-clang', 'CONDA_BACKUP_OBJC': 'arm64-apple-darwin20.0.0-clang', 'CONDA_BACKUP_CPP': 'arm64-apple-darwin20.0.0-clang-cpp', 'CONDA_BACKUP_CC_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang', 'CONDA_BACKUP_OBJC_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/@OBJC_FOR_BUILD@', 'CONDA_BACKUP_CPP_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang-cpp', 'CONDA_BACKUP_CPPFLAGS': '-D_FORTIFY_SOURCE=2 -isystem /Users/brightliu/miniconda3/envs/cs109b/include -D_FORTIFY_SOURCE=2 -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'CONDA_BACKUP_CFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -isystem /Users/brightliu/miniconda3/envs/cs109b/include -ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'CONDA_BACKUP_LDFLAGS': '-Wl,-headerpad_max_install_names -Wl,-dead_strip_dylibs -Wl,-rpath,/Users/brightliu/miniconda3/envs/cs109b/lib -L/Users/brightliu/miniconda3/envs/cs109b/lib -Wl,-headerpad_max_install_names -Wl,-dead_strip_dylibs -Wl,-rpath,/Users/brightliu/miniconda3/envs/cs109b/lib -L/Users/brightliu/miniconda3/envs/cs109b/lib', 'CONDA_BACKUP_LDFLAGS_LD': '-headerpad_max_install_names -dead_strip_dylibs -rpath /Users/brightliu/miniconda3/envs/cs109b/lib -L/Users/brightliu/miniconda3/envs/cs109b/lib -headerpad_max_install_names -dead_strip_dylibs -rpath /Users/brightliu/miniconda3/envs/cs109b/lib -L/Users/brightliu/miniconda3/envs/cs109b/lib', 'CONDA_BACKUP_DEBUG_CFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -Og -g -Wall -Wextra -isystem /Users/brightliu/miniconda3/envs/cs109b/include -ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -Og -g -Wall -Wextra -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'CONDA_BACKUP__CONDA_PYTHON_SYSCONFIGDATA_NAME': '_sysconfigdata_arm64_apple_darwin20_0_0', 'CONDA_BACKUP_CMAKE_PREFIX_PATH': ':/Users/brightliu/miniconda3/envs/cs109b', 'CONDA_BACKUP_SDKROOT': '/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', 'CONDA_BACKUP_ac_cv_func_malloc_0_nonnull': 'yes', 'CONDA_BACKUP_ac_cv_func_realloc_0_nonnull': 'yes', 'CONDA_BACKUP_host_alias': 'arm64-apple-darwin20.0.0', 'CONDA_BACKUP_build_alias': 'arm64-apple-darwin20.0.0', 'CONDA_BACKUP_BUILD': 'arm64-apple-darwin20.0.0', 'CONDA_PREFIX_2': '/Users/brightliu/miniconda3/envs/cs109b', 'NVM_DIR': '/Users/brightliu/.nvm', 'NVM_CD_FLAGS': '-q', 'ANTHROPIC_API_KEY': 'your*********here', 'AS': 'arm64-apple-darwin20.0.0-as', 'LDFLAGS': '-Wl,-headerpad_max_install_names -Wl,-dead_strip_dylibs -Wl,-rpath,/Users/brightliu/miniconda3/envs/cs109b/lib -L/Users/brightliu/miniconda3/envs/cs109b/lib', 'AR': 'arm64-apple-darwin20.0.0-ar', 'ac_cv_func_malloc_0_nonnull': 'yes', 'ac_cv_func_realloc_0_nonnull': 'yes', 'OBJC': 'arm64-apple-darwin20.0.0-clang', 'HOST': 'arm64-apple-darwin20.0.0', 'NM': 'arm64-apple-darwin20.0.0-nm', 'CPPFLAGS': '-D_FORTIFY_SOURCE=2 -isystem /Users/brightliu/miniconda3/envs/cs109b/include -mmacosx-version-min=11.0', 'PAGESTUFF': 'arm64-apple-darwin20.0.0-pagestuff', 'LIPO': 'arm64-apple-darwin20.0.0-lipo', 'GSETTINGS_SCHEMA_DIR_CONDA_BACKUP': '', 'SIZE': 'arm64-apple-darwin20.0.0-size', 'NMEDIT': 'arm64-apple-darwin20.0.0-nmedit', 'SDKROOT': '/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', 'CXX_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang++', 'INSTALL_NAME_TOOL': 'arm64-apple-darwin20.0.0-install_name_tool', 'SEGEDIT': 'arm64-apple-darwin20.0.0-segedit', 'SEG_HACK': 'arm64-apple-darwin20.0.0-seg_hack', 'CLANGXX': 'arm64-apple-darwin20.0.0-clang++', 'LIBTOOL': 'arm64-apple-darwin20.0.0-libtool', 'CONDA_TOOLCHAIN_BUILD': 'arm64-apple-darwin20.0.0', 'OTOOL': 'arm64-apple-darwin20.0.0-otool', 'CONDA_SYSROOT_osx_arm64_BACKUP_CMAKE_ARGS': '-DCMAKE_AR=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ar -DCMAKE_CXX_COMPILER_AR=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ar -DCMAKE_C_COMPILER_AR=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ar -DCMAKE_RANLIB=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ranlib -DCMAKE_CXX_COMPILER_RANLIB=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ranlib -DCMAKE_C_COMPILER_RANLIB=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ranlib -DCMAKE_LINKER=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ld -DCMAKE_STRIP=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-strip -DCMAKE_INSTALL_NAME_TOOL=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-install_name_tool -DCMAKE_LIBTOOL=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-libtool -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_SYSROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk', 'CXXFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -stdlib=libc++ -fvisibility-inlines-hidden -fmessage-length=0 -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'STRINGS': 'arm64-apple-darwin20.0.0-strings', 'CONDA_TOOLCHAIN_HOST': 'arm64-apple-darwin20.0.0', 'CPP': 'arm64-apple-darwin20.0.0-clang-cpp', 'CHECKSYMS': 'arm64-apple-darwin20.0.0-checksyms', 'GSETTINGS_SCHEMA_DIR': '/Users/brightliu/miniconda3/envs/cs109b/share/glib-2.0/schemas', 'MESON_ARGS': '-Dbuildtype=release', 'XML_CATALOG_FILES': 'file:///Users/brightliu/miniconda3/envs/cs109b/etc/xml/catalog file:///etc/xml/catalog', 'DEBUG_CXXFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -stdlib=libc++ -fvisibility-inlines-hidden -fmessage-length=0 -Og -g -Wall -Wextra -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'BUILD': 'arm64-apple-darwin20.0.0', 'LD': 'arm64-apple-darwin20.0.0-ld', 'STRIP': 'arm64-apple-darwin20.0.0-strip', 'CMAKE_ARGS': '-DCMAKE_AR=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ar -DCMAKE_CXX_COMPILER_AR=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ar -DCMAKE_C_COMPILER_AR=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ar -DCMAKE_RANLIB=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ranlib -DCMAKE_CXX_COMPILER_RANLIB=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ranlib -DCMAKE_C_COMPILER_RANLIB=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ranlib -DCMAKE_LINKER=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-ld -DCMAKE_STRIP=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-strip -DCMAKE_INSTALL_NAME_TOOL=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-install_name_tool -DCMAKE_LIBTOOL=/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-libtool -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_SYSROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0', 'CONDA_SYSROOT_osx_arm64_BACKUP_CPPFLAGS': '-D_FORTIFY_SOURCE=2 -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'REDO_PREBINDING': 'arm64-apple-darwin20.0.0-redo_prebinding', 'CXX': 'arm64-apple-darwin20.0.0-clang++', 'CC_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang', 'CLANG': 'arm64-apple-darwin20.0.0-clang', 'CFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -isystem /Users/brightliu/miniconda3/envs/cs109b/include', '_CONDA_PYTHON_SYSCONFIGDATA_NAME': '_sysconfigdata_arm64_apple_darwin20_0_0', 'MACOSX_DEPLOYMENT_TARGET': '11.0', 'build_alias': 'arm64-apple-darwin20.0.0', 'DEBUG_CFLAGS': '-ftree-vectorize -fPIC -fstack-protector-strong -O2 -pipe -Og -g -Wall -Wextra -isystem /Users/brightliu/miniconda3/envs/cs109b/include', 'RANLIB': 'arm64-apple-darwin20.0.0-ranlib', 'CMAKE_PREFIX_PATH': ':/Users/brightliu/miniconda3/envs/cs109b', 'CC': 'arm64-apple-darwin20.0.0-clang', 'SEG_ADDR_TABLE': 'arm64-apple-darwin20.0.0-seg_addr_table', 'host_alias': 'arm64-apple-darwin20.0.0', 'LDFLAGS_LD': '-headerpad_max_install_names -dead_strip_dylibs -rpath /Users/brightliu/miniconda3/envs/cs109b/lib -L/Users/brightliu/miniconda3/envs/cs109b/lib', 'CPP_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang-cpp', 'OBJC_FOR_BUILD': '/Users/brightliu/miniconda3/envs/cs109b/bin/arm64-apple-darwin20.0.0-clang', 'PS1': '(cs109b) (base) %n@%m %1~ %# ', 'COREPACK_ENABLE_AUTO_PIN': '0', 'CLAUDE_CODE_ENTRYPOINT': 'cli', 'OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE': 'delta', 'GIT_EDITOR': 'true', 'CLAUDECODE': '1', '_': '/Users/brightliu/miniconda3/envs/cs109b/bin/python'}",
+        "execution_error": null
+      },
+      {
+        "function": "src.simpulse.evolution.models.__str__",
+        "file": "/src/simpulse/evolution/models.py",
+        "line": 65,
+        "issues": [
+          "Returns same value for different inputs"
+        ],
+        "actual_behavior": "Sample output: <module 'models' from '/Users/brightliu/Coding_Projects/simpulse/src/simpulse/evolution/models.py'>",
+        "execution_error": null
+      }
+    ]
+  },
+  "worst_offenders": [
+    {
+      "module": "src.simpulse.simpng",
+      "stats": {
+        "total": 60,
+        "placeholders": 0,
+        "random": 2,
+        "deceptive": 2
+      },
+      "issue_rate": 6.666666666666667
+    },
+    {
+      "module": "src.simpulse.jit",
+      "stats": {
+        "total": 60,
+        "placeholders": 0,
+        "random": 1,
+        "deceptive": 1
+      },
+      "issue_rate": 3.3333333333333335
+    },
+    {
+      "module": "src.simpulse.evaluation",
+      "stats": {
+        "total": 13,
+        "placeholders": 0,
+        "random": 1,
+        "deceptive": 1
+      },
+      "issue_rate": 15.384615384615385
+    },
+    {
+      "module": "src.simpulse.validator",
+      "stats": {
+        "total": 8,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    },
+    {
+      "module": "src.simpulse.mathlib_integration",
+      "stats": {
+        "total": 8,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    },
+    {
+      "module": "src.simpulse.monitoring",
+      "stats": {
+        "total": 12,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    },
+    {
+      "module": "src.simpulse.analyzer",
+      "stats": {
+        "total": 9,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    },
+    {
+      "module": "src.simpulse.__init__",
+      "stats": {
+        "total": 1,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    },
+    {
+      "module": "src.simpulse.cli",
+      "stats": {
+        "total": 6,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    },
+    {
+      "module": "src.simpulse.optimizer",
+      "stats": {
+        "total": 11,
+        "placeholders": 0,
+        "random": 0,
+        "deceptive": 0
+      },
+      "issue_rate": 0.0
+    }
+  ],
+  "execution_stats": {
+    "total_tested": 33,
+    "successful": 7,
+    "failed": 26,
+    "test_coverage": 7.746478873239436,
+    "success_rate": 21.21212121212121
+  },
+  "timestamp": "2025-07-02T22:57:16.070946"
+}

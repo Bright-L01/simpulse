@@ -89,14 +89,10 @@ class TestRuntimeAdapter:
     def test_calculate_priority(self, adapter):
         """Test priority calculation."""
         # Create rule with good performance
-        good_stats = RuleStatistics(
-            "good_rule", attempts=20, successes=18, total_time=0.02
-        )
+        good_stats = RuleStatistics("good_rule", attempts=20, successes=18, total_time=0.02)
 
         # Create rule with poor performance
-        poor_stats = RuleStatistics(
-            "poor_rule", attempts=20, successes=2, total_time=0.5
-        )
+        poor_stats = RuleStatistics("poor_rule", attempts=20, successes=2, total_time=0.5)
 
         good_priority = adapter.calculate_priority(good_stats)
         poor_priority = adapter.calculate_priority(poor_stats)
@@ -105,19 +101,13 @@ class TestRuntimeAdapter:
         assert good_priority > poor_priority
 
         # Check priority bounds
-        assert (
-            adapter.config.priority_range[0]
-            <= good_priority
-            <= adapter.config.priority_range[1]
-        )
-        assert (
-            adapter.config.priority_range[0]
-            <= poor_priority
-            <= adapter.config.priority_range[1]
-        )
+        assert adapter.config.priority_range[0] <= good_priority <= adapter.config.priority_range[1]
+        assert adapter.config.priority_range[0] <= poor_priority <= adapter.config.priority_range[1]
 
     def test_optimize_priorities(self, adapter):
         """Test priority optimization."""
+        import time
+
         # Add statistics for several rules
         rules = [
             ("add_zero", 50, 45, 0.05),  # High success, fast
@@ -126,9 +116,14 @@ class TestRuntimeAdapter:
             ("rare_rule", 5, 3, 0.01),  # Too few samples
         ]
 
+        current_time = time.time()
         for rule, attempts, successes, total_time in rules:
             adapter.statistics[rule] = RuleStatistics(
-                rule, attempts=attempts, successes=successes, total_time=total_time
+                rule,
+                attempts=attempts,
+                successes=successes,
+                total_time=total_time,
+                last_used=current_time,
             )
 
         # Optimize
@@ -208,9 +203,15 @@ class TestRuntimeAdapter:
 
     def test_export_analysis(self, adapter, temp_dir):
         """Test analysis export."""
-        # Add statistics
-        for i in range(10):
-            adapter.update_statistics("test_rule", i % 2 == 0, 0.001)
+        import time
+
+        # Reset call count to avoid triggering optimization
+        adapter.call_count = 0
+
+        # Add statistics manually instead of using update_statistics to avoid decay
+        adapter.statistics["test_rule"] = RuleStatistics(
+            rule_name="test_rule", attempts=10, successes=5, total_time=0.01, last_used=time.time()
+        )
 
         # Export
         export_path = os.path.join(temp_dir, "analysis.json")

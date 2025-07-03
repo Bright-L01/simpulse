@@ -29,6 +29,10 @@ lean_lib «Simpulse.Optimizer» where
 lean_lib «Simpulse.Integration» where
   roots := #[`Simpulse.Integration]
 
+-- Apply library
+lean_lib «Simpulse.Apply» where
+  roots := #[`Simpulse.Apply]
+
 -- Example executable
 lean_exe demo where
   root := `Main

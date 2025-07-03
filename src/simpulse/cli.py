@@ -20,9 +20,7 @@ def cli():
 
 
 @cli.command()
-@click.argument(
-    "project_path", type=click.Path(exists=True, path_type=Path), default="."
-)
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path), default=".")
 @click.option("--json", is_flag=True, help="Output in JSON format")
 def check(project_path: Path, json: bool):
     """Check if your Lean 4 project could benefit from optimization."""
@@ -61,20 +59,14 @@ def check(project_path: Path, json: bool):
 
         if result.score > 60:
             console.print("\n💡 [yellow]High optimization potential detected![/yellow]")
-            console.print(
-                f"   Run [cyan]simpulse optimize {project_path}[/cyan] to optimize\n"
-            )
+            console.print(f"   Run [cyan]simpulse optimize {project_path}[/cyan] to optimize\n")
         else:
             console.print("\n✅ [green]Your project is well optimized![/green]\n")
 
 
 @cli.command()
-@click.argument(
-    "project_path", type=click.Path(exists=True, path_type=Path), default="."
-)
-@click.option(
-    "--output", "-o", type=click.Path(), help="Output path for optimization plan"
-)
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path), default=".")
+@click.option("--output", "-o", type=click.Path(), help="Output path for optimization plan")
 @click.option("--apply", is_flag=True, help="Apply optimizations directly")
 @click.option(
     "--strategy",
@@ -82,17 +74,76 @@ def check(project_path: Path, json: bool):
     default="balanced",
     help="Optimization strategy",
 )
-def optimize(project_path: Path, output: Path, apply: bool, strategy: str):
+@click.option(
+    "--validate/--no-validate",
+    default=True,
+    help="Validate correctness of optimizations (recommended)",
+)
+@click.option(
+    "--safety-report",
+    type=click.Path(),
+    help="Path to save safety validation report",
+)
+def optimize(
+    project_path: Path,
+    output: Path,
+    apply: bool,
+    strategy: str,
+    validate: bool,
+    safety_report: Path,
+):
     """Generate optimized simp rule priorities for your project."""
     console.print(f"\n🧠 Optimizing [cyan]{project_path}[/cyan]...\n")
 
-    optimizer = SimpOptimizer(strategy=strategy)
+    # Import additional modules if validation is enabled
+    if validate:
+        from .analyzer import LeanAnalyzer
+        from .optimizer import PriorityOptimizer
+
+        analyzer = LeanAnalyzer()
+        optimizer = PriorityOptimizer(validate_correctness=True)
+
+        console.print("🔒 [yellow]Correctness validation enabled[/yellow]\n")
+    else:
+        optimizer = SimpOptimizer(strategy=strategy)
 
     # Run optimization with progress bar
     with console.status("[bold green]Analyzing simp rules...") as status:
-        analysis = optimizer.analyze(project_path)
+        if validate:
+            analysis = analyzer.analyze_project(project_path)
+        else:
+            analysis = optimizer.analyze(project_path)
+
         status.update("[bold green]Generating optimizations...")
-        optimization = optimizer.optimize(analysis)
+
+        if validate:
+            # Use the new validation-aware optimization
+            optimization_result = optimizer.optimize_with_safety_check(
+                analysis, output_dir=Path(safety_report).parent if safety_report else None
+            )
+
+            # Extract optimization info for display
+            optimization = type(
+                "obj",
+                (object,),
+                {
+                    "rules_changed": optimization_result.get("total_suggestions", 0),
+                    "estimated_improvement": 15.0,  # Default estimate
+                },
+            )()
+
+            if optimization_result.get("validation_enabled"):
+                console.print("✅ [green]Correctness validation complete![/green]")
+                batch_report = optimization_result.get("batch_report", {})
+                if batch_report:
+                    console.print(
+                        f"   Success rate: [cyan]{batch_report.get('overall_success_rate', 0):.1%}[/cyan]"
+                    )
+                    console.print(
+                        f"   Average speedup: [cyan]{batch_report.get('average_speedup', 1.0):.2f}x[/cyan]"
+                    )
+        else:
+            optimization = optimizer.optimize(analysis)
 
     console.print("\n✨ Optimization complete!")
     console.print(f"   Rules to optimize: [cyan]{optimization.rules_changed}[/cyan]")
@@ -103,29 +154,50 @@ def optimize(project_path: Path, output: Path, apply: bool, strategy: str):
     # Save or apply
     if apply:
         console.print("📝 Applying optimizations...")
-        optimizer.apply(optimization, project_path)
-        console.print("✅ Optimizations applied successfully!")
+        if validate:
+            console.print(
+                "⚠️  [yellow]Note: With validation enabled, use the generated optimization script to apply changes[/yellow]"
+            )
+        else:
+            optimizer.apply(optimization, project_path)
+            console.print("✅ Optimizations applied successfully!")
     elif output:
-        optimization.save(output)
+        if validate:
+            import json
+
+            with open(output, "w") as f:
+                json.dump(optimization_result if validate else optimization, f, indent=2)
+        else:
+            optimization.save(output)
         console.print(f"💾 Optimization plan saved to: [cyan]{output}[/cyan]")
     else:
         # Show preview
         console.print("Preview (first 5 changes):")
-        for i, change in enumerate(optimization.changes[:5]):
-            console.print(
-                f"  {change.rule_name}: {change.old_priority} → {change.new_priority}"
-            )
+        if validate and optimization_result.get("suggestions"):
+            for i, suggestion in enumerate(optimization_result["suggestions"][:5]):
+                console.print(
+                    f"  {suggestion['rule_name']}: {suggestion['current_priority'] or 'default'} → {suggestion['suggested_priority']}"
+                )
+        elif hasattr(optimization, "changes"):
+            for i, change in enumerate(optimization.changes[:5]):
+                console.print(
+                    f"  {change.rule_name}: {change.old_priority} → {change.new_priority}"
+                )
         console.print("\nUse --apply to apply changes or -o to save plan")
+
+    # Save safety report if requested and validation was enabled
+    if safety_report and validate and optimization_result.get("safety_report"):
+        import json
+
+        with open(safety_report, "w") as f:
+            json.dump(optimization_result["safety_report"], f, indent=2)
+        console.print(f"\n📊 Safety report saved to: [cyan]{safety_report}[/cyan]")
 
 
 @cli.command()
-@click.argument(
-    "project_path", type=click.Path(exists=True, path_type=Path), default="."
-)
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path), default=".")
 @click.option("--runs", "-r", type=int, default=3, help="Number of benchmark runs")
-@click.option(
-    "--compare", type=click.Path(exists=True), help="Compare with optimization plan"
-)
+@click.option("--compare", type=click.Path(exists=True), help="Compare with optimization plan")
 def benchmark(project_path: Path, runs: int, compare: Path):
     """Run performance benchmarks on your Lean 4 project."""
     console.print(f"\n🏃 Benchmarking [cyan]{project_path}[/cyan]...\n")

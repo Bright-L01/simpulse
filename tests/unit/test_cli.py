@@ -16,7 +16,7 @@ class TestCLI:
         """Test version command."""
         result = self.runner.invoke(cli, ["version"])
         assert result.exit_code == 0
-        assert "Simpulse v1.0.0" in result.output
+        assert "Simpulse v1.1.0" in result.output
 
     def test_check_command_help(self):
         """Test check command help."""

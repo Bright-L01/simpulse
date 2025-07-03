@@ -297,7 +297,8 @@ class LeanGoalParser:
 
         patterns = {
             "arithmetic": bool(token_set & self.ARITHMETIC_OPS),
-            "algebra": any(t in text for t in ["ring", "field", "group", "monoid"]),
+            "algebra": any(t in text for t in ["ring", "field", "group", "monoid"])
+            or self._has_algebraic_operations(tokens),
             "linear": any(t in text for t in ["linear", "vector", "matrix"])
             or self._is_linear_expression(tokens),
             "logic": bool(token_set & self.LOGICAL_OPS),
@@ -329,6 +330,15 @@ class LeanGoalParser:
             types[type_name] = bool(pattern.search(text))
 
         return types
+
+    def _has_algebraic_operations(self, tokens: list[str]) -> bool:
+        """Check if expression has algebraic operations like exponentiation."""
+        # Look for exponentiation operators or patterns like x^2, x**2
+        algebraic_indicators = ["^", "**", "²", "³", "⁴", "sqrt", "pow"]
+        return any(
+            indicator in tokens or any(indicator in token for token in tokens)
+            for indicator in algebraic_indicators
+        )
 
     def _classify_goal_type(self, text: str, patterns: dict[str, bool]) -> str:
         """Classify the overall goal type."""
