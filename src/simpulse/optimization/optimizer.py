@@ -81,7 +81,7 @@ class SimpOptimizer:
             )
 
         for lean_file in lean_files:
-            if "lake-packages" not in str(lean_file):
+            if "lake-packages" not in str(lean_file) and ".lake" not in str(lean_file):
                 try:
                     module_rules = self.extractor.extract_rules_from_file(lean_file)
                     all_rules.extend(module_rules.rules)

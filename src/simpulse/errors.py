@@ -5,10 +5,13 @@ Provides comprehensive error handling, recovery mechanisms, and user-friendly er
 """
 
 import logging
+import os
+import sys
+import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 
 class ErrorSeverity(Enum):
@@ -38,9 +41,9 @@ class ErrorContext:
     """Context information for an error."""
 
     operation: str
-    file_path: Optional[Path] = None
-    rule_name: Optional[str] = None
-    strategy: Optional[str] = None
+    file_path: Path | None = None
+    rule_name: str | None = None
+    strategy: str | None = None
     additional_info: dict[str, Any] = None
 
 
@@ -52,14 +55,13 @@ class SimpulseError:
     severity: ErrorSeverity
     message: str
     context: ErrorContext
-    original_exception: Optional[Exception] = None
+    original_exception: Exception | None = None
     recovery_suggestions: list[str] = None
     timestamp: float = None
 
     def __post_init__(self):
+        """Initialize computed fields."""
         if self.timestamp is None:
-            import time
-
             self.timestamp = time.time()
 
         if self.recovery_suggestions is None:
@@ -69,7 +71,7 @@ class SimpulseError:
 class ErrorHandler:
     """Robust error handling and recovery system."""
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: logging.Logger | None = None):
         self.logger = logger or logging.getLogger(__name__)
         self.errors: list[SimpulseError] = []
         self.recovery_attempts = 0
@@ -81,10 +83,9 @@ class ErrorHandler:
         severity: ErrorSeverity,
         message: str,
         context: ErrorContext,
-        exception: Optional[Exception] = None,
+        exception: Exception | None = None,
     ) -> SimpulseError:
         """Handle an error with comprehensive logging and recovery suggestions."""
-
         error = SimpulseError(
             category=category,
             severity=severity,
@@ -104,7 +105,7 @@ class ErrorHandler:
         return error
 
     def _generate_recovery_suggestions(
-        self, category: ErrorCategory, exception: Optional[Exception]
+        self, category: ErrorCategory, exception: Exception | None
     ) -> list[str]:
         """Generate context-specific recovery suggestions."""
         suggestions = []
@@ -173,7 +174,7 @@ class ErrorHandler:
         # Add exception-specific suggestions
         if exception:
             if isinstance(exception, FileNotFoundError):
-                suggestions.append(f"File not found: {str(exception)}")
+                suggestions.append(f"File not found: {exception!s}")
             elif isinstance(exception, PermissionError):
                 suggestions.append("Permission denied - check file/directory permissions")
             elif isinstance(exception, TimeoutError):
@@ -255,7 +256,7 @@ class ErrorHandler:
                 subprocess.run(["lake", "clean"], capture_output=True, check=True)
                 self.logger.info("Executed 'lake clean' for recovery")
             except Exception:
-                pass  # Recovery attempt failed, but don't crash
+                self.logger.debug("Recovery attempt failed but continuing")
 
     def _recover_optimization(self, error: SimpulseError):
         """Attempt to recover from optimization errors."""
@@ -310,10 +311,146 @@ class ErrorHandler:
 
         return error_summary
 
+    def export_error_report(self, output_path: Path) -> bool:
+        """Export comprehensive error report for debugging."""
+        try:
+            import json
+
+            report = {
+                "timestamp": time.time(),
+                "summary": self.get_user_friendly_summary(),
+                "detailed_errors": [],
+                "system_info": {
+                    "platform": sys.platform,
+                    "python_version": sys.version,
+                    "working_directory": str(Path.cwd()),
+                    "environment_variables": dict(os.environ),
+                },
+            }
+
+            for error in self.errors:
+                detailed_error = {
+                    "id": error.error_id,
+                    "category": error.category.value,
+                    "severity": error.severity.value,
+                    "message": error.message,
+                    "timestamp": error.timestamp,
+                    "retry_count": error.retry_count,
+                    "recoverable": error.recoverable,
+                    "context": {
+                        "operation": error.context.operation,
+                        "file_path": (
+                            str(error.context.file_path) if error.context.file_path else None
+                        ),
+                        "additional_info": error.context.additional_info,
+                        "system_info": error.context.system_info,
+                    },
+                    "stack_trace": error.stack_trace,
+                    "recovery_suggestions": error.recovery_suggestions,
+                }
+                report["detailed_errors"].append(detailed_error)
+
+            with open(output_path, "w") as f:
+                json.dump(report, f, indent=2, default=str)
+
+            self.logger.info(f"Error report exported to {output_path}")
+            return True
+
+        except Exception as e:
+            self.logger.error(f"Failed to export error report: {e}")
+            return False
+
+    def get_error_statistics(self) -> dict[str, Any]:
+        """Get detailed error statistics for monitoring."""
+        if not self.errors:
+            return {"total": 0}
+
+        stats = {
+            "total": len(self.errors),
+            "by_severity": {},
+            "by_category": {},
+            "recovery_rate": 0.0,
+            "average_retry_count": 0.0,
+            "most_common_category": None,
+            "error_trend": [],
+            "time_span": 0.0,
+        }
+
+        # Calculate by severity and category
+        for error in self.errors:
+            severity = error.severity.value
+            category = error.category.value
+
+            stats["by_severity"][severity] = stats["by_severity"].get(severity, 0) + 1
+            stats["by_category"][category] = stats["by_category"].get(category, 0) + 1
+
+        # Calculate recovery rate
+        recoverable_errors = [e for e in self.errors if e.recoverable]
+        if recoverable_errors:
+            successful_recoveries = [
+                e for e in recoverable_errors if e.retry_count > 0 and e.retry_count < e.max_retries
+            ]
+            stats["recovery_rate"] = len(successful_recoveries) / len(recoverable_errors)
+
+        # Calculate average retry count
+        stats["average_retry_count"] = sum(e.retry_count for e in self.errors) / len(self.errors)
+
+        # Find most common category
+        if stats["by_category"]:
+            stats["most_common_category"] = max(stats["by_category"], key=stats["by_category"].get)
+
+        # Calculate time span
+        timestamps = [e.timestamp for e in self.errors]
+        if len(timestamps) > 1:
+            stats["time_span"] = max(timestamps) - min(timestamps)
+
+        return stats
+
+    def get_recovery_plan(self) -> dict[str, Any]:
+        """Generate a recovery plan based on current errors."""
+        plan = {
+            "immediate_actions": [],
+            "medium_term_actions": [],
+            "preventive_measures": [],
+            "estimated_success_rate": 0.0,
+        }
+
+        if not self.errors:
+            return plan
+
+        # Analyze error patterns
+        error_categories = {}
+        for error in self.errors:
+            category = error.category.value
+            error_categories[category] = error_categories.get(category, 0) + 1
+
+        # Generate specific recovery actions
+        if ErrorCategory.MEMORY.value in error_categories:
+            plan["immediate_actions"].append("Enable memory-efficient processing mode")
+            plan["medium_term_actions"].append("Consider upgrading system memory")
+
+        if ErrorCategory.FILE_ACCESS.value in error_categories:
+            plan["immediate_actions"].append("Check file permissions and paths")
+            plan["preventive_measures"].append("Implement file validation before processing")
+
+        if ErrorCategory.ENCODING.value in error_categories:
+            plan["immediate_actions"].append("Use robust encoding detection")
+            plan["preventive_measures"].append("Standardize on UTF-8 encoding")
+
+        # Estimate success rate based on error recoverability
+        recoverable_errors = sum(1 for e in self.errors if e.recoverable)
+        total_errors = len(self.errors)
+        plan["estimated_success_rate"] = (
+            recoverable_errors / total_errors if total_errors > 0 else 1.0
+        )
+
+        return plan
+
     def clear_errors(self):
         """Clear all recorded errors."""
         self.errors.clear()
         self.recovery_attempts = 0
+        self.partial_results.clear()
 
     def has_fatal_errors(self) -> bool:
         """Check if any fatal errors have occurred."""
@@ -339,14 +476,14 @@ def handle_file_error(
     return handler.handle_error(
         category=ErrorCategory.FILE_ACCESS,
         severity=severity,
-        message=f"File operation failed: {str(exception)}",
+        message=f"File operation failed: {exception!s}",
         context=context,
         exception=exception,
     )
 
 
 def handle_lean_error(
-    handler: ErrorHandler, operation: str, exception: Exception, file_path: Optional[Path] = None
+    handler: ErrorHandler, operation: str, exception: Exception, file_path: Path | None = None
 ) -> SimpulseError:
     """Handle Lean execution errors."""
     context = ErrorContext(operation=operation, file_path=file_path)
@@ -354,7 +491,7 @@ def handle_lean_error(
     return handler.handle_error(
         category=ErrorCategory.LEAN_EXECUTION,
         severity=ErrorSeverity.HIGH,
-        message=f"Lean execution failed: {str(exception)}",
+        message=f"Lean execution failed: {exception!s}",
         context=context,
         exception=exception,
     )
@@ -364,8 +501,8 @@ def handle_optimization_error(
     handler: ErrorHandler,
     operation: str,
     exception: Exception,
-    strategy: Optional[str] = None,
-    rule_name: Optional[str] = None,
+    strategy: str | None = None,
+    rule_name: str | None = None,
 ) -> SimpulseError:
     """Handle optimization errors."""
     context = ErrorContext(operation=operation, strategy=strategy, rule_name=rule_name)
@@ -373,7 +510,7 @@ def handle_optimization_error(
     return handler.handle_error(
         category=ErrorCategory.OPTIMIZATION,
         severity=ErrorSeverity.MEDIUM,
-        message=f"Optimization failed: {str(exception)}",
+        message=f"Optimization failed: {exception!s}",
         context=context,
         exception=exception,
     )

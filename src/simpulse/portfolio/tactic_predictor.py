@@ -354,77 +354,39 @@ class TacticDataset:
                 self.add_example(example["goal"], example["tactic"])
 
     def create_synthetic_examples(self) -> list[tuple[str, str]]:
-        """Create synthetic training examples for initial model."""
-        examples = []
+        """Create synthetic training examples - NOT IMPLEMENTED.
 
-        # Simp examples - simple arithmetic and algebraic identities
-        simp_goals = [
-            "⊢ x + 0 = x",
-            "⊢ 0 + x = x",
-            "⊢ x * 1 = x",
-            "⊢ 1 * x = x",
-            "⊢ x - x = 0",
-            "⊢ x * 0 = 0",
-            "⊢ (x + y) + 0 = x + y",
-            "⊢ List.length [] = 0",
-            "⊢ List.append [] l = l",
-        ]
-        examples.extend((g, "simp") for g in simp_goals)
+        This method would create realistic goal-tactic pairs for initial training.
+        Real implementation would require:
 
-        # Ring examples - polynomial equations
-        ring_goals = [
-            "⊢ (x + y) * (x - y) = x^2 - y^2",
-            "⊢ (a + b)^2 = a^2 + 2*a*b + b^2",
-            "⊢ x * (y + z) = x * y + x * z",
-            "⊢ (x + 1) * (x - 1) = x^2 - 1",
-            "⊢ x^2 + 2*x + 1 = (x + 1)^2",
-            "⊢ a * b + a * c = a * (b + c)",
-        ]
-        examples.extend((g, "ring") for g in ring_goals)
+        1. **Corpus Collection**: Extract goal-tactic pairs from real Lean projects
+           - Parse .lean files for tactic proofs
+           - Extract goal states and successful tactics
+           - Build large-scale dataset (10K+ examples)
 
-        # Linarith examples - linear inequalities
-        linarith_goals = [
-            "⊢ x < x + 1",
-            "⊢ x ≤ y → y ≤ z → x ≤ z",
-            "⊢ 2 * x < 3 * x → 0 < x",
-            "⊢ x + y < x + z → y < z",
-            "⊢ a ≤ b → c ≤ d → a + c ≤ b + d",
-            "⊢ 0 < x → 0 < y → 0 < x + y",
-        ]
-        examples.extend((g, "linarith") for g in linarith_goals)
+        2. **Data Quality**: Ensure high-quality training data
+           - Validate that goals are well-formed
+           - Verify tactic applications are correct
+           - Remove trivial or duplicate examples
 
-        # Norm_num examples - numerical computations
-        norm_num_goals = [
-            "⊢ 2 + 3 = 5",
-            "⊢ 7 * 8 = 56",
-            "⊢ 100 / 5 = 20",
-            "⊢ 2^10 = 1024",
-            "⊢ 15 % 4 = 3",
-            "⊢ 17 < 23",
-        ]
-        examples.extend((g, "norm_num") for g in norm_num_goals)
+        3. **Diversity**: Cover all major proof domains
+           - Algebra, analysis, topology, logic
+           - Different complexity levels
+           - Various proof styles and patterns
 
-        # Field_simp examples - field arithmetic
-        field_simp_goals = [
-            "⊢ x / x = 1",
-            "⊢ (a / b) * b = a",
-            "⊢ 1 / (1 / x) = x",
-            "⊢ (x / y) / z = x / (y * z)",
-            "⊢ a / b + c / d = (a * d + b * c) / (b * d)",
-        ]
-        examples.extend((g, "field_simp") for g in field_simp_goals)
+        Research references:
+        - "TacTok: Semantics-Aware Proof Synthesis" (Agrawal et al., 2021)
+        - "Proof Artifact Co-training for Theorem Proving" (Han et al., 2021)
+        - "Learning to Reason in Large Theories without Imitation" (Lample et al., 2022)
 
-        # Abel examples - abelian group equations
-        abel_goals = [
-            "⊢ a + b = b + a",
-            "⊢ (a + b) + c = a + (b + c)",
-            "⊢ a + (b - a) = b",
-            "⊢ -(-a) = a",
-            "⊢ a - b + b = a",
-        ]
-        examples.extend((g, "abel") for g in abel_goals)
-
-        return examples
+        Previous version created hardcoded examples which don't represent
+        real proof complexity or tactic usage patterns.
+        """
+        raise NotImplementedError(
+            "Synthetic example generation not implemented. "
+            "Real implementation requires corpus of actual Lean proofs. "
+            "See research on proof synthesis and tactic prediction."
+        )
 
     def get_balanced_dataset(self) -> list[tuple[str, str]]:
         """Get a balanced dataset with equal examples per tactic."""

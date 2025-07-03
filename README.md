@@ -1,120 +1,170 @@
-# Simpulse 🚀
+# Simpulse 🧪
 
-**High-Performance Optimization Tool for Lean 4 Simp Tactics**
+**Experimental Simp Tactic Analyzer for Lean 4**
 
 [![CI](https://github.com/Bright-L01/simpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/Bright-L01/simpulse/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)]()
 
-Simpulse is a production-grade tool that analyzes and optimizes simp rule priorities in Lean 4 projects, delivering measurable performance improvements for theorem proving workflows.
+**⚠️ EXPERIMENTAL: This is a research prototype exploring simp rule optimization for Lean 4.**
 
-## ✨ Key Features
+## 🎯 Current Capabilities
 
-- **🔍 Smart Analysis**: Deep analysis of simp rule usage patterns across entire projects
-- **⚡ Performance Optimization**: Intelligent priority assignment based on frequency and impact
-- **🧪 Rigorous Validation**: Comprehensive correctness and performance validation
-- **🏭 Production Ready**: Industry-grade CI/CD, testing, and code quality standards
-- **📊 Detailed Reporting**: Rich insights into optimization opportunities and results
+- **🔍 Rule Extraction**: Extracts simp rules from Lean 4 files (84% accuracy on mathlib4)
+- **📁 Basic Analysis**: Analyzes rule usage patterns and suggests priority adjustments  
+- **🔧 CLI Interface**: Basic command-line interface for analysis
+- **📝 Optimization Scripts**: Generates priority adjustment suggestions (impact unverified)
 
-## 📈 Performance Impact
+## ⚠️ Limitations
 
-Simpulse has been validated on real-world projects with measurable results:
+- **No Performance Measurement**: Cannot measure actual compilation time improvements
+- **No Lean Integration**: Does not connect to Lean's build process
+- **Simulated Components**: ML features use placeholder implementations
+- **Unverified Claims**: Performance improvement percentages are theoretical
 
-- **71% improvement** in mathlib4 simp performance
-- **99.7% of rules** use optimal default priorities
-- **Comprehensive validation** across 4,000+ theorem files
-
-## 🚀 Quick Start
+## 🚀 Installation & Usage
 
 ### Installation
 
 ```bash
-# Install from PyPI (recommended)
-pip install simpulse
-
-# Or install from source
+# Clone the repository
 git clone https://github.com/Bright-L01/simpulse.git
 cd simpulse
+
+# Install in development mode
 pip install -e .
 ```
 
 ### Basic Usage
 
 ```bash
-# Analyze a Lean project
-simpulse analyze /path/to/lean/project
+# Extract simp rules from a Lean file
+simpulse analyze path/to/file.lean
 
-# Get optimization suggestions
-simpulse suggest /path/to/lean/project
+# Analyze a Lean project (extracts rules from all .lean files)
+simpulse analyze path/to/lean/project
 
-# Apply optimizations with validation
-simpulse optimize /path/to/lean/project --validate
+# Generate optimization suggestions (theoretical)
+simpulse optimize path/to/lean/project --strategy frequency
 ```
 
-### Python API
+## 📊 What Actually Works
 
-```python
-from simpulse import LeanAnalyzer, PriorityOptimizer
+### Verified Functionality
 
-# Analyze project
-analyzer = LeanAnalyzer()
-results = analyzer.analyze_project("path/to/project")
+| Feature | Status | Evidence |
+|---------|--------|----------|
+| Rule Extraction | ✅ Working | Tested on 5 mathlib4 modules, 84% accuracy |
+| File Analysis | ✅ Working | Processes .lean files <1 second |
+| Basic CLI | ✅ Working | Commands execute successfully |
+| Priority Calculation | ⚠️ Partial | Logic exists but impact unverified |
+| Performance Measurement | ❌ Not Working | No integration with Lean compilation |
+| ML Features | ❌ Simulated | Uses math functions instead of real ML |
 
-# Generate optimizations
-optimizer = PriorityOptimizer()
-suggestions = optimizer.optimize_project(results)
+### Test Results on Mathlib4
 
-print(f"Found {len(suggestions)} optimization opportunities")
+- **Modules Tested**: 5 (List/Basic, Group/Basic, Logic/Basic, Nat/Basic, Order/Basic)
+- **Total Lines**: 4,910
+- **Rules Extracted**: 89 simp rules
+- **Processing Time**: <1 second average per module
+- **Optimization Impact**: Unknown (no measurement capability)
+
+## 🔬 How It Actually Works
+
+1. **Rule Extraction**: Parses .lean files with regex to find @[simp] annotations
+2. **Basic Analysis**: Counts rule occurrences and calculates priorities
+3. **Script Generation**: Creates suggestions for priority adjustments
+4. **No Validation**: Cannot verify if optimizations actually improve performance
+
+### Technical Reality
+
+- Uses regex patterns for parsing (not Lean's AST)
+- No actual machine learning (simulated with math functions)  
+- Cannot measure real compilation times
+- Does not integrate with Lean 4 build process
+
+## 💻 Development Status
+
+### Setup Development Environment
+
+```bash
+# Clone repository
+git clone https://github.com/Bright-L01/simpulse.git
+cd simpulse
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install in development mode
+pip install -e ".[dev]"
+
+# Run tests (90% pass on working features)
+pytest
 ```
 
-## 🏗️ Architecture
+### Architecture Reality
 
-Simpulse uses a sophisticated multi-stage approach:
-
-1. **Analysis**: Extract simp rules and usage patterns
-2. **Optimization**: Calculate optimal priorities using frequency-based algorithms
-3. **Validation**: Verify correctness and measure performance improvements
-4. **Reporting**: Generate detailed insights and recommendations
-
-## 📚 Documentation
-
-- **[Installation Guide](docs/INSTALLATION.md)** - Detailed setup instructions
-- **[Quick Start](docs/QUICKSTART.md)** - 5-minute getting started guide  
-- **[API Reference](docs/API_REFERENCE.md)** - Complete CLI and Python API docs
-- **[Contributing](docs/CONTRIBUTING.md)** - Development workflow and guidelines
-- **[Architecture](docs/architecture/)** - Technical design and implementation details
-
-## 🧪 Testing & Quality
-
-Simpulse maintains high code quality standards:
-
-- **85%+ test coverage** with comprehensive unit, integration, and performance tests
-- **Strict type checking** with mypy in strict mode
-- **Automated quality gates** with ruff, black, bandit security scanning
-- **Multi-platform CI/CD** testing on Ubuntu, macOS, and Windows
+- `analyzer.py`: ✅ Working - Extracts rules from files
+- `optimizer.py`: ⚠️ Partial - Generates suggestions
+- `validator.py`: ✅ Working - Basic file validation
+- `profiling/`: ❌ Simulated - No real measurements
+- `simpng/`: ❌ Theoretical - ML features not implemented
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details on:
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-- Development setup
-- Code style and quality standards
-- Testing requirements
-- Pull request workflow
+### Priority Areas for Contribution
 
-## 📄 License
+- **Real Performance Measurement**: Connect to Lean's build system
+- **Remove Simulations**: Replace fake ML with simple statistics
+- **Honest Documentation**: Update docs to reflect reality
+- **Integration**: Make it actually work with Lean compilation
+- **Testing**: Verify claimed optimizations with real data
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📄 Documentation
 
-## 🙏 Acknowledgments
+- [Installation Guide](docs/INSTALLATION.md)
+- [API Reference](docs/API_REFERENCE.md)
+- [Architecture Overview](docs/architecture/DESIGN.md)
+- [Reality Check](docs/REALITY_CHECK.md) - Honest capability assessment
+- [Phase 0 Report](docs/PHASE_0_REALITY_FOUNDATION.md) - Truth baseline
 
-- Built for the [Lean 4](https://leanprover.github.io/) theorem proving community
-- Validated against [mathlib4](https://github.com/leanprover-community/mathlib4)
-- Inspired by the need for faster, more efficient theorem proving
+## 🔮 Honest Roadmap
+
+### Immediate Priorities (1-3 months)
+- [ ] Connect to Lean build system for real measurements
+- [ ] Remove all simulated components
+- [ ] Prove any optimization benefit with real data
+- [ ] Update documentation to reflect actual capabilities
+
+### Future Possibilities (3-6 months)  
+- [ ] If optimizations work, expand to more tactics
+- [ ] Create simple statistical models (no fake ML)
+- [ ] Build trust through transparency
+- [ ] Focus on measurable improvements
+
+## 📧 Contact
+
+- **Email**: brightliu@college.harvard.edu
+- **GitHub Issues**: [Create an issue](https://github.com/Bright-L01/simpulse/issues)
+- **Status**: Experimental research prototype
 
 ---
 
 <p align="center">
-  <strong>Transform your Lean 4 projects with intelligent simp optimization</strong>
+  <i>An honest exploration of simp tactic optimization for Lean 4.</i>
 </p>
+
+## ⚠️ Important Disclaimers
+
+1. **No Verified Performance Gains**: All performance claims are theoretical
+2. **Experimental Software**: Not ready for production use
+3. **Simulated Components**: ML features use placeholder implementations
+4. **No Lean Integration**: Does not connect to actual compilation process
+5. **Research Prototype**: Exploring possibilities, not delivering solutions
+
+For the full honest assessment, see [FINAL_RECOVERY_ASSESSMENT.md](FINAL_RECOVERY_ASSESSMENT.md).

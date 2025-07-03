@@ -1,0 +1,453 @@
+{
+  "aggregate_statistics": {
+    "test_overview": {
+      "total_modules": 5,
+      "test_timestamp": "2025-07-03T11:23:21.832636",
+      "simpulse_version": "Phase 3 Milestone 3.2",
+      "test_type": "Real Mathlib4 Production Code Analysis"
+    },
+    "content_analysis": {
+      "total_lines_analyzed": 4910,
+      "total_theorems_found": 825,
+      "total_simp_annotations": 105,
+      "average_file_size": 37567.4
+    },
+    "pipeline_performance": {
+      "stage_success_rates": {
+        "rule_extraction": {
+          "successful": 5,
+          "total": 5,
+          "success_rate": 1.0
+        },
+        "traditional_analyzer": {
+          "successful": 5,
+          "total": 5,
+          "success_rate": 1.0
+        },
+        "pattern_analysis": {
+          "successful": 0,
+          "total": 5,
+          "success_rate": 0.0
+        },
+        "smart_optimization": {
+          "successful": 5,
+          "total": 5,
+          "success_rate": 1.0
+        }
+      },
+      "fully_successful_modules": 0,
+      "overall_success_rate": 0.0,
+      "average_total_duration": 0.9688465118408203
+    },
+    "rule_extraction_analysis": {
+      "total_rules_extracted": 89,
+      "extraction_success_rate": 1.0
+    }
+  },
+  "detailed_results": [
+    {
+      "module_name": "Mathlib/Data/List/Basic",
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/mathlib4_test_modules/List_Basic.lean",
+      "file_name": "List_Basic.lean",
+      "timestamp": "2025-07-03T11:23:16.984986",
+      "stages": {
+        "rule_extraction": {
+          "status": "success",
+          "duration_seconds": 0.0014903545379638672,
+          "rules_extracted": 40,
+          "module_name": "List",
+          "has_imports": true,
+          "imports_count": 9,
+          "priority_distribution": {
+            "default": 40
+          },
+          "direction_distribution": {
+            "forward": 40,
+            "backward": 0
+          },
+          "sample_rules": [
+            {
+              "name": "theorem",
+              "line": 51,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 79,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 228,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 234,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 246,
+              "priority": "default",
+              "direction": "forward"
+            }
+          ]
+        },
+        "traditional_analyzer": {
+          "status": "success",
+          "duration_seconds": 0.41457629203796387,
+          "rules_found": 43,
+          "syntax_valid": false,
+          "total_lines": 1312
+        },
+        "pattern_analysis": {
+          "status": "failed",
+          "error": "'PatternAnalysisResult' object has no attribute 'get'",
+          "duration_seconds": 0.34287214279174805
+        },
+        "smart_optimization": {
+          "status": "success",
+          "duration_seconds": 0.33524417877197266,
+          "optimization_suggestions": 0,
+          "insights_generated": 0,
+          "potential_improvements": 0
+        }
+      },
+      "basic_stats": {
+        "total_lines": 1311,
+        "file_size_bytes": 47948,
+        "theorem_count": 205,
+        "simp_annotations": 43,
+        "characters": 45470
+      },
+      "summary": {
+        "successful_stages": 3,
+        "total_stages": 4,
+        "success_rate": 0.75,
+        "total_duration_seconds": 1.0941829681396484,
+        "pipeline_status": "partial",
+        "major_failures": [
+          "pattern_analysis"
+        ]
+      }
+    },
+    {
+      "module_name": "Mathlib/Algebra/Group/Basic",
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/mathlib4_test_modules/Group_Basic.lean",
+      "file_name": "Group_Basic.lean",
+      "timestamp": "2025-07-03T11:23:18.079833",
+      "stages": {
+        "rule_extraction": {
+          "status": "success",
+          "duration_seconds": 0.0007920265197753906,
+          "rules_extracted": 0,
+          "module_name": "Group_Basic",
+          "has_imports": true,
+          "imports_count": 6,
+          "priority_distribution": {},
+          "direction_distribution": {
+            "forward": 0,
+            "backward": 0
+          },
+          "sample_rules": []
+        },
+        "traditional_analyzer": {
+          "status": "success",
+          "duration_seconds": 0.30750489234924316,
+          "rules_found": 47,
+          "syntax_valid": false,
+          "total_lines": 1095
+        },
+        "pattern_analysis": {
+          "status": "failed",
+          "error": "'PatternAnalysisResult' object has no attribute 'get'",
+          "duration_seconds": 0.28722691535949707
+        },
+        "smart_optimization": {
+          "status": "success",
+          "duration_seconds": 0.32126688957214355,
+          "optimization_suggestions": 0,
+          "insights_generated": 0,
+          "potential_improvements": 0
+        }
+      },
+      "basic_stats": {
+        "total_lines": 1094,
+        "file_size_bytes": 38412,
+        "theorem_count": 206,
+        "simp_annotations": 0,
+        "characters": 37407
+      },
+      "summary": {
+        "successful_stages": 3,
+        "total_stages": 4,
+        "success_rate": 0.75,
+        "total_duration_seconds": 0.9167907238006592,
+        "pipeline_status": "partial",
+        "major_failures": [
+          "pattern_analysis"
+        ]
+      }
+    },
+    {
+      "module_name": "Mathlib/Logic/Basic",
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/mathlib4_test_modules/Logic_Basic.lean",
+      "file_name": "Logic_Basic.lean",
+      "timestamp": "2025-07-03T11:23:18.997368",
+      "stages": {
+        "rule_extraction": {
+          "status": "success",
+          "duration_seconds": 0.0009729862213134766,
+          "rules_extracted": 25,
+          "module_name": "contains",
+          "has_imports": true,
+          "imports_count": 7,
+          "priority_distribution": {
+            "default": 25
+          },
+          "direction_distribution": {
+            "forward": 25,
+            "backward": 0
+          },
+          "sample_rules": [
+            {
+              "name": "lemma",
+              "line": 57,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 194,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 224,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 232,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 234,
+              "priority": "default",
+              "direction": "forward"
+            }
+          ]
+        },
+        "traditional_analyzer": {
+          "status": "success",
+          "duration_seconds": 0.31630492210388184,
+          "rules_found": 24,
+          "syntax_valid": false,
+          "total_lines": 987
+        },
+        "pattern_analysis": {
+          "status": "failed",
+          "error": "'PatternAnalysisResult' object has no attribute 'get'",
+          "duration_seconds": 0.2847757339477539
+        },
+        "smart_optimization": {
+          "status": "success",
+          "duration_seconds": 0.3184549808502197,
+          "optimization_suggestions": 0,
+          "insights_generated": 0,
+          "potential_improvements": 0
+        }
+      },
+      "basic_stats": {
+        "total_lines": 986,
+        "file_size_bytes": 41521,
+        "theorem_count": 214,
+        "simp_annotations": 33,
+        "characters": 38339
+      },
+      "summary": {
+        "successful_stages": 3,
+        "total_stages": 4,
+        "success_rate": 0.75,
+        "total_duration_seconds": 0.920508623123169,
+        "pipeline_status": "partial",
+        "major_failures": [
+          "pattern_analysis"
+        ]
+      }
+    },
+    {
+      "module_name": "Mathlib/Data/Nat/Basic",
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/mathlib4_test_modules/Nat_Basic.lean",
+      "file_name": "Nat_Basic.lean",
+      "timestamp": "2025-07-03T11:23:19.918585",
+      "stages": {
+        "rule_extraction": {
+          "status": "success",
+          "duration_seconds": 0.00018286705017089844,
+          "rules_extracted": 0,
+          "module_name": "Nat",
+          "has_imports": true,
+          "imports_count": 5,
+          "priority_distribution": {},
+          "direction_distribution": {
+            "forward": 0,
+            "backward": 0
+          },
+          "sample_rules": []
+        },
+        "traditional_analyzer": {
+          "status": "success",
+          "duration_seconds": 0.33219313621520996,
+          "rules_found": 0,
+          "syntax_valid": false,
+          "total_lines": 122
+        },
+        "pattern_analysis": {
+          "status": "failed",
+          "error": "'PatternAnalysisResult' object has no attribute 'get'",
+          "duration_seconds": 0.33585190773010254
+        },
+        "smart_optimization": {
+          "status": "success",
+          "duration_seconds": 0.3344991207122803,
+          "optimization_suggestions": 0,
+          "insights_generated": 0,
+          "potential_improvements": 0
+        }
+      },
+      "basic_stats": {
+        "total_lines": 121,
+        "file_size_bytes": 3963,
+        "theorem_count": 8,
+        "simp_annotations": 0,
+        "characters": 3824
+      },
+      "summary": {
+        "successful_stages": 3,
+        "total_stages": 4,
+        "success_rate": 0.75,
+        "total_duration_seconds": 1.0027270317077637,
+        "pipeline_status": "partial",
+        "major_failures": [
+          "pattern_analysis"
+        ]
+      }
+    },
+    {
+      "module_name": "Mathlib/Order/Basic",
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/mathlib4_test_modules/Order_Basic.lean",
+      "file_name": "Order_Basic.lean",
+      "timestamp": "2025-07-03T11:23:20.921745",
+      "stages": {
+        "rule_extraction": {
+          "status": "success",
+          "duration_seconds": 0.0012507438659667969,
+          "rules_extracted": 24,
+          "module_name": "LT.lt",
+          "has_imports": true,
+          "imports_count": 8,
+          "priority_distribution": {
+            "default": 24
+          },
+          "direction_distribution": {
+            "forward": 24,
+            "backward": 0
+          },
+          "sample_rules": [
+            {
+              "name": "Order",
+              "line": 107,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "lemma",
+              "line": 161,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "lemma",
+              "line": 163,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 325,
+              "priority": "default",
+              "direction": "forward"
+            },
+            {
+              "name": "theorem",
+              "line": 401,
+              "priority": "default",
+              "direction": "forward"
+            }
+          ]
+        },
+        "traditional_analyzer": {
+          "status": "success",
+          "duration_seconds": 0.29344725608825684,
+          "rules_found": 30,
+          "syntax_valid": false,
+          "total_lines": 1399
+        },
+        "pattern_analysis": {
+          "status": "failed",
+          "error": "'PatternAnalysisResult' object has no attribute 'get'",
+          "duration_seconds": 0.2907071113586426
+        },
+        "smart_optimization": {
+          "status": "success",
+          "duration_seconds": 0.3246181011199951,
+          "optimization_suggestions": 0,
+          "insights_generated": 0,
+          "potential_improvements": 0
+        }
+      },
+      "basic_stats": {
+        "total_lines": 1398,
+        "file_size_bytes": 55993,
+        "theorem_count": 192,
+        "simp_annotations": 29,
+        "characters": 52374
+      },
+      "summary": {
+        "successful_stages": 3,
+        "total_stages": 4,
+        "success_rate": 0.75,
+        "total_duration_seconds": 0.9100232124328613,
+        "pipeline_status": "partial",
+        "major_failures": [
+          "pattern_analysis"
+        ]
+      }
+    }
+  ],
+  "conclusions": {
+    "overall_assessment": "needs_improvement",
+    "key_findings": [],
+    "strengths": [
+      "Rule extraction works reliably on real mathlib4 code",
+      "Successfully extracted 89 simp rules from production code"
+    ],
+    "limitations": [
+      "Pipeline failed on: Mathlib/Data/List/Basic, Mathlib/Algebra/Group/Basic, Mathlib/Logic/Basic, Mathlib/Data/Nat/Basic, Mathlib/Order/Basic"
+    ],
+    "recommendations": [
+      "Improve error handling for edge cases in mathlib4 code",
+      "Continue development - core functionality proven on real code"
+    ]
+  }
+}

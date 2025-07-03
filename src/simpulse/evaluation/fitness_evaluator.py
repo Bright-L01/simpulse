@@ -296,7 +296,7 @@ class FitnessEvaluator:
     async def _run_performance_test(
         self, candidate: Candidate, modules: list[str], timeout: float
     ) -> PerformanceMetrics | None:
-        """Run performance test for a candidate.
+        """Run performance test for a candidate - NOT IMPLEMENTED.
 
         Args:
             candidate: Candidate to test
@@ -306,38 +306,16 @@ class FitnessEvaluator:
         Returns:
             Performance metrics or None if failed
         """
-        try:
-            # For now, simulate performance testing
-            # In a real implementation, this would:
-            # 1. Apply candidate's mutations to workspace
-            # 2. Run lake build with profiling
-            # 3. Extract performance metrics
-
-            # Simulate some variance in performance
-            import random
-
-            base_time = 1000.0 + random.uniform(-200, 200)
-
-            # If candidate has mutations, simulate potential improvement
-            if candidate.mutations:
-                # Simulate 0-30% improvement for mutations
-                improvement_factor = random.uniform(0.7, 1.0)
-                base_time *= improvement_factor
-
-            rule_applications = max(1, int(base_time / 20 + random.uniform(-10, 10)))
-            memory_usage = 50.0 + random.uniform(-10, 10)
-
-            return PerformanceMetrics(
-                total_time_ms=base_time,
-                rule_applications=rule_applications,
-                successful_rewrites=rule_applications,
-                failed_rewrites=0,
-                memory_usage_mb=memory_usage,
-            )
-
-        except Exception as e:
-            logger.error(f"Performance test failed for candidate {candidate.id}: {e}")
-            return None
+        raise NotImplementedError(
+            "Real performance testing not implemented. "
+            "Previous version used random numbers to simulate performance. "
+            "Real implementation would require:\n"
+            "1. Apply candidate's mutations to a workspace copy\n"
+            "2. Run 'lake build' with Lean profiling enabled\n"
+            "3. Parse simp timing data from Lean output\n"
+            "4. Extract rule application counts and timing metrics\n"
+            "5. Compare against baseline measurements"
+        )
 
     def _get_cache_key(self, candidate: Candidate, modules: list[str]) -> str:
         """Generate cache key for candidate evaluation.

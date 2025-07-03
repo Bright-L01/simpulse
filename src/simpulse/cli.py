@@ -7,8 +7,11 @@ from rich.console import Console
 from rich.table import Table
 
 from .analysis.health_checker import HealthChecker
+from .optimization.fast_optimizer import FastOptimizer
 from .optimization.optimizer import SimpOptimizer
 from .profiling.benchmarker import Benchmarker
+from .profiling.performance_benchmarks import run_benchmarks
+from .profiling.simpulse_profiler import SimpulseProfiler
 
 console = Console()
 
@@ -70,9 +73,14 @@ def check(project_path: Path, json: bool):
 @click.option("--apply", is_flag=True, help="Apply optimizations directly")
 @click.option(
     "--strategy",
-    type=click.Choice(["conservative", "balanced", "aggressive"]),
+    type=click.Choice(["conservative", "balanced", "aggressive", "performance", "frequency"]),
     default="balanced",
     help="Optimization strategy",
+)
+@click.option(
+    "--fast",
+    is_flag=True,
+    help="Use fast optimizer with parallel processing",
 )
 @click.option(
     "--validate/--no-validate",
@@ -91,6 +99,7 @@ def optimize(
     strategy: str,
     validate: bool,
     safety_report: Path,
+    fast: bool,
 ):
     """Generate optimized simp rule priorities for your project."""
     console.print(f"\n🧠 Optimizing [cyan]{project_path}[/cyan]...\n")
@@ -105,7 +114,10 @@ def optimize(
 
         console.print("🔒 [yellow]Correctness validation enabled[/yellow]\n")
     else:
-        optimizer = SimpOptimizer(strategy=strategy)
+        if fast:
+            optimizer = FastOptimizer(strategy=strategy)
+        else:
+            optimizer = SimpOptimizer(strategy=strategy)
 
     # Run optimization with progress bar
     with console.status("[bold green]Analyzing simp rules...") as status:
@@ -222,6 +234,77 @@ def benchmark(project_path: Path, runs: int, compare: Path):
         console.print("\n📊 Benchmark Results:")
         console.print(f"   Mean build time: {results.mean:.2f}s")
         console.print(f"   Std deviation: {results.stdev:.2f}s\n")
+
+
+@cli.command()
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path), default=".")
+@click.option("--detailed", is_flag=True, help="Show detailed profiling information")
+@click.option("--output", "-o", type=click.Path(), help="Save profiling report to file")
+def profile(project_path: Path, detailed: bool, output: Path):
+    """Profile Simpulse performance on your project."""
+    console.print(f"\n📊 Profiling [cyan]{project_path}[/cyan]...\n")
+
+    profiler = SimpulseProfiler()
+
+    # Profile the full pipeline
+    with console.status("[bold green]Running performance analysis..."):
+        results = profiler.profile_full_pipeline(project_path)
+
+    # Display summary
+    console.print("\n[bold]Performance Summary:[/bold]")
+    console.print(f"Total time: [cyan]{results['total_duration']:.3f}s[/cyan]")
+    console.print(f"Analysis phase: [cyan]{results['analysis_metrics'].duration:.3f}s[/cyan]")
+    console.print(
+        f"Optimization phase: [cyan]{results['optimization_metrics'].duration:.3f}s[/cyan]"
+    )
+    console.print(f"Files processed: [cyan]{results['analysis_metrics'].file_count}[/cyan]")
+    console.print(f"Rules found: [cyan]{results['analysis_metrics'].rule_count}[/cyan]")
+
+    if detailed:
+        console.print("\n" + profiler.generate_report())
+
+    if output:
+        profiler.save_report(output)
+        console.print(f"\n[green]Report saved to {output}[/green]")
+
+
+@cli.command()
+@click.argument("project_path", type=click.Path(exists=True, path_type=Path), required=False)
+@click.option("--compare", is_flag=True, help="Compare original vs optimized performance")
+def perf_test(project_path: Path, compare: bool):
+    """Run comprehensive performance benchmarks."""
+    console.print("\n[bold cyan]Running Performance Tests[/bold cyan]\n")
+
+    if compare and project_path:
+        # Run before/after comparison
+        from .optimization.fast_optimizer import FastOptimizer
+
+        console.print("Comparing original vs optimized implementation...")
+
+        # Time original
+        import time
+
+        start = time.time()
+        optimizer1 = SimpOptimizer()
+        analysis1 = optimizer1.analyze(project_path)
+        optimizer1.optimize(analysis1)
+        time1 = time.time() - start
+
+        # Time optimized
+        start = time.time()
+        optimizer2 = FastOptimizer()
+        analysis2 = optimizer2.analyze(project_path)
+        optimizer2.optimize(analysis2)
+        time2 = time.time() - start
+
+        speedup = time1 / time2 if time2 > 0 else 0
+
+        console.print(f"\nOriginal: [cyan]{time1:.3f}s[/cyan]")
+        console.print(f"Optimized: [cyan]{time2:.3f}s[/cyan]")
+        console.print(f"Speedup: [green]{speedup:.2f}x[/green]")
+    else:
+        # Run full benchmark suite
+        run_benchmarks(project_path)
 
 
 @cli.command()

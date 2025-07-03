@@ -6,10 +6,9 @@ namespace Simpulse.JIT
 -- Priority configuration from runtime profiling
 def optimizedPriorities : List (Name × Nat) := [  (`List.append_nil, 100),
   (`Nat.add_zero, 110),
-  (`List.nil_append, 120),
-  (`Nat.zero_add, 130),
-  (`List.map_append, 140),
-  (`List.length_append, 150)
+  (`Nat.zero_add, 120),
+  (`List.nil_append, 130),
+  (`List.map_append, 140)
 ]
 
 -- Apply optimized priorities at initialization

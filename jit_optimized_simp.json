@@ -1,37 +1,36 @@
 {
   "version": "1.0",
-  "generated_at": 1751511434.40524,
+  "generated_at": 1751566858.236919,
   "statistics": {
-    "total_attempts": 1062,
-    "unique_rules": 6,
-    "avg_improvement": -9.864427691094826e-17
+    "total_attempts": 1060,
+    "unique_rules": 5,
+    "avg_improvement": -5.551731072767009e-16
   },
   "priorities": {
     "List.append_nil": 100,
     "Nat.add_zero": 110,
-    "List.nil_append": 120,
-    "Nat.zero_add": 130,
-    "List.map_append": 140,
-    "List.length_append": 150
+    "Nat.zero_add": 120,
+    "List.nil_append": 130,
+    "List.map_append": 140
   },
   "hot_paths": {
-    "TestModule:intro.rw.simp": 1062
+    "TestModule:intro.rw.simp": 1060
   },
   "rule_statistics": {
     "List.append_nil": {
       "success_rate": 1.0,
-      "avg_time": 0.0012617956178511051,
-      "attempts": 953
+      "avg_time": 0.0013131173969316882,
+      "attempts": 952
     },
     "List.nil_append": {
       "success_rate": 1.0,
-      "avg_time": 0.0015720188617706298,
-      "attempts": 38
+      "avg_time": 0.001376580238342285,
+      "attempts": 25
     },
     "Nat.add_zero": {
       "success_rate": 1.0,
-      "avg_time": 0.0012578655691707836,
-      "attempts": 17
+      "avg_time": 0.0012884907100511633,
+      "attempts": 23
     }
   }
 }
