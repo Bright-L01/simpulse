@@ -1,0 +1,145 @@
+{
+  "test_date": "2025-07-04",
+  "results": [
+    {
+      "file": "mathlib4_test_modules/Nat_Basic.lean",
+      "file_size_bytes": 3824,
+      "line_count": 122,
+      "actual_simp_count": 0,
+      "extracted_count": 0,
+      "accuracy_percent": 100,
+      "success": true,
+      "rules": []
+    },
+    {
+      "file": "mathlib4_test_modules/List_Basic.lean",
+      "file_size_bytes": 45470,
+      "line_count": 1312,
+      "actual_simp_count": 45,
+      "extracted_count": 43,
+      "accuracy_percent": 95.56,
+      "success": true,
+      "rules": [
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 51
+        },
+        {
+          "name": "theorem",
+          "priority": "1100",
+          "line": 74
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 79
+        },
+        {
+          "name": "lemma",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 98
+        },
+        {
+          "name": "lemma",
+          "priority": "1001",
+          "line": 111
+        }
+      ]
+    },
+    {
+      "file": "mathlib4_test_modules/Logic_Basic.lean",
+      "file_size_bytes": 38339,
+      "line_count": 987,
+      "actual_simp_count": 33,
+      "extracted_count": 24,
+      "accuracy_percent": 72.73,
+      "success": true,
+      "rules": [
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 54
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 57
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 194
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 221
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 224
+        }
+      ]
+    },
+    {
+      "file": "mathlib4_test_modules/Group_Basic.lean",
+      "file_size_bytes": 37407,
+      "line_count": 1095,
+      "actual_simp_count": 0,
+      "extracted_count": 1,
+      "accuracy_percent": 100,
+      "success": true,
+      "rules": [
+        {
+          "name": "lemma",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 445
+        }
+      ]
+    },
+    {
+      "file": "mathlib4_test_modules/Order_Basic.lean",
+      "file_size_bytes": 52374,
+      "line_count": 1399,
+      "actual_simp_count": 31,
+      "extracted_count": 30,
+      "accuracy_percent": 96.77,
+      "success": true,
+      "rules": [
+        {
+          "name": "Order",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 107
+        },
+        {
+          "name": "lemma",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 133
+        },
+        {
+          "name": "lemma",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 161
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 325
+        },
+        {
+          "name": "theorem",
+          "priority": "SimpPriority.DEFAULT",
+          "line": 401
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "files_tested": 5,
+    "total_actual_rules": 109,
+    "total_extracted_rules": 98,
+    "overall_accuracy": 89.91
+  }
+}

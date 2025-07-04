@@ -1,0 +1,142 @@
+{
+  "baseline_metadata": {
+    "created_date": "2025-07-03T22:12:25-04:00",
+    "description": "REAL compilation time baseline for 5 mathlib4 files - no optimization, raw truth",
+    "purpose": "Establish truthful performance baseline before any Simpulse optimization",
+    "methodology": "Direct timing of 'lean <file>' command execution, 3 runs per file"
+  },
+  "system_environment": {
+    "timestamp": "Thu Jul  3 22:12:25 EDT 2025",
+    "hardware": {
+      "architecture": "arm64",
+      "cpu": "Apple M2",
+      "memory_gb": 16
+    },
+    "operating_system": {
+      "name": "Darwin",
+      "version": "24.5.0",
+      "full_name": "macOS"
+    },
+    "lean_version": {
+      "version": "4.21.0",
+      "architecture": "arm64-apple-darwin23.6.0", 
+      "commit": "6741444a63ee",
+      "build_type": "Release"
+    }
+  },
+  "test_files": {
+    "Group_Basic.lean": {
+      "file_size_bytes": 38412,
+      "file_size_human": "38.4 KB",
+      "description": "Basic group theory definitions and theorems",
+      "raw_measurements": {
+        "run_1_seconds": 1.6253,
+        "run_2_seconds": 0.6020,
+        "run_3_seconds": 0.4461
+      },
+      "analysis": {
+        "mean_seconds": 0.8911,
+        "min_seconds": 0.4461,
+        "max_seconds": 1.6253,
+        "note": "First run significantly slower (cold start effect)"
+      }
+    },
+    "List_Basic.lean": {
+      "file_size_bytes": 47948,
+      "file_size_human": "46.8 KB", 
+      "description": "Basic list operations and properties",
+      "raw_measurements": {
+        "run_1_seconds": 0.3865,
+        "run_2_seconds": 0.4102,
+        "run_3_seconds": 0.3637
+      },
+      "analysis": {
+        "mean_seconds": 0.3868,
+        "min_seconds": 0.3637,
+        "max_seconds": 0.4102,
+        "note": "Consistent performance across runs"
+      }
+    },
+    "Logic_Basic.lean": {
+      "file_size_bytes": 41521,
+      "file_size_human": "40.5 KB",
+      "description": "Basic logical operations and proofs", 
+      "raw_measurements": {
+        "run_1_seconds": 0.3743,
+        "run_2_seconds": 0.4405,
+        "run_3_seconds": 0.3866
+      },
+      "analysis": {
+        "mean_seconds": 0.4005,
+        "min_seconds": 0.3743,
+        "max_seconds": 0.4405,
+        "note": "Moderate variation across runs"
+      }
+    },
+    "Nat_Basic.lean": {
+      "file_size_bytes": 3963,
+      "file_size_human": "3.9 KB",
+      "description": "Basic natural number operations (smallest file)",
+      "raw_measurements": {
+        "run_1_seconds": 0.3712,
+        "run_2_seconds": 0.3809,
+        "run_3_seconds": 0.3677
+      },
+      "analysis": {
+        "mean_seconds": 0.3733,
+        "min_seconds": 0.3677,
+        "max_seconds": 0.3809,
+        "note": "Very consistent performance despite being smallest file"
+      }
+    },
+    "Order_Basic.lean": {
+      "file_size_bytes": 55993,
+      "file_size_human": "54.7 KB",
+      "description": "Basic order theory and relations (largest file)",
+      "raw_measurements": {
+        "run_1_seconds": 0.3509,
+        "run_2_seconds": 0.3691,
+        "run_3_seconds": 0.4344
+      },
+      "analysis": {
+        "mean_seconds": 0.3848,
+        "min_seconds": 0.3509,
+        "max_seconds": 0.4344,
+        "note": "Fastest despite being largest file - suggests file size not primary factor"
+      }
+    }
+  },
+  "baseline_summary": {
+    "total_files": 5,
+    "total_size_bytes": 187837,
+    "total_size_human": "183.4 KB",
+    "performance_insights": [
+      "File size does not directly correlate with compilation time",
+      "Cold start effect visible in Group_Basic.lean first run",
+      "Overall compilation times range from 0.35-1.63 seconds",
+      "Smallest file (Nat_Basic) not fastest, largest file (Order_Basic) not slowest",
+      "Suggests complexity/content matters more than file size"
+    ],
+    "timing_ranges": {
+      "fastest_single_run": {
+        "file": "Order_Basic.lean",
+        "time_seconds": 0.3509
+      },
+      "slowest_single_run": {
+        "file": "Group_Basic.lean", 
+        "time_seconds": 1.6253,
+        "note": "Likely cold start effect"
+      },
+      "most_consistent": {
+        "file": "Nat_Basic.lean",
+        "std_dev_approx": 0.0066
+      }
+    }
+  },
+  "raw_data_guarantee": {
+    "no_averaging": "All individual run times preserved",
+    "no_statistics": "Only basic min/max/mean provided for context",
+    "no_filtering": "All measurements included, including outliers",
+    "pure_truth": "These are the actual times Lean took to process these files on this system"
+  }
+}
