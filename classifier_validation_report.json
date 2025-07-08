@@ -1,0 +1,181 @@
+{
+  "summary": {
+    "total_files": 791,
+    "train_size": 553,
+    "test_size": 238,
+    "accuracy": 0.6932773109243697,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1_score": 0.0,
+    "meets_85_percent_target": false
+  },
+  "misclassifications": [
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/lake/Lake/DSL/Meta.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "algebraic_uniform",
+      "confidence": 0.5241747572815534,
+      "success_probability": 0.335
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Init/WF.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6860409924487594,
+      "success_probability": 0.41333333333333333
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/lake/Lake/Util/MainM.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "unknown_complex",
+      "confidence": 0.24236893203883494,
+      "success_probability": 0.18500000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/LocalContext.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "abstract_moderate",
+      "confidence": 0.5626860841423948,
+      "success_probability": 0.2254914822613403
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Data/Lsp/Communication.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6516666666666666,
+      "success_probability": 0.41000000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Meta/Closure.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "tactic_heavy_automated",
+      "confidence": 0.6335922330097088,
+      "success_probability": 0.28300000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Meta/CasesOn.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6533333333333333,
+      "success_probability": 0.41000000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Elab/Deriving/FromToJson.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.655,
+      "success_probability": 0.41000000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Elab/RecAppSyntax.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.5627184466019417,
+      "success_probability": 0.401
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Meta/Tactic/Cases.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6676190476190476,
+      "success_probability": 0.41114285714285714
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Compiler/LCNF/Internalize.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6433333333333333,
+      "success_probability": 0.41000000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Elab/Command.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "algebraic_uniform",
+      "confidence": 0.6532362459546925,
+      "success_probability": 0.355
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Init/Data/Queue.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6973462783171521,
+      "success_probability": 0.401
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Elab/Tactic/Simproc.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "tactic_heavy_automated",
+      "confidence": 0.6128802588996763,
+      "success_probability": 0.22760000000000002
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Meta/Tactic/Revert.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6433333333333333,
+      "success_probability": 0.41000000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Elab/Tactic/Calc.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6851132686084143,
+      "success_probability": 0.3995000000000001
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Meta/Tactic/Apply.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.6533333333333333,
+      "success_probability": 0.41000000000000003
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Elab/Term.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "abstract_moderate",
+      "confidence": 0.5186959127412202,
+      "success_probability": 0.22826599326599328
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Init/Control/Lawful.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.7654976845643584,
+      "success_probability": 0.422675138121547
+    },
+    {
+      "file": "/Users/brightliu/.elan/toolchains/leanprover--lean4-nightly---nightly-2024-02-01/src/lean/Lean/Meta/Tactic/Util.lean",
+      "predicted": 0,
+      "actual": 1,
+      "context_type": "arithmetic_uniform",
+      "confidence": 0.8049190938511327,
+      "success_probability": 0.42550000000000004
+    }
+  ],
+  "recommendations": [
+    "Accuracy 69.33% is below 85% target - classifier needs improvement",
+    "Low precision - too many false positives. Tighten success criteria.",
+    "Low recall - missing successful optimizations. Expand pattern detection.",
+    "Context type 'arithmetic_uniform' has high error rate (20.6%) - needs recalibration",
+    "Context type 'unknown_complex' has high error rate (5.5%) - needs recalibration"
+  ]
+}

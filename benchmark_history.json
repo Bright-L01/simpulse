@@ -1,0 +1,63 @@
+{
+  "benchmarks": [
+    {
+      "id": "06b9540fb81c",
+      "timestamp": "20250704_100539",
+      "file": "benchmarks/benchmark_results/benchmark_20250704_100539.json",
+      "git": {
+        "commit": "e8cc2a36b94c017a1087995f2a0eef2790ad2d5d",
+        "branch": "main",
+        "message": "feat: robust rule extraction with honest metrics",
+        "author": "Bright-L01 <brightliu@college.harvard.edu>",
+        "has_uncommitted_changes": true
+      },
+      "system": {
+        "platform": "macOS-15.5-arm64-arm-64bit",
+        "processor": "arm",
+        "python_version": "3.12.9 | packaged by conda-forge | (main, Feb 14 2025, 07:56:32) [Clang 18.1.8 ]",
+        "lean_version": "Lean (version 4.21.0, arm64-apple-darwin23.6.0, commit 6741444a63ee, Release)",
+        "cpu_count": 8,
+        "memory_total": 17179869184,
+        "timestamp": "2025-07-04T10:05:39.838062"
+      },
+      "summary": {
+        "benchmark_files/bench_optimized.lean": {
+          "avg_wall_time": 0.7226387659708658,
+          "min_wall_time": 0.40923404693603516,
+          "max_wall_time": 1.3420050144195557,
+          "avg_memory_mb": 192.22395833333334,
+          "successful_runs": 3,
+          "total_runs": 3
+        },
+        "benchmark_files/bench_lists.lean": {
+          "avg_wall_time": 0.45576055844624835,
+          "min_wall_time": 0.41930699348449707,
+          "max_wall_time": 0.5192790031433105,
+          "avg_memory_mb": 103.078125,
+          "successful_runs": 3,
+          "total_runs": 3
+        },
+        "benchmark_files/bench_complex.lean": {
+          "avg_wall_time": 0.48372658093770343,
+          "min_wall_time": 0.41661691665649414,
+          "max_wall_time": 0.519744873046875,
+          "avg_memory_mb": 184.09375,
+          "successful_runs": 3,
+          "total_runs": 3
+        },
+        "benchmark_files/bench_arithmetic.lean": {
+          "avg_wall_time": 0.48264869054158527,
+          "min_wall_time": 0.41724300384521484,
+          "max_wall_time": 0.5154719352722168,
+          "avg_memory_mb": 143.06770833333334,
+          "successful_runs": 3,
+          "total_runs": 3
+        }
+      },
+      "tags": [
+        "baseline",
+        "core-lean"
+      ]
+    }
+  ]
+}

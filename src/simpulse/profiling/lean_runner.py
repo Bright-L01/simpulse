@@ -13,8 +13,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-# Import security validators
-from ..security.validators import validate_command_args, validate_file_path
+# Security validators removed - using simple inline validation
 
 logger = logging.getLogger(__name__)
 
@@ -312,8 +311,11 @@ class LeanRunner:
         Raises:
             ValueError: If path is invalid or unsafe
         """
-        # Use the security validator
-        validate_file_path(path)
+        # Simple path validation
+        if not path.exists():
+            raise ValueError(f"File does not exist: {path}")
+        if not path.is_file():
+            raise ValueError(f"Path is not a file: {path}")
 
         # Additional Lean-specific validation
         if not str(path).endswith(".lean"):
@@ -328,7 +330,8 @@ class LeanRunner:
         Returns:
             Validated arguments
         """
-        return validate_command_args(args)
+        # Simple command validation - just return args as-is for now
+        return args
 
     def _validate_file_size(self, path: Path, max_size_mb: int = 50) -> None:
         """Validate file size is within limits.
@@ -340,9 +343,10 @@ class LeanRunner:
         Raises:
             ValueError: If file is too large
         """
-        from ..security.validators import validate_file_size
-
-        validate_file_size(path, max_size_mb)
+        # Simple file size validation
+        file_size_mb = path.stat().st_size / (1024 * 1024)
+        if file_size_mb > max_size_mb:
+            raise ValueError(f"File too large: {file_size_mb:.1f}MB > {max_size_mb}MB")
 
     def _check_rate_limit(self) -> bool:
         """Check if rate limited.

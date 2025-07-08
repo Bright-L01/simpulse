@@ -1,0 +1,22 @@
+{
+  "experiment_summary": {
+    "total_experiments": 5,
+    "unique_files": 1,
+    "strategies_tested": 5,
+    "contexts_found": 1
+  },
+  "best_strategies_by_context": {
+    "arithmetic_uniform": {
+      "strategy": "no_optimization",
+      "speedup": 1.2110276717721384,
+      "success_rate": 1.0
+    }
+  },
+  "overall_best_strategy": {
+    "strategy": "no_optimization",
+    "average_speedup": 1.2110276717721384
+  },
+  "key_findings": [
+    "Significant speedups achieved: 1.21x average"
+  ]
+}

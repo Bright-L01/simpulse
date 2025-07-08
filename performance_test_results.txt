@@ -1,0 +1,7 @@
+SIMP PRIORITY OPTIMIZATION TEST RESULTS
+==================================================
+
+Baseline avg time:  0.500s
+Optimized avg time: 0.370s
+Speedup:            1.35x
+Time saved:         26.0%

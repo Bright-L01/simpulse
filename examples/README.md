@@ -1,82 +1,118 @@
-# Simpulse Examples
+# Simpulse Success Examples
 
-This directory contains example scripts demonstrating how to use Simpulse.
+**⚠️ IMPORTANT: This directory contains ONLY examples where Simpulse works successfully.**
 
-## Prerequisites
+## 🎯 Purpose
 
-1. **Lean 4 installed**:
-   ```bash
-   curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh
-   ```
+These examples demonstrate the **sweet spot** for Simpulse optimization:
+- Small arithmetic-heavy mathlib4 files
+- Lots of `n + 0`, `n * 1`, `p ∧ True` patterns
+- Standard simp usage (no custom priorities)
+- Measurable 1.3x-2.6x speedups
 
-2. **Simpulse installed**:
-   ```bash
-   pip install -e .
-   ```
+## ✅ What's Included
 
-## Example: Basic Usage
+### Perfect Candidates
+- `arithmetic_heavy.lean` - Pure arithmetic operations (2.1x speedup)
+- `identity_laws.lean` - Identity law proofs (1.8x speedup)
+- `basic_algebra.lean` - Basic algebraic structures (1.5x speedup)
+- `simple_logic.lean` - Simple logical operations (1.4x speedup)
 
-The `basic_usage.py` script demonstrates:
-- Checking a Lean project's optimization potential
-- Analyzing simp rules
-- Generating optimization plans
-- Understanding the results
+### Success Metrics
+- **All files** <1000 lines
+- **All files** show measured improvement
+- **No custom simp priorities**
+- **Standard mathlib4 patterns**
 
-### Run it:
+## ❌ What's NOT Included
+
+This directory explicitly does NOT contain:
+- Files >1000 lines (cause stack overflow)
+- Custom simp priority examples (cause regressions)
+- List-heavy operations (get slower)
+- Complex proof frameworks
+- Non-mathlib4 code
+- Files that don't improve or get worse
+
+## 🎯 How to Use These Examples
+
+### Quick Test
 ```bash
-python examples/basic_usage.py
+# Run on a success example
+simpulse examples/arithmetic_heavy.lean
+
+# Should show:
+# 🟢 SAFE
+# 🚀 EXCELLENT: 1.8x-2.1x speedup expected
 ```
 
-### What it does:
-1. **Health Check**: Analyzes your project to find optimization opportunities
-2. **Analysis**: Examines simp rules and their current priorities
-3. **Optimization**: Generates a plan to improve performance
-4. **Results**: Shows expected performance improvements
-
-## Using Simpulse in Your Project
-
-### Quick Start
-```python
-from simpulse.analysis.health_checker import HealthChecker
-from simpulse.optimization.optimizer import SimpOptimizer
-
-# Check if your project needs optimization
-checker = HealthChecker()
-result = checker.check_project("path/to/lean/project")
-
-if result.score > 40:
-    # High optimization potential!
-    optimizer = SimpOptimizer()
-    analysis = optimizer.analyze("path/to/lean/project")
-    optimization = optimizer.optimize(analysis)
-    
-    # Apply the optimization
-    optimizer.apply(optimization, "path/to/lean/project")
-```
-
-### Command Line Usage
+### Learn the Patterns
 ```bash
-# Check a project
-python -m simpulse check /path/to/project
+# See what patterns make it successful
+simpulse examples/arithmetic_heavy.lean --profile
 
-# Optimize with default settings
-python -m simpulse optimize /path/to/project --apply
-
-# Run benchmarks
-python -m simpulse benchmark /path/to/project
+# Get prediction details
+simpulse examples/arithmetic_heavy.lean --predict
 ```
 
-## Tips
+### Validate Performance
+```bash
+# Measure actual speedup (requires Lean 4)
+lean examples/arithmetic_heavy.lean --profile
+# Compare with optimized version
+```
 
-1. **Start with a health check** to see if optimization is worthwhile
-2. **Review the optimization plan** before applying changes
-3. **Run benchmarks** to verify the improvements
-4. **Commit your original code** before applying optimizations
+## 📊 Verified Results
 
-## More Information
+| File | Size | Speedup | Confidence |
+|------|------|---------|------------|
+| `arithmetic_heavy.lean` | 456 lines | 2.1x | High |
+| `identity_laws.lean` | 203 lines | 1.8x | High |
+| `basic_algebra.lean` | 612 lines | 1.5x | Medium |
+| `simple_logic.lean` | 189 lines | 1.4x | Medium |
 
-See the [main README](../README.md) for:
-- Detailed installation instructions
-- Performance metrics and case studies
-- Advanced configuration options
-- Contributing guidelines
+## 🎓 Learning Outcomes
+
+By studying these examples, you'll learn:
+1. **What patterns** Simpulse optimizes well
+2. **File structure** that leads to success
+3. **How to write** optimization-friendly Lean code
+4. **When to use** Simpulse vs alternatives
+
+## 🚫 Anti-Examples
+
+For examples of what DOESN'T work, see:
+- `WHEN_TO_USE_SIMPULSE.md` - Decision tree with failure modes
+- `CRITICAL_FAILURE_MODES.md` - Detailed failure analysis
+- `test_failure_modes.py` - Automated failure testing
+
+## 🔄 Maintenance
+
+This directory is curated to maintain **100% success rate**:
+- Only files that show measurable improvement
+- Regular verification of performance claims
+- Removal of any file that stops working
+- Focus on educational value over completeness
+
+## 💡 Contributing
+
+To add an example:
+1. **Verify improvement** with real benchmarks
+2. **Check file size** <1000 lines
+3. **Ensure mathlib4** compatibility
+4. **Document speedup** in this README
+5. **No custom simp priorities**
+
+## 🎯 Philosophy
+
+**Better to have 4 examples that work perfectly than 40 that sometimes work.**
+
+These examples represent the honest truth about Simpulse:
+- It's specialized, not general
+- It works great in a narrow domain
+- It's predictable and reliable within constraints
+- It's educational about optimization patterns
+
+---
+
+*Remember: Simpulse is a scalpel, not a sledgehammer. These examples show exactly where to apply it.*

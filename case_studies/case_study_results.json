@@ -1,0 +1,97 @@
+[
+  {
+    "file": "Data/List/Basic.lean",
+    "description": "List operations - heavy simp usage",
+    "characteristics": "Recursive data structures, many simp lemmas",
+    "baseline": {
+      "times": [
+        1.2533929347991943,
+        0.4317138195037842,
+        0.3688082695007324,
+        0.36458611488342285,
+        0.3600490093231201
+      ],
+      "mean": 0.5557100296020507,
+      "stdev": 0.39111390600629253,
+      "min": 0.3600490093231201,
+      "max": 1.2533929347991943,
+      "iterations": 5
+    },
+    "optimized": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "speedup": 0,
+    "improvement_percent": 0
+  },
+  {
+    "file": "Algebra/Group/Basic.lean",
+    "description": "Group theory - algebraic simplification",
+    "characteristics": "Abstract algebra, associativity/commutativity",
+    "baseline": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "optimized": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "speedup": 0,
+    "improvement_percent": 0
+  },
+  {
+    "file": "Data/Nat/Basic.lean",
+    "description": "Natural numbers - arithmetic heavy",
+    "characteristics": "Basic arithmetic, fundamental lemmas",
+    "baseline": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "optimized": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "speedup": 0,
+    "improvement_percent": 0
+  },
+  {
+    "file": "Logic/Basic.lean",
+    "description": "Logic foundations - boolean simplification",
+    "characteristics": "Propositional logic, many small lemmas",
+    "baseline": {
+      "times": [
+        0.36480093002319336,
+        0.35537195205688477,
+        0.3849477767944336,
+        0.387376070022583,
+        0.39765191078186035
+      ],
+      "mean": 0.37802972793579104,
+      "stdev": 0.017382602452233505,
+      "min": 0.35537195205688477,
+      "max": 0.39765191078186035,
+      "iterations": 5
+    },
+    "optimized": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "speedup": 0,
+    "improvement_percent": 0
+  },
+  {
+    "file": "Order/Basic.lean",
+    "description": "Order relations - comparison lemmas",
+    "characteristics": "Transitivity, reflexivity patterns",
+    "baseline": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "optimized": {
+      "error": "Compilation failed",
+      "times": []
+    },
+    "speedup": 0,
+    "improvement_percent": 0
+  }
+]

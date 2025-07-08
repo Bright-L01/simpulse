@@ -1,0 +1,72 @@
+[
+  {
+    "file_path": "/Users/brightliu/Coding_Projects/simpulse/final_proof_test.lean",
+    "context_type": "arithmetic_uniform",
+    "strategy_name": "no_optimization",
+    "baseline_time": 0.46999597549438477,
+    "optimized_time": 0.38809680938720703,
+    "speedup": 1.2110276717721384,
+    "success": true,
+    "error_message": null,
+    "detailed_metrics": {
+      "file_size": 572,
+      "line_count": 19
+    }
+  },
+  {
+    "file_path": "/Users/brightliu/Coding_Projects/simpulse/final_proof_test.lean",
+    "context_type": "arithmetic_uniform",
+    "strategy_name": "conservative",
+    "baseline_time": 0.429110050201416,
+    "optimized_time": 0.44707202911376953,
+    "speedup": 0.9598230760534057,
+    "success": false,
+    "error_message": null,
+    "detailed_metrics": {
+      "file_size": 572,
+      "line_count": 19
+    }
+  },
+  {
+    "file_path": "/Users/brightliu/Coding_Projects/simpulse/final_proof_test.lean",
+    "context_type": "arithmetic_uniform",
+    "strategy_name": "moderate",
+    "baseline_time": 0.4279477596282959,
+    "optimized_time": 0.3998568058013916,
+    "speedup": 1.0702525339555107,
+    "success": true,
+    "error_message": null,
+    "detailed_metrics": {
+      "file_size": 572,
+      "line_count": 19
+    }
+  },
+  {
+    "file_path": "/Users/brightliu/Coding_Projects/simpulse/final_proof_test.lean",
+    "context_type": "arithmetic_uniform",
+    "strategy_name": "aggressive",
+    "baseline_time": 0.49750590324401855,
+    "optimized_time": 0.41446399688720703,
+    "speedup": 1.2003597585809382,
+    "success": true,
+    "error_message": null,
+    "detailed_metrics": {
+      "file_size": 572,
+      "line_count": 19
+    }
+  },
+  {
+    "file_path": "/Users/brightliu/Coding_Projects/simpulse/final_proof_test.lean",
+    "context_type": "arithmetic_uniform",
+    "strategy_name": "selective_top5",
+    "baseline_time": 0.42138099670410156,
+    "optimized_time": 0.3928070068359375,
+    "speedup": 1.0727430757875926,
+    "success": true,
+    "error_message": null,
+    "detailed_metrics": {
+      "file_size": 572,
+      "line_count": 19
+    }
+  }
+]

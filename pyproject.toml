@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "simpulse"
-version = "1.1.0"
-description = "High-performance optimization tool for Lean 4 simp tactics"
+version = "0.4.0"
+description = "Rule extraction and basic optimization toolkit for Lean 4"
 authors = ["Bright Liu <bright.liu@example.com>"]
 license = "MIT"
 readme = "README.md"
@@ -9,7 +9,7 @@ repository = "https://github.com/Bright-L01/simpulse"
 documentation = "https://simpulse.readthedocs.io"
 keywords = ["lean4", "theorem-proving", "optimization", "simp", "tactics"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering :: Mathematics",
@@ -33,8 +33,7 @@ click = "^8.1.7"
 rich = "^13.7.0"
 pydantic = "^2.5.0"
 typing-extensions = "^4.8.0"
-sentence-transformers = "^2.2.2"
-torch = "^2.0.0"
+# ML dependencies removed - not actually used
 numpy = "^1.24.0"
 psutil = "^5.9.0"
 

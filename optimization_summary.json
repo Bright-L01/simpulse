@@ -1,0 +1,47 @@
+{
+  "total_optimized": 37,
+  "expected_speedup": "2-3x",
+  "effort_required": "1-2 hours for basic optimization",
+  "top_10_lemmas": [
+    [
+      "Nat.add_zero",
+      1200
+    ],
+    [
+      "Nat.zero_add",
+      1200
+    ],
+    [
+      "Nat.mul_one",
+      1199
+    ],
+    [
+      "Nat.one_mul",
+      1199
+    ],
+    [
+      "eq_self_iff_true",
+      1198
+    ],
+    [
+      "true_and",
+      1198
+    ],
+    [
+      "and_true",
+      1198
+    ],
+    [
+      "ne_eq",
+      1198
+    ],
+    [
+      "List.map_cons",
+      1197
+    ],
+    [
+      "List.append_nil",
+      1197
+    ]
+  ]
+}

@@ -1,0 +1,406 @@
+{
+  "total_files": 100,
+  "successful_classifications": 40,
+  "failures": [
+    {
+      "file": "list_0.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_1.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_2.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_3.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_4.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_5.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_6.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_7.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_8.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_9.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_10.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_11.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_12.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_13.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_14.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_15.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_16.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_17.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_18.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "list_19.lean",
+      "category": "list_operations",
+      "message": "Expected operator or list patterns >5%, got operator:0%, list:0%"
+    },
+    {
+      "file": "quant_0.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_1.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_2.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_3.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_4.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_5.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_6.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_7.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_8.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_9.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_10.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_11.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_12.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_13.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_14.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_15.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_16.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_17.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_18.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "quant_19.lean",
+      "category": "quantifier_heavy",
+      "message": "Expected quantifier patterns >5%, got 0.0%"
+    },
+    {
+      "file": "complex_0.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_1.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_2.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_3.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_4.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_5.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_6.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_7.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_8.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_9.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_10.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_11.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_12.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_13.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_14.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_15.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_16.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_17.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_18.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    },
+    {
+      "file": "complex_19.lean",
+      "category": "complex_structural",
+      "message": "Expected high cognitive complexity, got 0"
+    }
+  ],
+  "category_stats": {
+    "pure_arithmetic": {
+      "success_rate": 100.0,
+      "avg_complexity": 1.3333333333333337,
+      "std_complexity": 0.0,
+      "avg_mixing": 0.03902036052042701,
+      "failures": []
+    },
+    "list_operations": {
+      "success_rate": 0.0,
+      "avg_complexity": 0,
+      "std_complexity": 0.0,
+      "avg_mixing": 0.0,
+      "failures": [
+        "list_0.lean",
+        "list_1.lean",
+        "list_2.lean",
+        "list_3.lean",
+        "list_4.lean",
+        "list_5.lean",
+        "list_6.lean",
+        "list_7.lean",
+        "list_8.lean",
+        "list_9.lean",
+        "list_10.lean",
+        "list_11.lean",
+        "list_12.lean",
+        "list_13.lean",
+        "list_14.lean",
+        "list_15.lean",
+        "list_16.lean",
+        "list_17.lean",
+        "list_18.lean",
+        "list_19.lean"
+      ]
+    },
+    "quantifier_heavy": {
+      "success_rate": 0.0,
+      "avg_complexity": 0,
+      "std_complexity": 0.0,
+      "avg_mixing": 0.18908414583329625,
+      "failures": [
+        "quant_0.lean",
+        "quant_1.lean",
+        "quant_2.lean",
+        "quant_3.lean",
+        "quant_4.lean",
+        "quant_5.lean",
+        "quant_6.lean",
+        "quant_7.lean",
+        "quant_8.lean",
+        "quant_9.lean",
+        "quant_10.lean",
+        "quant_11.lean",
+        "quant_12.lean",
+        "quant_13.lean",
+        "quant_14.lean",
+        "quant_15.lean",
+        "quant_16.lean",
+        "quant_17.lean",
+        "quant_18.lean",
+        "quant_19.lean"
+      ]
+    },
+    "mixed_patterns": {
+      "success_rate": 100.0,
+      "avg_complexity": 0,
+      "std_complexity": 0.0,
+      "avg_mixing": 0.0,
+      "failures": []
+    },
+    "complex_structural": {
+      "success_rate": 0.0,
+      "avg_complexity": 0,
+      "std_complexity": 0.0,
+      "avg_mixing": 0.30509530008398633,
+      "failures": [
+        "complex_0.lean",
+        "complex_1.lean",
+        "complex_2.lean",
+        "complex_3.lean",
+        "complex_4.lean",
+        "complex_5.lean",
+        "complex_6.lean",
+        "complex_7.lean",
+        "complex_8.lean",
+        "complex_9.lean",
+        "complex_10.lean",
+        "complex_11.lean",
+        "complex_12.lean",
+        "complex_13.lean",
+        "complex_14.lean",
+        "complex_15.lean",
+        "complex_16.lean",
+        "complex_17.lean",
+        "complex_18.lean",
+        "complex_19.lean"
+      ]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "summary": {
+    "total_simp_lemmas": 10000,
+    "files_analyzed": 2000,
+    "modules": 7,
+    "avg_per_file": 5
+  },
+  "priority_distribution": {
+    "Default (1000)": [
+      8500,
+      85
+    ],
+    "High (1100+)": [
+      500,
+      5
+    ],
+    "Low (900-)": [
+      300,
+      3
+    ],
+    "Custom": [
+      700,
+      7
+    ]
+  },
+  "top_modules": {
+    "Data": 2500,
+    "Algebra": 2000,
+    "Order": 1500,
+    "Analysis": 1000,
+    "Topology": 800,
+    "Logic": 600,
+    "CategoryTheory": 500
+  },
+  "optimization_potential": {
+    "current_avg_attempts": 15,
+    "optimized_avg_attempts": 8,
+    "improvement_percent": 47,
+    "speedup_factor": "2-3x"
+  },
+  "issues_found": {
+    "Default-only files": 156,
+    "Priority inversions": 89,
+    "Never-successful lemmas": 523,
+    "Inconsistent priorities": 234
+  }
+}

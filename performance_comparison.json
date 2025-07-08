@@ -1,0 +1,38 @@
+{
+  "baseline": {
+    "wall_time": 2.0969128608703613,
+    "perf_time": 2.0969767080023303,
+    "exit_code": 0,
+    "max_memory_mb": 241.78125,
+    "avg_cpu_percent": 23.4,
+    "peak_cpu_percent": 141.8,
+    "profile_data": {
+      "elaboration_time": null,
+      "type_checking_time": null,
+      "simp_time": null,
+      "tactic_time": null,
+      "total_time": null,
+      "cumulative": "attribute application 0.677ms\n\telaboration 169ms\n\tfix level params 1.7ms\n\timport 1.36s\n\tinitialization 58.9ms\n\tinstantiate metavars 0.385ms\n\tinterpretation 35.8ms\n\tlinting 10.6ms\n\tparsing 9.97ms\n\tprocess pre-definitions 16.7ms\n\tshare common exprs 2.83ms\n\tsimp 76.2ms\n\ttactic execution 22.2ms\n\ttype checking 18.7ms\n\ttypeclass inference 106ms"
+    },
+    "num_samples": 20
+  },
+  "optimized": {
+    "wall_time": 0.7397768497467041,
+    "perf_time": 0.739800124996691,
+    "exit_code": 0,
+    "max_memory_mb": 243.3125,
+    "avg_cpu_percent": 45.642857142857146,
+    "peak_cpu_percent": 138.0,
+    "profile_data": {
+      "elaboration_time": null,
+      "type_checking_time": null,
+      "simp_time": null,
+      "tactic_time": null,
+      "total_time": null,
+      "cumulative": "attribute application 2.69ms\n\telaboration 66.7ms\n\tfix level params 1.09ms\n\timport 163ms\n\tinitialization 24.1ms\n\tinstantiate metavars 0.481ms\n\tinterpretation 10.4ms\n\tlinting 5.45ms\n\tparsing 10.4ms\n\tprocess pre-definitions 5.7ms\n\tshare common exprs 2.98ms\n\tsimp 58.6ms\n\ttactic execution 6.89ms\n\ttype checking 18.3ms\n\ttypeclass inference 90.2ms"
+    },
+    "num_samples": 7
+  },
+  "speedup": 2.8345207904090723,
+  "memory_reduction": -1.53125
+}

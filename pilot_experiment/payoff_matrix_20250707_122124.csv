@@ -1,0 +1,2 @@
+context_type,adaptive_threshold,aggressive,conservative,contextual_arithmetic,inverse_reduction,kitchen_sink,moderate,no_optimization,random_shuffle,selective_top5
+arithmetic_uniform,0.9917252943306807,0.9435286160789014,0.9963157018095387,1.1074176698654998,0.6848883648528148,1.1094573066794857,0.8960956614966162,1.0071190009851476,1.0319100620913753,1.0334619471206394

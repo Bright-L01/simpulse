@@ -1,0 +1,208 @@
+{
+  "test_date": "2025-07-05 00:05:18",
+  "total_tests": 18,
+  "total_failures": 12,
+  "failure_rate": 66.66666666666666,
+  "compilation_errors": 7,
+  "performance_regressions": 5,
+  "results": [
+    {
+      "test_name": "large_file_10k",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": "\nStack overflow detected. Aborting.\n"
+    },
+    {
+      "test_name": "unusual_simp_with_config",
+      "baseline_time": 0.41115903854370117,
+      "optimized_time": 0.3822908401489258,
+      "speedup": 1.0755137067462288,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "unusual_simp_only",
+      "baseline_time": 0.46714186668395996,
+      "optimized_time": 0.4080979824066162,
+      "speedup": 1.1446806571528556,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "unusual_simp_with_args",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": ""
+    },
+    {
+      "test_name": "unusual_simp_star",
+      "baseline_time": 2.1857211589813232,
+      "optimized_time": 2.2693331241607666,
+      "speedup": 0.963155711125327,
+      "regression": true,
+      "regression_percent": 3.825371998430556,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "unusual_simp_rw",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": ""
+    },
+    {
+      "test_name": "unusual_nested_simp",
+      "baseline_time": 2.013173818588257,
+      "optimized_time": 1.0000169277191162,
+      "speedup": 2.013139740724184,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "unusual_simp_at",
+      "baseline_time": 1.0842061042785645,
+      "optimized_time": 0.6571180820465088,
+      "speedup": 1.6499410591501995,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "custom_custom_simp_set",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": ""
+    },
+    {
+      "test_name": "custom_multiple_simp_sets",
+      "baseline_time": 0.4081449508666992,
+      "optimized_time": 0.5302252769470215,
+      "speedup": 0.7697576268275114,
+      "regression": true,
+      "regression_percent": 29.911022008500577,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "custom_simp_proc",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": ""
+    },
+    {
+      "test_name": "custom_conditional_simp",
+      "baseline_time": 0.39421987533569336,
+      "optimized_time": 0.4091677665710449,
+      "speedup": 0.9634675738007917,
+      "regression": true,
+      "regression_percent": 3.791764994756507,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "custom_scoped_simp",
+      "baseline_time": 0.48812007904052734,
+      "optimized_time": 0.49663829803466797,
+      "speedup": 0.9828482438268463,
+      "regression": true,
+      "regression_percent": 1.7451072717361786,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "non_mathlib_game_dev",
+      "baseline_time": 0.5120439529418945,
+      "optimized_time": 0.4512450695037842,
+      "speedup": 1.1347358398950893,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "non_mathlib_web_framework",
+      "baseline_time": 0.5691871643066406,
+      "optimized_time": 0.45759057998657227,
+      "speedup": 1.2438786749573016,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "non_mathlib_compiler_dev",
+      "baseline_time": 0.7051351070404053,
+      "optimized_time": 1.0187878608703613,
+      "speedup": 0.6921314378814848,
+      "regression": true,
+      "regression_percent": 44.48122788077028,
+      "compilation_error": false,
+      "error_message": null
+    },
+    {
+      "test_name": "non_mathlib_crypto_verification",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": ""
+    },
+    {
+      "test_name": "non_mathlib_ml_formalization",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "compilation_error": true,
+      "error_message": ""
+    }
+  ],
+  "failure_analysis": {
+    "compilation_error_tests": [
+      "large_file_10k",
+      "unusual_simp_with_args",
+      "unusual_simp_rw",
+      "custom_custom_simp_set",
+      "custom_simp_proc",
+      "non_mathlib_crypto_verification",
+      "non_mathlib_ml_formalization"
+    ],
+    "regression_tests": {
+      "unusual_simp_star": 3.825371998430556,
+      "custom_multiple_simp_sets": 29.911022008500577,
+      "custom_conditional_simp": 3.791764994756507,
+      "custom_scoped_simp": 1.7451072717361786,
+      "non_mathlib_compiler_dev": 44.48122788077028
+    }
+  }
+}

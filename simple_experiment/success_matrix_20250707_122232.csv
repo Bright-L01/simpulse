@@ -1,0 +1,2 @@
+context_type,aggressive,conservative,moderate,no_optimization,selective_top5
+arithmetic_uniform,1.0,0.0,1.0,1.0,1.0

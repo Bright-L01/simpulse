@@ -1,0 +1,117 @@
+{
+  "accuracy": 0.09090909090909091,
+  "total_tests": 11,
+  "matches": 1,
+  "results": [
+    {
+      "expected": "pure_identity_arithmetic",
+      "predicted": "tactic_heavy",
+      "matches": false,
+      "confidence": 0.85,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "tactic_specific_ordering"
+    },
+    {
+      "expected": "simple_list_operations",
+      "predicted": "tactic_heavy",
+      "matches": false,
+      "confidence": 0.85,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "tactic_specific_ordering"
+    },
+    {
+      "expected": "complex_arithmetic",
+      "predicted": "tactic_heavy",
+      "matches": false,
+      "confidence": 0.85,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "tactic_specific_ordering"
+    },
+    {
+      "expected": "quantifier_chains",
+      "predicted": "quantifier_chains",
+      "matches": true,
+      "confidence": 0.8,
+      "success_rate": 0.22,
+      "adjusted_success": 0.20600000000000002,
+      "should_optimize": false,
+      "strategy": "quantifier_lifting"
+    },
+    {
+      "expected": "recursive_structures",
+      "predicted": "complex_arithmetic",
+      "matches": false,
+      "confidence": 0.6,
+      "success_rate": 0.28,
+      "adjusted_success": 0.228,
+      "should_optimize": false,
+      "strategy": "operator_precedence_ordering"
+    },
+    {
+      "expected": "case_analysis",
+      "predicted": "recursive_structures",
+      "matches": false,
+      "confidence": 1.4,
+      "success_rate": 0.3,
+      "adjusted_success": 0.36,
+      "should_optimize": true,
+      "strategy": "induction_friendly_ordering"
+    },
+    {
+      "expected": "type_class_resolution",
+      "predicted": "unknown_novel",
+      "matches": false,
+      "confidence": 0.3,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "conservative_ordering"
+    },
+    {
+      "expected": "tactic_heavy",
+      "predicted": "complex_arithmetic",
+      "matches": false,
+      "confidence": 0.6,
+      "success_rate": 0.28,
+      "adjusted_success": 0.228,
+      "should_optimize": false,
+      "strategy": "operator_precedence_ordering"
+    },
+    {
+      "expected": "algebraic_structures",
+      "predicted": "tactic_heavy",
+      "matches": false,
+      "confidence": 0.85,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "tactic_specific_ordering"
+    },
+    {
+      "expected": "mixed_low_interference",
+      "predicted": "tactic_heavy",
+      "matches": false,
+      "confidence": 0.85,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "tactic_specific_ordering"
+    },
+    {
+      "expected": "mixed_high_interference",
+      "predicted": "tactic_heavy",
+      "matches": false,
+      "confidence": 0.85,
+      "success_rate": 0.15,
+      "adjusted_success": 0.15,
+      "should_optimize": false,
+      "strategy": "tactic_specific_ordering"
+    }
+  ]
+}

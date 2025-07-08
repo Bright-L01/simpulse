@@ -168,6 +168,10 @@ class RuleExtractor:
                 if rule:
                     rules.append(rule)
 
+        # Also find "attribute [simp]" style declarations
+        attribute_rules = self._find_attribute_simp_declarations(content, file_path)
+        rules.extend(attribute_rules)
+
         return rules
 
     def _find_simp_attributes(self, content: str) -> list[tuple[int, dict]]:
@@ -184,10 +188,25 @@ class RuleExtractor:
             stripped = line.strip()
             if stripped.startswith("--") or stripped.startswith("/-"):
                 continue
-            
+
             # Look for @[...] attributes that contain 'simp'
             attr_matches = re.findall(r"@\[([^\]]+)\]", line)
-            
+
+            # Also check for nested simp attributes like @[to_additive (attr := simp)]
+            nested_simp_match = re.search(r"@\[.*\(attr\s*:=\s*simp\).*\]", line)
+            if nested_simp_match:
+                # Extract the full attribute content
+                full_attr = nested_simp_match.group(0)
+                attr_content = full_attr[2:-1]  # Remove @[ and ]
+                attr_info = {
+                    "priority": SimpPriority.DEFAULT,
+                    "direction": SimpDirection.FORWARD,
+                    "raw_attr": full_attr,
+                    "simp_part": "simp",
+                    "nested": True,
+                }
+                locations.append((i, attr_info))
+
             for attr_content in attr_matches:
                 # Check if this attribute contains 'simp' (but not 'simps')
                 if self._contains_simp_attribute(attr_content):
@@ -195,20 +214,20 @@ class RuleExtractor:
                     simp_attr = f"@[{attr_content}]"
                     if self._is_attribute_in_comment(line, simp_attr):
                         continue
-                    
+
                     attr_info = self._parse_simp_attribute(attr_content, line)
                     if attr_info:
                         locations.append((i, attr_info))
 
         return locations
-    
+
     def _is_attribute_in_comment(self, line: str, attribute: str) -> bool:
         """Check if an attribute appears in an inline comment.
-        
+
         Args:
             line: The line to check
             attribute: The attribute to look for (e.g., '@[simp]')
-            
+
         Returns:
             True if the attribute appears after a comment marker
         """
@@ -216,34 +235,34 @@ class RuleExtractor:
         attr_pos = line.find(attribute)
         if attr_pos == -1:
             return False
-        
+
         # Find the position of the comment marker
         comment_pos = line.find("--")
         if comment_pos == -1:
             return False
-        
+
         # If the attribute appears after the comment marker, it's in a comment
         return attr_pos > comment_pos
-    
+
     def _contains_simp_attribute(self, attr_content: str) -> bool:
         """Check if attribute content contains a simp attribute (not simps)."""
         # Split by commas and check each part
         parts = [part.strip() for part in attr_content.split(",")]
-        
+
         for part in parts:
             # Check if this part starts with 'simp' but is not 'simps'
             if part.startswith("simp") and not part.startswith("simps"):
                 return True
-        
+
         return False
-    
+
     def _parse_simp_attribute(self, attr_content: str, full_line: str) -> dict | None:
         """Parse a simp attribute to extract priority and direction."""
         # Split by commas and find the simp part
         parts = [part.strip() for part in attr_content.split(",")]
         simp_part = None
         unsupported_parts = []
-        
+
         for part in parts:
             if part.startswith("simp") and not part.startswith("simps"):
                 simp_part = part
@@ -251,17 +270,17 @@ class RuleExtractor:
                 # Track potentially unsupported syntax
                 if not part.startswith("nolint"):
                     unsupported_parts.append(part)
-        
+
         if not simp_part:
             return None
-        
+
         # Parse the simp part: "simp", "simp high", "simp 1000", "simp ←", etc.
         simp_tokens = simp_part.split()
-        
+
         priority = SimpPriority.DEFAULT
         direction = SimpDirection.FORWARD
         unsupported_tokens = []
-        
+
         # Process tokens after 'simp'
         for token in simp_tokens[1:]:
             if token in ["high", "high←", "high↓"]:
@@ -272,6 +291,26 @@ class RuleExtractor:
                 priority = int(token)
             elif token in ["←", "↓"]:
                 direction = SimpDirection.BACKWARD
+            elif "high" in token and "-" in token:
+                # Handle high-1, high-2, etc.
+                try:
+                    num_str = token.split("-")[1]
+                    if num_str.isdigit():
+                        # HIGH is typically around 1500, so high-1 = 1499
+                        priority = 1500 - int(num_str)
+                except (IndexError, ValueError):
+                    logger.warning(f"Failed to parse priority '{token}' in {full_line.strip()}")
+                    unsupported_tokens.append(token)
+            elif "low" in token and "+" in token:
+                # Handle low+1, low+2, etc.
+                try:
+                    num_str = token.split("+")[1]
+                    if num_str.isdigit():
+                        # LOW is typically around 500, so low+1 = 501
+                        priority = 500 + int(num_str)
+                except (IndexError, ValueError):
+                    logger.warning(f"Failed to parse priority '{token}' in {full_line.strip()}")
+                    unsupported_tokens.append(token)
             elif "default" in token:
                 # Handle arithmetic priorities like "default+1"
                 if "+" in token:
@@ -281,7 +320,9 @@ class RuleExtractor:
                         if num_str.isdigit():
                             priority = 1000 + int(num_str)  # default is around 1000
                     except (IndexError, ValueError):
-                        logger.warning(f"Failed to parse arithmetic priority '{token}' in {full_line.strip()}")
+                        logger.warning(
+                            f"Failed to parse arithmetic priority '{token}' in {full_line.strip()}"
+                        )
                         unsupported_tokens.append(token)
                 elif "-" in token:
                     try:
@@ -290,20 +331,24 @@ class RuleExtractor:
                         if num_str.isdigit():
                             priority = 1000 - int(num_str)  # default is around 1000
                     except (IndexError, ValueError):
-                        logger.warning(f"Failed to parse arithmetic priority '{token}' in {full_line.strip()}")
+                        logger.warning(
+                            f"Failed to parse arithmetic priority '{token}' in {full_line.strip()}"
+                        )
                         unsupported_tokens.append(token)
                 else:
                     unsupported_tokens.append(token)
             else:
                 unsupported_tokens.append(token)
-        
+
         # Log warnings for unsupported syntax
         if unsupported_parts:
-            logger.warning(f"Unsupported attribute parts in '@[{attr_content}]': {unsupported_parts}")
-        
+            logger.warning(
+                f"Unsupported attribute parts in '@[{attr_content}]': {unsupported_parts}"
+            )
+
         if unsupported_tokens:
             logger.warning(f"Unsupported simp tokens in '{simp_part}': {unsupported_tokens}")
-        
+
         return {
             "priority": priority,
             "direction": direction,
@@ -335,13 +380,13 @@ class RuleExtractor:
 
         # Look for declaration in the next few lines, but be more careful about consecutive attributes
         search_limit = min(len(lines), attr_line + 10)  # Increased from 5 to 10
-        
+
         for i in range(attr_line + 1, search_limit):
             line = lines[i].strip()
 
             if not line or line.startswith("--") or line.startswith("/-"):
                 continue
-                
+
             # If we encounter another @[...] attribute, stop looking
             # This handles consecutive simp rules properly
             if line.startswith("@["):
@@ -363,24 +408,24 @@ class RuleExtractor:
                     }
 
         return None
-    
+
     def _check_same_line_declaration(self, line: str, attr_info: dict) -> dict | None:
         """Check if a declaration exists on the same line as the attribute.
-        
+
         Args:
             line: The line containing the attribute
             attr_info: Parsed attribute information
-            
+
         Returns:
             Declaration information or None
         """
         # Remove the attribute part from the line
         attr_pattern = re.escape(attr_info["raw_attr"])
         remaining_line = re.sub(attr_pattern, "", line).strip()
-        
+
         if not remaining_line:
             return None
-        
+
         # Check for various declaration types in the remaining line
         for decl_type, pattern in self.DECLARATION_PATTERNS.items():
             match = pattern.match(remaining_line)
@@ -391,8 +436,69 @@ class RuleExtractor:
                     "declaration": remaining_line,
                     "first_line": remaining_line,
                 }
-        
+
         return None
+
+    def _find_attribute_simp_declarations(self, content: str, file_path: Path) -> list[SimpRule]:
+        """Find rules declared with 'attribute [simp]' syntax.
+
+        Args:
+            content: File content
+            file_path: Path to file
+
+        Returns:
+            List of SimpRule objects
+        """
+        rules = []
+        lines = content.split("\n")
+
+        # Look for 'attribute [simp]' lines
+        attr_pattern = re.compile(r"^\s*attribute\s*\[([^\]]*simp[^\]]*)\]\s*(.+)")
+
+        for i, line in enumerate(lines):
+            match = attr_pattern.match(line)
+            if match:
+                attr_content = match.group(1)
+                names_str = match.group(2)
+
+                # Parse the attribute (similar to regular @[simp])
+                attr_info = self._parse_simp_attribute(attr_content, line)
+                if not attr_info:
+                    attr_info = {
+                        "priority": SimpPriority.DEFAULT,
+                        "direction": SimpDirection.FORWARD,
+                        "raw_attr": f"attribute [{attr_content}]",
+                        "simp_part": "simp",
+                    }
+
+                # Split the names (they can be space or comma separated)
+                names = re.split(r"[,\s]+", names_str.strip())
+
+                # Create a rule for each name
+                for name in names:
+                    if name:
+                        location = SourceLocation(
+                            file=file_path, line=i + 1, column=0, module=file_path.stem
+                        )
+
+                        rule = SimpRule(
+                            name=name,
+                            declaration=f"attribute [{attr_content}] {name}",
+                            priority=attr_info["priority"],
+                            direction=attr_info["direction"],
+                            location=location,
+                            conditions=[],
+                            pattern=None,
+                            rhs=None,
+                            metadata={
+                                "declaration_type": "attribute",
+                                "raw_attribute": attr_info["raw_attr"],
+                                "file_path": str(file_path),
+                            },
+                        )
+                        rules.append(rule)
+
+        return rules
 
     def _extract_full_declaration(self, lines: list[str], start_line: int) -> str:
         """Extract the complete declaration starting from a line.

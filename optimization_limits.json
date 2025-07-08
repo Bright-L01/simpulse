@@ -1,0 +1,110 @@
+{
+  "test_date": "2025-07-04 23:58:22",
+  "total_tests": 10,
+  "regressions": 2,
+  "regression_rate": 20.0,
+  "results": [
+    {
+      "test_name": "list_heavy",
+      "baseline_time": 1.5272750854492188,
+      "optimized_time": 0.41742634773254395,
+      "speedup": 3.658789373850891,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": null
+    },
+    {
+      "test_name": "no_arithmetic",
+      "baseline_time": 0.389005184173584,
+      "optimized_time": 0.39319896697998047,
+      "speedup": 0.9893341967843725,
+      "regression": true,
+      "regression_percent": 1.078078898949869,
+      "error": null
+    },
+    {
+      "test_name": "already_optimized",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": "Baseline failed: Command '['lean', '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/tmpkse4plp2/baseline.lean']' returned non-zero exit status 1."
+    },
+    {
+      "test_name": "overhead_sensitive",
+      "baseline_time": 0.4305531978607178,
+      "optimized_time": 0.380918025970459,
+      "speedup": 1.1303040772717543,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": null
+    },
+    {
+      "test_name": "complex_tactics",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": "Baseline failed: Command '['lean', '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/tmpdgerj4rp/baseline.lean']' returned non-zero exit status 1."
+    },
+    {
+      "test_name": "type_class_heavy",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": "Baseline failed: Command '['lean', '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/tmpkuyr52wh/baseline.lean']' returned non-zero exit status 1."
+    },
+    {
+      "test_name": "dependent_types",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": "Baseline failed: Command '['lean', '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/tmphcoy9dsm/baseline.lean']' returned non-zero exit status 1."
+    },
+    {
+      "test_name": "mutual_recursion",
+      "baseline_time": 0.3821070194244385,
+      "optimized_time": 0.39389610290527344,
+      "speedup": 0.9700705759872165,
+      "regression": true,
+      "regression_percent": 3.08528314883947,
+      "error": null
+    },
+    {
+      "test_name": "large_terms",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": "Baseline failed: Command '['lean', '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/tmppdnsrun0/baseline.lean']' returned non-zero exit status 1."
+    },
+    {
+      "test_name": "custom_simp_lemmas",
+      "baseline_time": 0.0,
+      "optimized_time": 0.0,
+      "speedup": 0.0,
+      "regression": false,
+      "regression_percent": 0.0,
+      "error": "Baseline failed: Command '['lean', '/var/folders/kb/h2jmx6m91qld2ldqbdprhbhr0000gn/T/tmpainljxrs/baseline.lean']' returned non-zero exit status 1."
+    }
+  ],
+  "patterns": {
+    "worst_regression": {
+      "test_name": "mutual_recursion",
+      "baseline_time": 0.3821070194244385,
+      "optimized_time": 0.39389610290527344,
+      "speedup": 0.9700705759872165,
+      "regression": true,
+      "regression_percent": 3.08528314883947,
+      "error": null
+    },
+    "average_regression": 2.0816810238946695
+  }
+}

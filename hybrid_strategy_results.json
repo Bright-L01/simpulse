@@ -1,0 +1,29 @@
+{
+  "arithmetic_pure": {
+    "success_rate": 0.51,
+    "average_speedup": 1.4134860534390061,
+    "performance_by_complexity": {
+      "simple": 0.67,
+      "moderate": 0.54,
+      "complex": 0.32
+    }
+  },
+  "algebraic_pure": {
+    "success_rate": 0.35,
+    "average_speedup": 1.2769969204440403,
+    "performance_by_complexity": {
+      "simple": 0.51,
+      "moderate": 0.27,
+      "complex": 0.27
+    }
+  },
+  "structural_pure": {
+    "success_rate": 0.36,
+    "average_speedup": 1.2600105992725803,
+    "performance_by_complexity": {
+      "simple": 0.45,
+      "moderate": 0.4,
+      "complex": 0.23
+    }
+  }
+}

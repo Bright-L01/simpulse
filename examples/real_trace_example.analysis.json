@@ -1,0 +1,58 @@
+{
+  "total_applications": 9,
+  "unique_lemmas": 9,
+  "success_rate": 0.7777777777777778,
+  "top_10_lemmas": [
+    [
+      "Nat.add_zero",
+      1
+    ],
+    [
+      "Nat.add_comm",
+      1
+    ],
+    [
+      "eq_self_iff_true",
+      1
+    ],
+    [
+      "trivial",
+      1
+    ],
+    [
+      "List.head",
+      1
+    ],
+    [
+      "List.head_cons",
+      1
+    ],
+    [
+      "List.map_cons",
+      1
+    ],
+    [
+      "List.map_nil",
+      1
+    ],
+    [
+      "List.append_nil",
+      1
+    ]
+  ],
+  "frequency_distribution": {
+    "Nat.add_zero": 1,
+    "Nat.add_comm": 1,
+    "eq_self_iff_true": 1,
+    "trivial": 1,
+    "List.head": 1,
+    "List.head_cons": 1,
+    "List.map_cons": 1,
+    "List.map_nil": 1,
+    "List.append_nil": 1
+  },
+  "never_succeeded": [
+    "List.head",
+    "List.head_cons"
+  ]
+}
