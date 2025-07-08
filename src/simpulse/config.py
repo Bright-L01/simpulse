@@ -21,15 +21,45 @@ LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
 LEAN_EXCLUDE_DIRS = ["lake-packages", ".lake", "build", "_target", "__pycache__"]
 
 # Timeouts (in seconds)
-LEAN_TIMEOUT = int(os.environ.get("LEAN_TIMEOUT", "300"))
-BUILD_TIMEOUT = int(os.environ.get("BUILD_TIMEOUT", "600"))
+try:
+    LEAN_TIMEOUT = int(os.environ.get("LEAN_TIMEOUT", "300"))
+except ValueError:
+    LEAN_TIMEOUT = 300
+
+try:
+    BUILD_TIMEOUT = int(os.environ.get("BUILD_TIMEOUT", "600"))
+except ValueError:
+    BUILD_TIMEOUT = 600
 
 # Performance settings
-MAX_PARALLEL_JOBS = int(os.environ.get("SIMPULSE_JOBS", "4"))
-BENCHMARK_RUNS = int(os.environ.get("BENCHMARK_RUNS", "3"))
+try:
+    MAX_PARALLEL_JOBS = int(os.environ.get("SIMPULSE_JOBS", "4"))
+except ValueError:
+    MAX_PARALLEL_JOBS = 4
+
+try:
+    BENCHMARK_RUNS = int(os.environ.get("BENCHMARK_RUNS", "3"))
+except ValueError:
+    BENCHMARK_RUNS = 3
 
 # Development settings
 DEBUG = os.environ.get("SIMPULSE_DEBUG", "false").lower() == "true"
+
+# Safety limits
+try:
+    MAX_FILE_SIZE = int(os.environ.get("SIMPULSE_MAX_FILE_SIZE", "1000000"))  # 1MB default
+except ValueError:
+    MAX_FILE_SIZE = 1_000_000
+
+try:
+    MAX_MEMORY_USAGE = int(os.environ.get("SIMPULSE_MAX_MEMORY", "1000000000"))  # 1GB default
+except ValueError:
+    MAX_MEMORY_USAGE = 1_000_000_000
+
+try:
+    OPTIMIZATION_TIMEOUT = int(os.environ.get("SIMPULSE_TIMEOUT", "30"))  # 30 seconds default
+except ValueError:
+    OPTIMIZATION_TIMEOUT = 30
 
 
 def ensure_dirs():

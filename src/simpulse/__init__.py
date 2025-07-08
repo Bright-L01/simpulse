@@ -28,6 +28,19 @@ def optimize_project(project_path, strategy="frequency", apply=False):
 
     Returns:
         Dictionary with optimization results
+
+    Raises:
+        OptimizationError: If optimization fails
+        ConfigurationError: If configuration is invalid
     """
-    optimizer = UnifiedOptimizer(strategy=strategy)
-    return optimizer.optimize(project_path, apply=apply)
+    try:
+        optimizer = UnifiedOptimizer(strategy=strategy)
+        return optimizer.optimize(project_path, apply=apply)
+    except Exception as e:
+        import logging
+
+        from .error import handle_error
+
+        error_msg = handle_error(e, debug=False)
+        logging.error(f"Optimization failed: {error_msg}")
+        raise

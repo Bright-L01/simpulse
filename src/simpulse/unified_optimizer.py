@@ -5,10 +5,21 @@ Does one thing: finds frequently used simp rules and gives them higher priority.
 No sophistication, no complex strategies, just basic priority adjustment that works.
 """
 
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
+
+from .error import (
+    OptimizationError,
+    check_memory_usage,
+    safe_file_read,
+    safe_file_write,
+    timeout,
+)
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -48,7 +59,25 @@ class UnifiedOptimizer:
 
     def optimize(self, project_path, apply: bool = False) -> Dict:
         """Main entry point. Find rules, count usage, optimize priorities."""
+        # Import timeout value from config
+        from .config import OPTIMIZATION_TIMEOUT
+
+        # Run the actual optimization with timeout and memory checks
+        with timeout(OPTIMIZATION_TIMEOUT, "optimization"):
+            return self._optimize_with_safety(project_path, apply)
+
+    def _optimize_with_safety(self, project_path, apply: bool = False) -> Dict:
+        """Internal optimization with safety checks."""
         project = Path(project_path)
+
+        # Check memory at start
+        check_memory_usage("optimization start")
+
+        # Validate project path
+        if not project.exists():
+            raise OptimizationError(f"Project path does not exist: {project}")
+        if not project.is_dir():
+            raise OptimizationError(f"Project path is not a directory: {project}")
 
         # Step 1: Find all Lean files
         lean_files = list(project.glob("**/*.lean"))
@@ -58,17 +87,53 @@ class UnifiedOptimizer:
 
         lean_files = [f for f in lean_files if not should_skip_file(f)]
 
+        if not lean_files:
+            logger.warning(f"No Lean files found in {project}")
+            return {
+                "project_path": str(project_path),
+                "total_rules": 0,
+                "rules_changed": 0,
+                "estimated_improvement": 0.0,
+                "changes": [],
+            }
+
+        logger.info(f"Found {len(lean_files)} Lean files in {project}")
+
+        # Check memory after file discovery
+        check_memory_usage("after finding files")
+
         # Step 2: Extract all simp rules
         rules = self._find_rules(lean_files)
+
+        if not rules:
+            logger.info("No simp rules found in project")
+            return {
+                "project_path": str(project_path),
+                "total_rules": 0,
+                "rules_changed": 0,
+                "estimated_improvement": 0.0,
+                "changes": [],
+            }
+
+        logger.info(f"Found {len(rules)} simp rules")
+
+        # Check memory after rule extraction
+        check_memory_usage("after extracting rules")
 
         # Step 3: Count how often each rule is used
         self._count_usage(lean_files, rules)
 
+        # Check memory after counting usage
+        check_memory_usage("after counting usage")
+
         # Step 4: Calculate new priorities (simple frequency-based)
         changes = self._calculate_changes(rules)
 
+        logger.info(f"Calculated {len(changes)} optimization changes")
+
         # Step 5: Apply changes if requested
-        if apply:
+        if apply and changes:
+            logger.info("Applying optimization changes...")
             self._apply_changes(changes)
 
         # Step 6: Return simple results
@@ -92,10 +157,15 @@ class UnifiedOptimizer:
     def _find_rules(self, lean_files: List[Path]) -> List[Rule]:
         """Find all @[simp] rules in files."""
         rules = []
+        failed_files = []
 
         for file_path in lean_files:
+            content = safe_file_read(file_path)
+            if content is None:
+                failed_files.append(file_path)
+                continue
+
             try:
-                content = file_path.read_text()
                 for match in self.rule_pattern.finditer(content):
                     priority_str = match.group(1)
                     rule_name = match.group(2)
@@ -111,27 +181,39 @@ class UnifiedOptimizer:
                             priority=priority,
                         )
                     )
-            except Exception:
-                # Skip files we can't read
-                continue
+            except Exception as e:
+                logger.warning(f"Failed to parse rules in {file_path}: {e}")
+                failed_files.append(file_path)
+
+        if failed_files:
+            logger.info(f"Skipped {len(failed_files)} files due to read/parse errors")
 
         return rules
 
     def _count_usage(self, lean_files: List[Path], rules: List[Rule]) -> None:
         """Count how often each rule is used in simp calls."""
         rule_by_name = {rule.name: rule for rule in rules}
+        failed_files = []
 
         for file_path in lean_files:
+            content = safe_file_read(file_path)
+            if content is None:
+                failed_files.append(file_path)
+                continue
+
             try:
-                content = file_path.read_text()
                 for match in self.usage_pattern.finditer(content):
                     rule_list = match.group(1)
                     for rule_name in rule_list.split(","):
                         rule_name = rule_name.strip()
                         if rule_name in rule_by_name:
                             rule_by_name[rule_name].usage_count += 1
-            except Exception:
-                continue
+            except Exception as e:
+                logger.warning(f"Failed to count usage in {file_path}: {e}")
+                failed_files.append(file_path)
+
+        if failed_files:
+            logger.info(f"Skipped {len(failed_files)} files when counting usage")
 
     def _calculate_changes(self, rules: List[Rule]) -> List[Change]:
         """Calculate priority changes based on usage frequency."""
@@ -170,20 +252,36 @@ class UnifiedOptimizer:
             changes_by_file[file_path].append(change)
 
         # Apply changes to each file
-        for file_path, file_changes in changes_by_file.items():
-            try:
-                content = file_path.read_text()
+        failed_files = []
+        successful_files = []
 
+        for file_path, file_changes in changes_by_file.items():
+            content = safe_file_read(file_path)
+            if content is None:
+                failed_files.append(file_path)
+                continue
+
+            try:
                 for change in file_changes:
                     # Replace @[simp] or @[simp N] with @[simp new_priority]
                     pattern = rf"@\[simp(?:\s+\d+)?\](\s*.*?)(?=(?:theorem|lemma|def)\s+{re.escape(change.rule_name)}\b)"
                     replacement = f"@[simp {change.new_priority}]\\1"
                     content = re.sub(pattern, replacement, content)
 
-                file_path.write_text(content)
-            except Exception:
-                # Skip files we can't modify
-                continue
+                if safe_file_write(file_path, content):
+                    successful_files.append(file_path)
+                    logger.info(f"Applied {len(file_changes)} changes to {file_path}")
+                else:
+                    failed_files.append(file_path)
+
+            except Exception as e:
+                logger.error(f"Failed to apply changes to {file_path}: {e}")
+                failed_files.append(file_path)
+
+        if failed_files:
+            logger.warning(f"Failed to apply changes to {len(failed_files)} files")
+        if successful_files:
+            logger.info(f"Successfully updated {len(successful_files)} files")
 
 
 # Simple CLI integration
