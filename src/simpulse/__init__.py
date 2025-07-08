@@ -1,65 +1,33 @@
-"""Simpulse - High-performance optimization tool for Lean 4 simp tactics.
+"""Simpulse - Simple optimizer for Lean 4 simp rules.
 
-Simpulse analyzes and optimizes simp rule priorities in Lean 4 projects,
-delivering measurable performance improvements for theorem proving workflows.
+Direct, no-nonsense optimization without the complexity.
 """
 
-__version__ = "1.1.0"
+__version__ = "2.0.0"
 __author__ = "Bright Liu"
 __email__ = "bright.liu@example.com"
 
-# Core modules
-from pathlib import Path
-
-from . import analyzer, optimizer, validator
-from .analyzer import LeanAnalyzer, LeanFileAnalysis, SimpRule
-from .optimizer import OptimizationSuggestion, PriorityOptimizer
-from .validator import OptimizationValidator
-
-# Legacy modules (for backward compatibility)
-try:
-    from .analysis.health_checker import HealthChecker
-    from .optimization.optimizer import SimpOptimizer
-    from .profiling.benchmarker import Benchmarker
-    from .reporting.report_generator import PerformanceReporter
-except ImportError:
-    # Handle missing legacy modules gracefully
-    HealthChecker = None
-    SimpOptimizer = None
-    Benchmarker = None
-    PerformanceReporter = None
+# The only thing that matters
+from .unified_optimizer import Change, Rule, UnifiedOptimizer
 
 __all__ = [
-    "LeanAnalyzer",
-    "LeanFileAnalysis",
-    "OptimizationSuggestion",
-    "OptimizationValidator",
-    "PerformanceReporter",
-    "PriorityOptimizer",
-    "SimpRule",
-    "analyzer",
-    "optimizer",
-    "validator",
+    "UnifiedOptimizer",
+    "Rule",
+    "Change",
+    "optimize_project",
 ]
 
-# Include legacy classes if available
-if HealthChecker:
-    __all__.extend(["Benchmarker", "HealthChecker", "SimpOptimizer"])
 
-
-# Convenience function
-def optimize_project(project_path: Path, strategy: str = "balanced"):
-    """Convenience function to optimize a project.
+def optimize_project(project_path, strategy="frequency", apply=False):
+    """Simple convenience function to optimize a project.
 
     Args:
         project_path: Path to Lean 4 project
-        strategy: Optimization strategy (conservative, balanced, aggressive)
+        strategy: One of "frequency", "balanced", "conservative"
+        apply: Whether to apply changes immediately
 
     Returns:
-        List of OptimizationSuggestion objects
+        Dictionary with optimization results
     """
-    analyzer_obj = LeanAnalyzer()
-    analysis = analyzer_obj.analyze_project(project_path)
-
-    optimizer_obj = PriorityOptimizer()
-    return optimizer_obj.optimize_project(analysis)
+    optimizer = UnifiedOptimizer(strategy=strategy)
+    return optimizer.optimize(project_path, apply=apply)

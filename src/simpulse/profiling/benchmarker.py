@@ -34,11 +34,15 @@ class Benchmarker:
 
         for _ in range(runs):
             # Clean build
-            subprocess.run(["lake", "clean"], cwd=project_path, capture_output=True)
+            from ..config import get_lake_command
+
+            subprocess.run([get_lake_command(), "clean"], cwd=project_path, capture_output=True)
 
             # Time build
             start = time.time()
-            result = subprocess.run(["lake", "build"], cwd=project_path, capture_output=True)
+            result = subprocess.run(
+                [get_lake_command(), "build"], cwd=project_path, capture_output=True
+            )
 
             if result.returncode == 0:
                 times.append(time.time() - start)

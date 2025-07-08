@@ -8,7 +8,7 @@
 @[simp] theorem custom_one_mul (n : Nat) : 1 * n = n := Nat.one_mul n
 
 -- More complex custom lemmas
-@[simp] theorem distrib_1 (a b c : Nat) : a * (b + c) = a * b + a * c := Nat.mul_add a b c
+@[simp 100] theorem distrib_1 (a b c : Nat) : a * (b + c) = a * b + a * c := Nat.mul_add a b c
 @[simp] theorem distrib_2 (a b c : Nat) : (a + b) * c = a * c + b * c := Nat.add_mul a b c
 
 -- Recursive simp applications

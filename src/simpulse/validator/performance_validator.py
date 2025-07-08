@@ -30,8 +30,10 @@ class PerformanceMetrics:
 class PerformanceValidator:
     """Validates that optimizations actually improve performance."""
 
-    def __init__(self, lean_path: str = "lean", iterations: int = 3):
-        self.lean_path = lean_path
+    def __init__(self, lean_path: str = None, iterations: int = 3):
+        from ..config import get_lean_command
+
+        self.lean_path = lean_path or get_lean_command()
         self.iterations = iterations
         self.min_improvement_threshold = 1.05  # Require 5% improvement
 

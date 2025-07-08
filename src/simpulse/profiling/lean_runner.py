@@ -47,8 +47,8 @@ class LeanRunner:
 
     def __init__(
         self,
-        lake_path: str = "lake",
-        lean_path: str = "lean",
+        lake_path: str = None,
+        lean_path: str = None,
         working_dir: Path | None = None,
     ):
         """Initialize Lean runner.
@@ -58,8 +58,10 @@ class LeanRunner:
             lean_path: Path to lean executable
             working_dir: Working directory for Lean commands
         """
-        self.lake_path = lake_path
-        self.lean_path = lean_path
+        from ..config import get_lake_command, get_lean_command
+
+        self.lake_path = lake_path or get_lake_command()
+        self.lean_path = lean_path or get_lean_command()
         self.working_dir = working_dir or Path.cwd()
         self._rate_limiter = None  # Initialize if needed
 

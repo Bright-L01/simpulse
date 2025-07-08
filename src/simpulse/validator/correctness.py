@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from ..monitoring import monitor_operation
+# Monitoring removed - using simple logging instead
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class ValidationResult:
 class CorrectnessValidator:
     """Validates that optimizations preserve Lean proof correctness"""
 
-    def __init__(self, lean_exe: str = "lake", timeout: int = 60):
+    def __init__(self, lean_exe: str = None, timeout: int = 60):
         """
         Initialize the correctness validator
 
@@ -72,7 +72,9 @@ class CorrectnessValidator:
             lean_exe: Path to the Lean executable
             timeout: Timeout for compilation in seconds
         """
-        self.lean_exe = lean_exe
+        from ..config import get_lake_command
+
+        self.lean_exe = lean_exe or get_lake_command()
         self.timeout = timeout
         self.temp_dir = None
 

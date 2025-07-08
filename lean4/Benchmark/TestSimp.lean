@@ -15,9 +15,9 @@ theorem test_mul_zero (n : Nat) : n * 0 = 0 := by simp
 theorem test_zero_mul (n : Nat) : 0 * n = 0 := by simp
 
 -- Some simple custom simp lemmas
-@[simp] theorem my_add_comm (a b : Nat) : a + b = b + a := Nat.add_comm a b
+@[simp 110] theorem my_add_comm (a b : Nat) : a + b = b + a := Nat.add_comm a b
 
-@[simp] theorem my_mul_comm (a b : Nat) : a * b = b * a := Nat.mul_comm a b
+@[simp 120] theorem my_mul_comm (a b : Nat) : a * b = b * a := Nat.mul_comm a b
 
 -- More complex theorems using simp
 theorem complex_simp_1 (a b c : Nat) : (a + 0) * 1 + (b * 0 + c + 0) = a + c := by

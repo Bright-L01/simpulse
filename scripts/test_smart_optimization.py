@@ -285,7 +285,9 @@ def demonstrate_pattern_analysis(project_path: Path):
 def main():
     """Main entry point."""
     # Test on integration test project
-    test_project = Path("/Users/brightliu/Coding_Projects/simpulse/lean4/integration_test")
+    import os
+
+    test_project = Path(os.environ.get("TEST_PROJECT_PATH", "./lean4/integration_test"))
 
     if not test_project.exists():
         print(f"❌ Test project not found: {test_project}")

@@ -39,6 +39,41 @@
 
 **👉 See [WHEN_TO_USE_SIMPULSE.md](WHEN_TO_USE_SIMPULSE.md) for the complete decision tree.**
 
+## 🚀 Quick Start
+
+### Prerequisites
+- Lean 4 installed and in PATH
+- Python 3.10+
+
+### Installation & Setup
+```bash
+# Clone and install
+git clone https://github.com/Bright-L01/simpulse.git
+cd simpulse
+pip install -e .
+
+# Set your Lean path (if not 'lean')
+export LEAN_PATH=/path/to/your/lean
+export LAKE_PATH=/path/to/your/lake
+
+# Or copy .env.example to .env and customize
+cp .env.example .env
+```
+
+### Run
+```bash
+# Check if your project could benefit
+simpulse check /path/to/lean/project
+
+# Generate optimization plan
+simpulse optimize /path/to/lean/project
+
+# Apply optimizations
+simpulse optimize /path/to/lean/project --apply
+```
+
+That's it! No complex configuration, just set `LEAN_PATH` and run.
+
 ## 🎯 What's Real (40%)
 
 - **🔍 Rule Extraction**: 89.91% accurate extraction of simp rules from complex Lean files

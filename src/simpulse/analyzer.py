@@ -35,13 +35,15 @@ class LeanFileAnalysis:
 class LeanAnalyzer:
     """Analyzes Lean 4 projects to extract simp rules and usage patterns."""
 
-    def __init__(self, lean_executable: str = "lean"):
+    def __init__(self, lean_executable: str = None):
         """Initialize the analyzer.
 
         Args:
             lean_executable: Path to Lean 4 executable.
         """
-        self.lean_executable = lean_executable
+        from .config import get_lean_command
+
+        self.lean_executable = lean_executable or get_lean_command()
         # Pattern to match @[simp] with various options
         # This will match the entire @[...] attribute
         self._simp_attr_pattern = re.compile(r"@\[[^\]]*\bsimp\b[^\]]*\]", re.MULTILINE)
