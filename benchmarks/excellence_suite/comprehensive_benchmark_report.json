@@ -1,0 +1,232 @@
+{
+  "benchmark_metadata": {
+    "timestamp": "2025-07-08 18:10:04",
+    "total_files": 14,
+    "categories": [
+      "moderate_impact",
+      "no_benefit"
+    ],
+    "lean_version": "Lean (version 4.21.0, arm64-apple-darwin23.6.0, commit 6741444a63ee, Release)",
+    "simpulse_version": "simpulse, version 1.0.0"
+  },
+  "individual_results": [
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile4.lean",
+      "category": "no_benefit",
+      "baseline_time": 1054.6345233917236,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile8.lean",
+      "category": "no_benefit",
+      "baseline_time": 1609.494924545288,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile9.lean",
+      "category": "no_benefit",
+      "baseline_time": 699.2388725280762,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile5.lean",
+      "category": "no_benefit",
+      "baseline_time": 1108.0292701721191,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile7.lean",
+      "category": "moderate_impact",
+      "baseline_time": 620.4389095306396,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile6.lean",
+      "category": "moderate_impact",
+      "baseline_time": 610.136890411377,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile5.lean",
+      "category": "moderate_impact",
+      "baseline_time": 608.6040496826172,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile9.lean",
+      "category": "moderate_impact",
+      "baseline_time": 568.4947490692139,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile8.lean",
+      "category": "moderate_impact",
+      "baseline_time": 695.4306602478027,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile10.lean",
+      "category": "moderate_impact",
+      "baseline_time": 603.8435935974121,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile10.lean",
+      "category": "no_benefit",
+      "baseline_time": 1020.0223922729492,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile4.lean",
+      "category": "moderate_impact",
+      "baseline_time": 777.3141384124756,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile6.lean",
+      "category": "no_benefit",
+      "baseline_time": 1641.310453414917,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    },
+    {
+      "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile7.lean",
+      "category": "no_benefit",
+      "baseline_time": 686.5810871124268,
+      "baseline_success": true,
+      "optimized_time": null,
+      "optimized_success": true,
+      "optimization_applied": false,
+      "improvement_percent": null,
+      "simp_rules_found": 0,
+      "rules_optimized": 0,
+      "error_message": null
+    }
+  ],
+  "category_statistics": {
+    "moderate_impact": {
+      "category": "moderate_impact",
+      "total_files": 7,
+      "successful_optimizations": 0,
+      "average_improvement": 0.0,
+      "median_improvement": 0.0,
+      "best_improvement": 0.0,
+      "worst_result": 0.0,
+      "total_time_saved_ms": 0.0,
+      "predicted_vs_actual": 100.0
+    },
+    "no_benefit": {
+      "category": "no_benefit",
+      "total_files": 7,
+      "successful_optimizations": 0,
+      "average_improvement": 0.0,
+      "median_improvement": 0.0,
+      "best_improvement": 0.0,
+      "worst_result": 0.0,
+      "total_time_saved_ms": 0.0,
+      "predicted_vs_actual": 100.0
+    }
+  },
+  "executive_summary": {
+    "total_files_tested": 14,
+    "successful_optimizations": 0,
+    "optimization_success_rate": 0.0,
+    "average_improvement_high_impact": 0,
+    "average_improvement_moderate": 0.0,
+    "no_benefit_correctly_identified": true,
+    "total_compilation_time_saved_ms": 0.0,
+    "proving_2x_speedup": false,
+    "proving_modest_improvement": false,
+    "proving_smart_skipping": true
+  }
+}

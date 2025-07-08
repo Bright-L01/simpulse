@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Quick Feedback (2 minutes)
+    url: https://github.com/Bright-L01/simpulse/blob/main/QUICK_FEEDBACK_FORM.md
+    about: Share quick feedback without filling out a full form
+  - name: Detailed Feedback Template
+    url: https://github.com/Bright-L01/simpulse/blob/main/BETA_FEEDBACK_TEMPLATE.md
+    about: Comprehensive feedback template for detailed testing results
+  - name: Lean Zulip Chat
+    url: https://leanprover.zulipchat.com/
+    about: Discuss Simpulse with the community or ask questions
