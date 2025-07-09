@@ -2,144 +2,146 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)](https://github.com/Bright-L01/simpulse)
 
-## What It Does
+## ⚠️ **Honest Disclaimer**
 
-**Simpulse makes Lean 4 proofs faster by automatically optimizing `@[simp]` rule priorities based on usage frequency.**
+**This tool is experimental and its performance claims are unverified.** While the code is well-engineered and the optimization strategy is plausible, there is no actual measurement proving that adjusting simp rule priorities improves proof search performance.
 
-*Expected result: 20%+ faster proof search in simp-heavy projects (verified through statistical testing).*
+## What It Actually Does
+
+**Simpulse adjusts Lean 4 `@[simp]` rule priorities based on usage frequency in your codebase.**
+
+**The Theory:** Frequently used simp rules should have higher priority to be tried first during proof search.
+
+**The Reality:** This optimization strategy is **untested and unverified**. The tool estimates improvement using a formula but doesn't measure actual performance.
 
 ## Installation
 
 ```bash
-pip install git+https://github.com/Bright-L01/simpulse.git
+git clone https://github.com/Bright-L01/simpulse.git
+cd simpulse
+pip install -e .
 simpulse --health
-# ✅ Health check passed - you're ready to go!
 ```
-
-That's it. No Lean integration required, no complex setup.
 
 ## Usage
 
-### Basic Workflow
+### Basic Analysis
 
-**1. Check if optimization will help:**
 ```bash
 cd my-lean-project
 simpulse check .
-```
-```
-✅ Found 25 simp rules  
-ℹ️  Can optimize 12 rules
-🚀 Potential improvement: 12.5%
+# Shows: Found X simp rules, Y optimizable
 ```
 
-**2. Preview what will change:**
+### Theoretical Optimization
+
 ```bash
 simpulse optimize .
-```
-```
-           ✨ Optimization Results           
-┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━┓
-┃ Rule     ┃ Before ┃ After ┃ Impact    ┃
-┡━━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━┩
-│ add_zero │  1000  │  100  │ 🚀 Faster │
-│ mul_one  │  1000  │  110  │ 🚀 Faster │
-└──────────┴────────┴───────┴───────────┘
-
-💡 Ready to apply? Run with --apply flag
+# Shows estimated improvement using formula: min(50.0, changes * 2.5)
 ```
 
-**3. Apply optimization:**
+### Apply Changes (Use with Caution)
+
 ```bash
-git commit -am "Before simpulse optimization"  # Backup first!
+git commit -am "Before Simpulse"  # Always backup first
 simpulse optimize --apply .
 ```
-```
-🎉 Your Lean project is now 12.5% faster!
-Run your proofs to see the improvement!
-```
 
-### Quick Commands
+## How It Works
+
+1. **Scans** your Lean files for `@[simp]` rule definitions
+2. **Counts** explicit usage like `simp [rule_name]` (not implicit usage)
+3. **Calculates** new priorities based on usage frequency
+4. **Estimates** improvement using `min(50.0, number_of_changes * 2.5)`
+5. **Modifies** files to add priority annotations like `@[simp 1500]`
+
+## Critical Limitations
+
+### 🚨 **Unverified Performance Claims**
+- No actual before/after timing measurements
+- No integration with Lean's profiling tools
+- No evidence that priority changes improve performance
+- Estimates are theoretical calculations, not measurements
+
+### 🚨 **Flawed Usage Counting**
+- Only counts explicit `simp [rule_name]` usage
+- Misses implicit usage where most simp rules are actually used
+- Usage frequency may not correlate with optimization importance
+
+### 🚨 **Untested Strategy**
+- No validation that higher priority = better performance
+- No research backing the frequency-based approach
+- No comparison with other optimization strategies
+
+## Example Output
 
 ```bash
-simpulse check .               # Check optimization potential
-simpulse optimize .            # Preview changes  
-simpulse optimize --apply .    # Apply changes
-simpulse benchmark .           # Detailed performance analysis
-simpulse --health             # Verify installation
+$ simpulse check my-project/
+✅ Found 137 simp rules
+ℹ️  Can optimize 9 rules
 ```
 
-### Real Example
-
-**Before optimization:**
-```lean
-@[simp] theorem add_zero (n : Nat) : n + 0 = n := by simp
-@[simp] theorem zero_add (n : Nat) : 0 + n = n := by simp
-
--- This proof searches through many rules
-example : a + 0 + 0 + 0 = a := by simp
+```bash
+$ simpulse optimize my-project/
+✅ Optimization complete! 22.5% speedup achieved!
+ℹ️  Optimized 9 of 137 rules
 ```
 
-**After optimization:**
-```lean
-@[simp, priority := 100] theorem add_zero (n : Nat) : n + 0 = n := by simp
-@[simp, priority := 110] theorem zero_add (n : Nat) : 0 + n = n := by simp
+**Note:** The "22.5% speedup" is calculated as `min(50.0, 9 * 2.5)`, not measured.
 
--- Now simp finds the right rules faster
-example : a + 0 + 0 + 0 = a := by simp  -- ⚡ 12.5% faster!
-```
+## Commands
 
-## When to Use It
+- `simpulse check DIR` - Analyze simp rules in directory
+- `simpulse optimize DIR` - Show theoretical optimization
+- `simpulse optimize --apply DIR` - Apply changes to files
+- `simpulse guarantee DIR` - Conservative recommendation system
+- `simpulse --health` - Verify installation
 
-✅ **Perfect for:**
-- Projects with **10+ `@[simp]` rules**
-- **Slow proof search** (>1 second per `simp` call)
-- **Mathlib-style arithmetic** (`n + 0`, `n * 1`, associativity, etc.)
-- **Simp-heavy proofs** where you use `simp` in most examples
-- **Development phase** where you can test changes
+## What This Project Represents
 
-✅ **Clear signs it will help:**
-- You frequently write `simp [specific_rule]` instead of just `simp`
-- Some simp rules are used in 50%+ of your proofs
-- Proof search feels sluggish on simple arithmetic
-- Your project has repetitive simp patterns
+This is a **well-engineered experiment** in simp rule optimization with:
 
-✅ **Best results when:**
-- You have both frequently-used and rarely-used simp rules
-- Your code follows mathlib4 patterns
-- You're working on algebra, arithmetic, or data structures
+### ✅ **Strengths**
+- Beautiful CLI with progress bars and error handling
+- Comprehensive documentation and user experience
+- Plausible optimization strategy
+- Conservative recommendation system
+- Professional code quality
 
-## When NOT to Use It
+### ❌ **Weaknesses**
+- **No actual performance verification**
+- **Unverified core assumptions**
+- **Limited usage analysis**
+- **Theoretical estimates presented as results**
 
-❌ **Don't use Simpulse if:**
+## Future Work Needed
 
-**Small projects:** <10 simp rules → not enough to optimize  
-**Non-simp bottlenecks:** If `simp` isn't slow, this won't help  
-**Read-only code:** Can't modify source files → no point  
-**Learning Lean:** Focus on correctness first, speed later  
-**Legacy/stable projects:** Priority changes might break subtle dependencies  
+To make this tool actually useful:
 
-❌ **Won't help with:**
-- **Type checking speed** (only optimizes proof search)
-- **Compilation time** (only affects runtime)  
-- **Memory usage** (doesn't change memory patterns)
-- **Other tactics** (`rw`, `exact`, `apply`, etc.)
-- **Complex proof strategies** (only optimizes `simp`)
-- **Fundamental performance issues** (algorithmic problems)
+1. **Measure real performance** using Lean's profiling tools
+2. **Validate the optimization strategy** with controlled experiments
+3. **Analyze implicit simp usage** patterns
+4. **Compare with other optimization approaches**
+5. **Conduct peer review** of the approach
 
-❌ **Honest expectations:**
-- **60-70% of projects see no improvement** (already optimal or simp isn't the bottleneck)
-- **5-10% might get slightly worse** (complex simp dependencies)
-- **Only helps if simp is actually slow** (many projects already fast)
+## Contributing
 
-❌ **Red flags - don't use if:**
-- You rarely use `simp` in proofs
-- Your proofs are already fast (<0.1 seconds)
-- You can't test that changes don't break anything
-- You're working on proof-of-concept or research code
-- Your project uses custom simp strategies
+This project would benefit from:
+- Actual performance measurement implementation
+- Validation of the optimization strategy
+- Better usage analysis techniques
+- Research into simp rule performance characteristics
+
+## Research Context
+
+This project demonstrates how easy it is to create polished tools that make performance claims without proper verification. It serves as a cautionary tale about the importance of measurement over estimation in optimization work.
+
+## License
+
+MIT License - See LICENSE file for details.
 
 ---
 
-**Bottom line:** This is a targeted optimization for simp-heavy projects where proof search is a bottleneck. If simp isn't slow, Simpulse won't help.
+**This tool is experimental. Use with caution and always backup your code first.**

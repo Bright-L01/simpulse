@@ -102,14 +102,14 @@ def create_progress_bar():
 
 
 @click.group()
-@click.version_option(version="1.0.0", prog_name="simpulse")
+@click.version_option(version="0.1.0-experimental", prog_name="simpulse")
 @click.option("--debug", is_flag=True, help="Enable debug mode with detailed error messages")
 @click.option("--quiet", "-q", is_flag=True, help="Quiet mode - minimal output")
 @click.option("--verbose", "-v", is_flag=True, help="Verbose mode - detailed progress")
 def cli(debug, quiet, verbose):
-    """✨ Simpulse - Lightning-fast optimizer for Lean 4 simp rules
+    """✨ Simpulse - Experimental optimizer for Lean 4 simp rules
 
-    Reduce proof search time by 20%+ with intelligent priority optimization.
+    Adjusts simp rule priorities based on usage frequency (unverified performance claims).
     """
     global DEBUG_MODE, QUIET_MODE, VERBOSE_MODE
     DEBUG_MODE = debug
@@ -272,10 +272,10 @@ def optimize(project_path: Path, strategy: str, output: Path, apply: bool, as_js
             print_warning("No simp rules found", "Ensure your project has @[simp] annotations")
             sys.exit(1)
 
-        # Success message with speedup
+        # Success message with theoretical estimate
         if optimized > 0:
-            speedup_msg = f"{improvement:.1f}% speedup achieved!"
-            print_success(f"Optimization complete! {speedup_msg}")
+            estimate_msg = f"{improvement:.1f}% theoretical improvement (unverified)"
+            print_success(f"Optimization complete! {estimate_msg}")
             print_info(f"Optimized {optimized} of {total_rules} rules")
 
             if VERBOSE_MODE:
@@ -336,10 +336,10 @@ def optimize(project_path: Path, strategy: str, output: Path, apply: bool, as_js
             elif apply and optimized > 0:
                 console.print(
                     Panel(
-                        f"🎉 Your Lean project is now [bold green]{improvement:.1f}% faster![/bold green]\n"
-                        "Run your proofs to see the improvement!",
-                        border_style="green",
-                        title="Success!",
+                        f"🎉 Applied priority optimizations with [bold yellow]{improvement:.1f}% theoretical improvement![/bold yellow]\n"
+                        "Note: Performance claims are unverified - actual results may vary.",
+                        border_style="yellow",
+                        title="Optimization Applied!",
                     )
                 )
 
@@ -391,12 +391,12 @@ def benchmark(project_path: Path):
         print_info(f"Optimization candidates: {optimizable}")
 
         if optimizable > 0:
-            print_success(f"Expected speedup: {improvement:.1f}%")
+            print_success(f"Theoretical improvement: {improvement:.1f}% (unverified)")
 
             if VERBOSE_MODE:
                 print_info(
-                    "High-impact optimizations available",
-                    "Run 'simpulse optimize --apply' to achieve speedup",
+                    "Priority optimizations available",
+                    "Run 'simpulse optimize --apply' to apply changes (results not guaranteed)",
                 )
         else:
             print_info("Rules are already optimized", "No performance improvements available")
