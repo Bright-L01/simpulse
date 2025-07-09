@@ -1,0 +1,104 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest pytest-cov
+    
+    - name: Run syntax validation
+      run: |
+        python -m py_compile src/simpulse/*.py
+    
+    - name: Run import tests
+      run: |
+        python -c "import simpulse; print('✓ Import successful')"
+        python -c "from simpulse.cli import main; print('✓ CLI module OK')"
+        python -c "from simpulse.unified_optimizer import UnifiedOptimizer; print('✓ Optimizer OK')"
+    
+    - name: Test CLI health check
+      run: |
+        python -m simpulse --health
+    
+    - name: Test CLI commands
+      run: |
+        python -m simpulse --help
+        python -m simpulse check --help
+        python -m simpulse optimize --help
+    
+    - name: Check documentation
+      run: |
+        if [ ! -f "README.md" ]; then
+          echo "❌ Missing README.md"
+          exit 1
+        fi
+        if [ ! -f "LICENSE" ]; then
+          echo "❌ Missing LICENSE"
+          exit 1
+        fi
+        echo "✓ Required documentation present"
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run security checks
+      run: |
+        # Check for dangerous patterns
+        if grep -r "eval(" src/ --include="*.py" | grep -v "validate"; then
+          echo "❌ Found potentially dangerous eval() usage"
+          exit 1
+        fi
+        if grep -r "exec(" src/ --include="*.py" | grep -v "validate"; then
+          echo "❌ Found potentially dangerous exec() usage"
+          exit 1
+        fi
+        echo "✓ Security checks passed"
+
+  lean-compatibility:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check Lean file syntax
+      run: |
+        # Validate that our test Lean files are syntactically correct
+        for lean_file in $(find . -name "*.lean" -type f); do
+          echo "Checking $lean_file"
+          # Basic syntax check - ensure balanced braces and valid structure
+          python -c "
+import sys
+content = open('$lean_file').read()
+if content.count('{') != content.count('}'):
+    print('❌ Unbalanced braces in $lean_file')
+    sys.exit(1)
+if content.count('(') != content.count(')'):
+    print('❌ Unbalanced parentheses in $lean_file')
+    sys.exit(1)
+print('✓ Basic syntax OK for $lean_file')
+"
+        done

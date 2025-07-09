@@ -1,0 +1,95 @@
+[tool.poetry]
+name = "simpulse"
+version = "0.1.0"
+description = "Experimental tool for adjusting Lean 4 simp rule priorities (unverified performance claims)"
+authors = ["Bright Liu <brightliu@college.harvard.edu>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Bright-L01/simpulse"
+homepage = "https://github.com/Bright-L01/simpulse"
+keywords = ["lean4", "theorem-proving", "experimental", "simp", "research"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Compilers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+]
+packages = [{include = "simpulse", from = "src"}]
+
+[tool.poetry.scripts]
+simpulse = "simpulse.cli:main"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "^8.1.7"  # CLI framework
+rich = "^13.7.0"  # Terminal formatting
+psutil = {version = "^5.9.0", optional = true}  # Optional for memory monitoring
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-cov = "^4.1.0"
+ruff = "^0.1.6"
+black = "^23.11.0"
+isort = "^5.12.0"
+mypy = "^1.7.1"
+
+[tool.poetry.extras]
+memory = ["psutil"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs",
+    "build",
+    "dist",
+    ".venv",
+    "venv",
+    "test_*.py",  # Exclude test files from project root
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "RUF"]
+ignore = [
+    "E501",   # Line too long - handled by formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # Allow assert in tests
+
+[tool.mypy]
+python_version = "3.10"
+check_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = ["-ra", "--strict-markers"]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

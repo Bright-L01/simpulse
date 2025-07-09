@@ -1,0 +1,56 @@
+name: Working CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        
+    - name: Configure Poetry
+      run: |
+        poetry config virtualenvs.in-project true
+        
+    - name: Install dependencies
+      run: |
+        poetry install --with dev
+        
+    - name: Format check with black
+      run: |
+        poetry run black --check src/ tests/
+        
+    - name: Import sort check  
+      run: |
+        poetry run isort --check-only src/ tests/
+        
+    - name: Lint with ruff
+      run: |
+        poetry run ruff check src/ tests/
+        
+    - name: Type check with mypy
+      run: |
+        poetry run mypy src/
+        
+    - name: Run tests
+      run: |
+        poetry run pytest tests/test_core.py tests/test_simple_optimizer.py -v
+        
+    - name: Test CLI
+      run: |
+        poetry run simpulse --version
+        poetry run simpulse --help

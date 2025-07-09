@@ -1,0 +1,109 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.env
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Type checking / Linting
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# Lean 4
+*.olean
+.lake/
+lean4/.lake/
+lake-manifest.json
+lake-packages/
+lean_packages/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+jit_*.log
+
+# Project specific
+results/
+validation_results/
+output/
+workspace/
+.simpulse/
+simpulse_cache/
+benchmark_results/
+analyzed_repos/
+mathlib4/
+
+# Generated files
+demo_*.json
+demo_*.lean
+simp_priorities.json
+jit_adapter.log
+jit_demo_analysis.json
+telemetry_batch_*.json
+*.pyc
+
+# Documentation build
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Temporary
+*.tmp
+*.bak
+tmp/
+temp/
+mathlib4_analysis/

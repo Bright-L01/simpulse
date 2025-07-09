@@ -1,0 +1,135 @@
+name: 'Simpulse Optimizer'
+description: 'Optimize Lean 4 simp tactics using intelligent optimization strategies'
+author: 'Simpulse Team'
+
+branding:
+  icon: 'zap'
+  color: 'green'
+
+inputs:
+  modules:
+    description: 'Modules to optimize (comma-separated, or "auto" for detection)'
+    required: false
+    default: 'auto'
+  
+  time-budget:
+    description: 'Time budget for optimization in seconds'
+    required: false
+    default: '7200'
+  
+  target-improvement:
+    description: 'Target improvement percentage to achieve'
+    required: false
+    default: '15'
+  
+  population-size:
+    description: 'Population size for evolutionary algorithm'
+    required: false
+    default: '30'
+  
+  max-generations:
+    description: 'Maximum number of generations'
+    required: false
+    default: '50'
+  
+  create-pr:
+    description: 'Create pull request with optimized rules'
+    required: false
+    default: 'true'
+  
+  pr-branch:
+    description: 'Branch name for pull request (auto-generated if empty)'
+    required: false
+    default: ''
+  
+  base-branch:
+    description: 'Base branch for pull request'
+    required: false
+    default: 'main'
+  
+  working-directory:
+    description: 'Working directory for the action'
+    required: false
+    default: '.'
+  
+  cache-enabled:
+    description: 'Enable caching of optimization results'
+    required: false
+    default: 'true'
+  
+  progress-comments:
+    description: 'Post progress comments on PR/issue'
+    required: false
+    default: 'true'
+  
+  report-format:
+    description: 'Report format (html, markdown, both)'
+    required: false
+    default: 'both'
+  
+  parallel-workers:
+    description: 'Number of parallel evaluation workers'
+    required: false
+    default: '4'
+  
+  enable-telemetry:
+    description: 'Enable anonymous usage telemetry'
+    required: false
+    default: 'true'
+  
+  dry-run:
+    description: 'Run in dry-run mode (no actual changes)'
+    required: false
+    default: 'false'
+
+outputs:
+  improvement-percent:
+    description: 'Achieved improvement percentage'
+  
+  total-generations:
+    description: 'Number of generations completed'
+  
+  execution-time:
+    description: 'Total execution time in seconds'
+  
+  mutations-applied:
+    description: 'Number of mutations applied'
+  
+  pr-url:
+    description: 'URL of created pull request (if created)'
+  
+  report-path:
+    description: 'Path to generated optimization report'
+  
+  success:
+    description: 'Whether optimization was successful'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.modules }}
+    - ${{ inputs.time-budget }}
+    - ${{ inputs.target-improvement }}
+    - ${{ inputs.population-size }}
+    - ${{ inputs.max-generations }}
+    - ${{ inputs.create-pr }}
+    - ${{ inputs.pr-branch }}
+    - ${{ inputs.base-branch }}
+    - ${{ inputs.working-directory }}
+    - ${{ inputs.cache-enabled }}
+    - ${{ inputs.progress-comments }}
+    - ${{ inputs.report-format }}
+    - ${{ inputs.parallel-workers }}
+    - ${{ inputs.enable-telemetry }}
+    - ${{ inputs.dry-run }}
+
+  env:
+    GITHUB_TOKEN: ${{ github.token }}
+    GITHUB_REPOSITORY: ${{ github.repository }}
+    GITHUB_SHA: ${{ github.sha }}
+    GITHUB_REF: ${{ github.ref }}
+    GITHUB_ACTOR: ${{ github.actor }}
+    GITHUB_WORKFLOW: ${{ github.workflow }}
+    GITHUB_RUN_ID: ${{ github.run_id }}
+    GITHUB_RUN_NUMBER: ${{ github.run_number }}
