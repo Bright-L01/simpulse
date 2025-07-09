@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 
-
 @dataclass
 class PerformancePrediction:
     """Prediction of optimization performance"""

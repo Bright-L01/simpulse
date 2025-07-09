@@ -1,0 +1,146 @@
+{
+  "benchmarks/excellence_suite/high_impact": {
+    "performance": {
+      "directory": "benchmarks/excellence_suite/high_impact",
+      "simp_rules": 137,
+      "optimizable_rules": 9,
+      "estimated_improvement": 22.5,
+      "optimization_data": {
+        "project_path": "benchmarks/excellence_suite/high_impact",
+        "total_rules": 137,
+        "rules_changed": 9,
+        "estimated_improvement": 22.5,
+        "changes": [
+          {
+            "rule_name": "add_comm_nat",
+            "file_path": "benchmarks/excellence_suite/high_impact/ArithmeticHeavy.lean",
+            "old_priority": 1000,
+            "new_priority": 100,
+            "reason": "Used 5 times"
+          },
+          {
+            "rule_name": "add_assoc_nat",
+            "file_path": "benchmarks/excellence_suite/high_impact/ArithmeticHeavy.lean",
+            "old_priority": 1000,
+            "new_priority": 110,
+            "reason": "Used 5 times"
+          },
+          {
+            "rule_name": "add_assoc_ring",
+            "file_path": "benchmarks/excellence_suite/high_impact/BasicAlgebra.lean",
+            "old_priority": 1000,
+            "new_priority": 120,
+            "reason": "Used 4 times"
+          },
+          {
+            "rule_name": "add_comm_ring",
+            "file_path": "benchmarks/excellence_suite/high_impact/BasicAlgebra.lean",
+            "old_priority": 1000,
+            "new_priority": 130,
+            "reason": "Used 2 times"
+          },
+          {
+            "rule_name": "left_distrib_ring",
+            "file_path": "benchmarks/excellence_suite/high_impact/BasicAlgebra.lean",
+            "old_priority": 1000,
+            "new_priority": 140,
+            "reason": "Used 2 times"
+          },
+          {
+            "rule_name": "right_distrib_ring",
+            "file_path": "benchmarks/excellence_suite/high_impact/BasicAlgebra.lean",
+            "old_priority": 1000,
+            "new_priority": 150,
+            "reason": "Used 2 times"
+          },
+          {
+            "rule_name": "mul_comm_nat",
+            "file_path": "benchmarks/excellence_suite/high_impact/ArithmeticHeavy.lean",
+            "old_priority": 1000,
+            "new_priority": 160,
+            "reason": "Used 1 times"
+          },
+          {
+            "rule_name": "mul_assoc_nat",
+            "file_path": "benchmarks/excellence_suite/high_impact/ArithmeticHeavy.lean",
+            "old_priority": 1000,
+            "new_priority": 170,
+            "reason": "Used 1 times"
+          },
+          {
+            "rule_name": "left_distrib_nat",
+            "file_path": "benchmarks/excellence_suite/high_impact/ArithmeticHeavy.lean",
+            "old_priority": 1000,
+            "new_priority": 180,
+            "reason": "Used 1 times"
+          }
+        ]
+      },
+      "success": true
+    },
+    "guarantee": {
+      "directory": "benchmarks/excellence_suite/high_impact",
+      "recommendation": "skip",
+      "exit_code": 2,
+      "output": "",
+      "success": true
+    },
+    "timestamp": 1752030737.5507011
+  },
+  "benchmarks/excellence_suite/moderate_impact": {
+    "performance": {
+      "directory": "benchmarks/excellence_suite/moderate_impact",
+      "simp_rules": 34,
+      "optimizable_rules": 1,
+      "estimated_improvement": 2.5,
+      "optimization_data": {
+        "project_path": "benchmarks/excellence_suite/moderate_impact",
+        "total_rules": 34,
+        "rules_changed": 1,
+        "estimated_improvement": 2.5,
+        "changes": [
+          {
+            "rule_name": "partial_list_nil_append",
+            "file_path": "benchmarks/excellence_suite/moderate_impact/PartialOptimization.lean",
+            "old_priority": 1000,
+            "new_priority": 100,
+            "reason": "Used 1 times"
+          }
+        ]
+      },
+      "success": true
+    },
+    "guarantee": {
+      "directory": "benchmarks/excellence_suite/moderate_impact",
+      "recommendation": "skip",
+      "exit_code": 2,
+      "output": "",
+      "success": true
+    },
+    "timestamp": 1752030737.829061
+  },
+  "benchmarks/excellence_suite/no_benefit": {
+    "performance": {
+      "directory": "benchmarks/excellence_suite/no_benefit",
+      "simp_rules": 4,
+      "optimizable_rules": 0,
+      "estimated_improvement": 0.0,
+      "optimization_data": {
+        "project_path": "benchmarks/excellence_suite/no_benefit",
+        "total_rules": 4,
+        "rules_changed": 0,
+        "estimated_improvement": 0.0,
+        "changes": []
+      },
+      "success": true
+    },
+    "guarantee": {
+      "directory": "benchmarks/excellence_suite/no_benefit",
+      "recommendation": "skip",
+      "exit_code": 2,
+      "output": "",
+      "success": true
+    },
+    "timestamp": 1752030738.122411
+  }
+}

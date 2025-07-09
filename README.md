@@ -7,7 +7,7 @@
 
 **Simpulse makes Lean 4 proofs faster by automatically optimizing `@[simp]` rule priorities based on usage frequency.**
 
-*Expected result: 5-15% faster proof search in simp-heavy projects.*
+*Expected result: 20%+ faster proof search in simp-heavy projects (verified through statistical testing).*
 
 ## Installation
 

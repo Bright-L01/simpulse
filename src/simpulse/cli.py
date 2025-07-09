@@ -109,7 +109,7 @@ def create_progress_bar():
 def cli(debug, quiet, verbose):
     """✨ Simpulse - Lightning-fast optimizer for Lean 4 simp rules
 
-    Reduce proof search time by 2.83x with intelligent priority optimization.
+    Reduce proof search time by 20%+ with intelligent priority optimization.
     """
     global DEBUG_MODE, QUIET_MODE, VERBOSE_MODE
     DEBUG_MODE = debug

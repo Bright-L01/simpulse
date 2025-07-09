@@ -1,6 +1,6 @@
 {
   "benchmark_metadata": {
-    "timestamp": "2025-07-08 18:10:04",
+    "timestamp": "2025-07-08 23:10:52",
     "total_files": 14,
     "categories": [
       "moderate_impact",
@@ -13,7 +13,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile4.lean",
       "category": "no_benefit",
-      "baseline_time": 1054.6345233917236,
+      "baseline_time": 691.1526679992676,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -26,7 +26,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile8.lean",
       "category": "no_benefit",
-      "baseline_time": 1609.494924545288,
+      "baseline_time": 391.88318252563477,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -39,7 +39,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile9.lean",
       "category": "no_benefit",
-      "baseline_time": 699.2388725280762,
+      "baseline_time": 407.2227954864502,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -52,7 +52,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile5.lean",
       "category": "no_benefit",
-      "baseline_time": 1108.0292701721191,
+      "baseline_time": 401.38440132141113,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -65,7 +65,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile7.lean",
       "category": "moderate_impact",
-      "baseline_time": 620.4389095306396,
+      "baseline_time": 412.95385360717773,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -78,7 +78,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile6.lean",
       "category": "moderate_impact",
-      "baseline_time": 610.136890411377,
+      "baseline_time": 375.799560546875,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -91,7 +91,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile5.lean",
       "category": "moderate_impact",
-      "baseline_time": 608.6040496826172,
+      "baseline_time": 399.1081237792969,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -104,7 +104,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile9.lean",
       "category": "moderate_impact",
-      "baseline_time": 568.4947490692139,
+      "baseline_time": 374.09939765930176,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -117,7 +117,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile8.lean",
       "category": "moderate_impact",
-      "baseline_time": 695.4306602478027,
+      "baseline_time": 395.7587718963623,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -130,7 +130,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile10.lean",
       "category": "moderate_impact",
-      "baseline_time": 603.8435935974121,
+      "baseline_time": 392.5206184387207,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -143,7 +143,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile10.lean",
       "category": "no_benefit",
-      "baseline_time": 1020.0223922729492,
+      "baseline_time": 415.12579917907715,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -156,7 +156,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/moderate_impact_ModerateFile4.lean",
       "category": "moderate_impact",
-      "baseline_time": 777.3141384124756,
+      "baseline_time": 435.10756492614746,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -169,7 +169,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile6.lean",
       "category": "no_benefit",
-      "baseline_time": 1641.310453414917,
+      "baseline_time": 411.6215229034424,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,
@@ -182,7 +182,7 @@
     {
       "file_path": "/Users/brightliu/Coding_Projects/simpulse/benchmarks/excellence_suite/temp_benchmark_project/Benchmark/no_benefit_NoBenefitFile7.lean",
       "category": "no_benefit",
-      "baseline_time": 686.5810871124268,
+      "baseline_time": 378.66902351379395,
       "baseline_success": true,
       "optimized_time": null,
       "optimized_success": true,

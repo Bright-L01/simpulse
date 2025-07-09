@@ -32,7 +32,7 @@ Automatically analyzes simp rule usage and adjusts priorities to speed up proof 
 
 ### 🚀 **Expected results:**
 - **High-impact projects:** 20-80% speedup (we have one case study showing 2.8x improvement)
-- **Moderate projects:** 5-15% improvement
+- **Moderate projects:** 2-5% improvement
 - **60-70% of projects:** No benefit (and we'll tell you this upfront!)
 
 ### 📝 **What I need from you:**
