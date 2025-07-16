@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from .diagnostic_parser import DiagnosticCollector, DiagnosticAnalysis
+from .lake_integration import HybridDiagnosticCollector
 from .performance_measurement import PerformanceMeasurer, PerformanceComparison, OptimizationValidator
 from .optimization_engine import OptimizationEngine, OptimizationPlan, OptimizationType
 from .error import OptimizationError
@@ -90,7 +91,7 @@ class AdvancedSimpOptimizer:
     
     def __init__(self, project_path: str):
         self.project_path = Path(project_path)
-        self.collector = DiagnosticCollector(self.project_path)
+        self.collector = HybridDiagnosticCollector(self.project_path)
         self.engine = OptimizationEngine(self.project_path) 
         self.validator = OptimizationValidator(self.project_path)
         
@@ -125,9 +126,9 @@ class AdvancedSimpOptimizer:
         logger.info("Starting advanced diagnostic analysis...")
         
         try:
-            # Step 1: Collect real diagnostic data from Lean
-            logger.info("Collecting diagnostic data from Lean...")
-            analysis = self.collector.collect_diagnostics(files)
+            # Step 1: Collect comprehensive analysis using Lake integration + fallback
+            logger.info("Collecting comprehensive analysis (Lake + pattern-based)...")
+            analysis = self.collector.collect_comprehensive_analysis()
             
             if not analysis.simp_theorems:
                 logger.warning("No simp theorem usage data collected")

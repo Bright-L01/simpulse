@@ -12,6 +12,7 @@ from .advanced_optimizer import AdvancedSimpOptimizer, AdvancedOptimizationResul
 from .diagnostic_parser import DiagnosticAnalysis, SimpTheoremUsage
 from .optimization_engine import OptimizationPlan, OptimizationRecommendation, OptimizationType
 from .performance_measurement import PerformanceReport, PerformanceComparison
+from .lake_integration import LakeIntegration, HybridDiagnosticCollector
 
 __all__ = [
     "AdvancedSimpOptimizer",
@@ -23,6 +24,8 @@ __all__ = [
     "OptimizationType",
     "PerformanceReport",
     "PerformanceComparison",
+    "LakeIntegration",
+    "HybridDiagnosticCollector",
     "optimize_project",
 ]
 

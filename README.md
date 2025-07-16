@@ -10,6 +10,8 @@ Evidence-based optimization with performance validation, powered by Lean's built
 
 ## ✨ What's New in 2.0
 
+- **Lake build system integration** - Works with real Lean 4 projects
+- **Hybrid analysis system** - Lake diagnostics + pattern-based fallback
 - **Real diagnostic data** from Lean 4.8.0+ `set_option diagnostics true`
 - **Performance validation** with actual timing measurements  
 - **Evidence-based recommendations** instead of theoretical estimates
@@ -18,11 +20,13 @@ Evidence-based optimization with performance validation, powered by Lean's built
 
 ## 🎯 How It Works
 
-1. **Collects real usage data** using Lean's diagnostic infrastructure
-2. **Analyzes simp theorem efficiency** from actual compilation statistics  
-3. **Generates evidence-based recommendations** with confidence scores
-4. **Validates optimizations** with before/after performance measurement
-5. **Reports actual improvements** with measurable results
+1. **Integrates with Lake build system** for real project compilation
+2. **Collects diagnostic data** from actual Lean 4.8.0+ compilation
+3. **Falls back to pattern analysis** when diagnostic data unavailable
+4. **Analyzes simp theorem efficiency** from real usage statistics  
+5. **Generates evidence-based recommendations** with confidence scores
+6. **Validates optimizations** with before/after performance measurement
+7. **Reports actual improvements** with measurable results
 
 ## 🚀 Quick Start
 
@@ -46,32 +50,46 @@ simpulse benchmark my-lean-project/
 ## 📊 Real Example Output
 
 ```bash
-$ simpulse analyze mathlib4/
+$ simpulse analyze lean4-project/
 
-Analyzing Lean project: mathlib4/
+Analyzing Lean project: lean4-project/
 Using real diagnostic data from Lean 4.8.0+...
 
 Advanced Simp Optimization Results:
-  Project: mathlib4/
-  Simp theorems analyzed: 1,247
-  Recommendations generated: 23
-    High confidence: 8
-    Medium confidence: 12
-    Low confidence: 3
-  Analysis time: 45.2s
+  Project: lean4-project
+  Simp theorems analyzed: 8
+  Recommendations generated: 8
+    High confidence: 0
+    Medium confidence: 8
+    Low confidence: 0
+  Analysis time: 45.4s
 
-Top recommendations (high confidence):
-  • List.append_nil: priority_increase
-    Used 156 times with 98.7% success rate
-    Expected: Faster simp by trying this theorem earlier
+# Shows Lake integration attempt + fallback
+2025-07-16 04:05:58,297 - Lake integration available
+2025-07-16 04:06:43,002 - Lake collection returned no data, trying fallback...
+2025-07-16 04:06:43,711 - Found 24725 simp rules in codebase
 ```
 
 ```bash
-$ simpulse optimize mathlib4/
+$ simpulse preview lean4-project/ --detailed
 
-Performance validation enabled (min improvement: 5.0%)
-✓ Successfully applied 8 optimizations
-✓ Performance validation PASSED: +12.3% improvement
+Optimization Preview:
+  Total recommendations: 8
+  Simp theorems analyzed: 8
+
+Recommendations by type:
+  priority_increase: 8 recommendations
+    • list_append_nil
+      Confidence: 51.7%
+      Reason: Used 10 times with 83.3% success rate
+
+Most used theorems:
+  • list_append_nil: 10 uses, 83.3% success rate
+  • nat_add_zero: 10 uses, 83.3% success rate
+  • list_nil_append: 10 uses, 83.3% success rate
+
+To apply these optimizations, run:
+  simpulse optimize lean4-project/ --confidence-threshold 50.0
 ```
 
 ## 🔬 Evidence-Based Analysis
