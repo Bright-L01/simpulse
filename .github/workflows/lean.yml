@@ -1,0 +1,68 @@
+name: Lean CI
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['lean4/**']
+  pull_request:
+    branches: [ main ]
+    paths: ['lean4/**']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build and test Lean 4 project
+      uses: leanprover/lean-action@v1
+      with:
+        working-directory: lean4
+        build-args: "--verbose"
+        test: true
+        lint: true
+        
+    - name: Run integration tests
+      working-directory: lean4/integration_test
+      run: |
+        lake build
+        python run_complete_test.py
+    
+    - name: Upload Lean build artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: lean-build-${{ matrix.os }}
+        path: |
+          lean4/.lake
+          lean4/build
+
+  benchmark:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Lean 4
+      uses: leanprover/lean-action@v1
+      with:
+        working-directory: lean4
+        use-mathlib-cache: true
+    
+    - name: Run benchmarks
+      working-directory: lean4
+      run: |
+        lake exe benchmark
+    
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v3
+      with:
+        name: benchmark-results
+        path: lean4/benchmark-results.json

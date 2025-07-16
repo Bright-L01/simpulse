@@ -133,26 +133,30 @@ def analysis_result_sample():
 @pytest.fixture
 def optimization_suggestions_sample():
     """Sample optimization suggestions for testing."""
-    from simpulse.optimizer import OptimizationSuggestion
+    from simpulse.optimization_engine import OptimizationRecommendation, OptimizationType
 
     return [
-        OptimizationSuggestion(
-            rule_name="list_append_nil",
+        OptimizationRecommendation(
+            theorem_name="list_append_nil",
             file_path="Data/List/Basic.lean",
-            current_priority=None,
+            optimization_type=OptimizationType.PRIORITY_INCREASE,
+            current_priority=1000,
             suggested_priority=100,
             reason="High frequency rule (847 uses)",
-            expected_speedup=0.234,
-            confidence="high",
+            confidence=85.4,
+            usage_count=847,
+            success_rate=0.924
         ),
-        OptimizationSuggestion(
-            rule_name="zero_add",
+        OptimizationRecommendation(
+            theorem_name="zero_add",
             file_path="Algebra/Group/Basic.lean",
-            current_priority=None,
+            optimization_type=OptimizationType.PRIORITY_INCREASE,
+            current_priority=1000,
             suggested_priority=200,
             reason="Medium frequency rule (421 uses)",
-            expected_speedup=0.156,
-            confidence="medium",
+            confidence=72.3,
+            usage_count=421,
+            success_rate=0.886
         ),
     ]
 

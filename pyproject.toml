@@ -1,12 +1,15 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "simpulse"
 version = "2.0.0"
 description = "Advanced Lean 4 simp optimization using real diagnostic data from Lean 4.8.0+"
-authors = ["Bright Liu <brightliu@college.harvard.edu>"]
-license = "MIT"
+authors = [{name = "Bright Liu", email = "brightliu@college.harvard.edu"}]
+license = {text = "MIT"}
 readme = "README.md"
-repository = "https://github.com/Bright-L01/simpulse"
-homepage = "https://github.com/Bright-L01/simpulse"
+requires-python = ">=3.10"
 keywords = ["lean4", "theorem-proving", "simp", "optimization", "diagnostics", "performance"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -23,31 +26,29 @@ classifiers = [
     "Operating System :: OS Independent",
     "Environment :: Console",
 ]
-packages = [{include = "simpulse", from = "src"}]
+dependencies = [
+    "click>=8.1.7",
+    "rich>=13.7.0",
+]
 
-[tool.poetry.scripts]
+[project.optional-dependencies]
+memory = ["psutil>=5.9.0"]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.6",
+    "black>=23.11.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.1",
+]
+
+[project.scripts]
 simpulse = "simpulse.cli:main"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-click = "^8.1.7"  # CLI framework
-rich = "^13.7.0"  # Terminal formatting
-psutil = {version = "^5.9.0", optional = true}  # Optional for memory monitoring
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.0.0"
-pytest-cov = "^4.1.0"
-ruff = "^0.1.6"
-black = "^23.11.0"
-isort = "^5.12.0"
-mypy = "^1.7.1"
-
-[tool.poetry.extras]
-memory = ["psutil"]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[project.urls]
+Homepage = "https://github.com/Bright-L01/simpulse"
+Repository = "https://github.com/Bright-L01/simpulse"
+Issues = "https://github.com/Bright-L01/simpulse/issues"
 
 [tool.ruff]
 line-length = 100
