@@ -1,46 +1,61 @@
-"""Simpulse - Simple optimizer for Lean 4 simp rules.
+"""Simpulse 2.0 - Advanced Lean 4 simp optimization using real diagnostic data.
 
-Direct, no-nonsense optimization without the complexity.
+Evidence-based optimization with performance validation, powered by Lean 4.8.0+ diagnostics.
 """
 
-__version__ = "0.1.0"
+__version__ = "2.0.0"
 __author__ = "Bright Liu"
 __email__ = "bright.liu@example.com"
 
-# The only thing that matters
-from .unified_optimizer import Change, Rule, UnifiedOptimizer
+# Advanced optimization engine
+from .advanced_optimizer import AdvancedSimpOptimizer, AdvancedOptimizationResult
+from .diagnostic_parser import DiagnosticAnalysis, SimpTheoremUsage
+from .optimization_engine import OptimizationPlan, OptimizationRecommendation, OptimizationType
+from .performance_measurement import PerformanceReport, PerformanceComparison
 
 __all__ = [
-    "Change",
-    "Rule",
-    "UnifiedOptimizer",
+    "AdvancedSimpOptimizer",
+    "AdvancedOptimizationResult", 
+    "DiagnosticAnalysis",
+    "SimpTheoremUsage",
+    "OptimizationPlan",
+    "OptimizationRecommendation",
+    "OptimizationType",
+    "PerformanceReport",
+    "PerformanceComparison",
     "optimize_project",
 ]
 
 
-def optimize_project(project_path, strategy="frequency", apply=False):
-    """Simple convenience function to optimize a project.
+def optimize_project(project_path, 
+                    confidence_threshold=70.0, 
+                    validate_performance=True,
+                    min_improvement_percent=5.0):
+    """Advanced optimization function using real diagnostic data.
 
     Args:
         project_path: Path to Lean 4 project
-        strategy: One of "frequency", "balanced", "conservative"
-        apply: Whether to apply changes immediately
+        confidence_threshold: Minimum confidence for applying optimizations (0-100)
+        validate_performance: Whether to validate improvements with actual measurements
+        min_improvement_percent: Minimum improvement required for validation
 
     Returns:
-        Dictionary with optimization results
+        AdvancedOptimizationResult with comprehensive analysis and validation
 
     Raises:
         OptimizationError: If optimization fails
-        ConfigurationError: If configuration is invalid
     """
     try:
-        optimizer = UnifiedOptimizer(strategy=strategy)
-        return optimizer.optimize(project_path, apply=apply)
+        optimizer = AdvancedSimpOptimizer(project_path)
+        return optimizer.optimize(
+            confidence_threshold=confidence_threshold,
+            validate_performance=validate_performance,
+            min_improvement_percent=min_improvement_percent
+        )
     except Exception as e:
         import logging
-
         from .error import handle_error
 
         error_msg = handle_error(e, debug=False)
-        logging.error(f"Optimization failed: {error_msg}")
+        logging.error(f"Advanced optimization failed: {error_msg}")
         raise
