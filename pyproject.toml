@@ -1,18 +1,20 @@
 [tool.poetry]
 name = "simpulse"
-version = "0.1.0"
-description = "Experimental tool for adjusting Lean 4 simp rule priorities (unverified performance claims)"
+version = "2.0.0"
+description = "Advanced Lean 4 simp optimization using real diagnostic data from Lean 4.8.0+"
 authors = ["Bright Liu <brightliu@college.harvard.edu>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Bright-L01/simpulse"
 homepage = "https://github.com/Bright-L01/simpulse"
-keywords = ["lean4", "theorem-proving", "experimental", "simp", "research"]
+keywords = ["lean4", "theorem-proving", "simp", "optimization", "diagnostics", "performance"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Software Development :: Compilers",
+    "Topic :: Software Development :: Testing",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

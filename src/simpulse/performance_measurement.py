@@ -111,7 +111,7 @@ class PerformanceMeasurer:
                 start_time = time.perf_counter()
                 
                 result = subprocess.run(
-                    [self.lean_executable, '--check', str(file_path)],
+                    [self.lean_executable, str(file_path)],
                     cwd=self.project_path,
                     capture_output=True,
                     text=True,

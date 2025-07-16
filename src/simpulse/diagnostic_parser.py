@@ -261,9 +261,9 @@ class DiagnosticCollector:
             temp_file_path = Path(temp_file.name)
         
         try:
-            # Run Lean with the diagnostic test file
+            # Run Lean with the diagnostic test file (no --check flag in newer versions)
             result = subprocess.run(
-                ['lean', '--check', str(temp_file_path)],
+                ['lean', str(temp_file_path)],
                 cwd=self.project_path,
                 capture_output=True,
                 text=True,
@@ -292,17 +292,31 @@ class DiagnosticCollector:
         content.append("set_option diagnostics.threshold 1")
         content.append("")
         
-        # Add imports for all files
+        # Add imports for all files (convert paths to proper module names)
         for file_path in files:
-            # Convert file path to module name
-            relative_path = file_path.relative_to(self.project_path)
-            module_name = str(relative_path.with_suffix('')).replace('/', '.')
-            content.append(f"import {module_name}")
+            try:
+                # Convert file path to module name
+                relative_path = file_path.relative_to(self.project_path)
+                module_parts = []
+                
+                # Handle nested directory structure
+                for part in relative_path.parts[:-1]:  # All parts except filename
+                    module_parts.append(part)
+                
+                # Add filename without extension
+                module_parts.append(relative_path.stem)
+                
+                module_name = '.'.join(module_parts)
+                content.append(f"import {module_name}")
+            except ValueError:
+                # Skip files outside project path
+                continue
         
         content.append("")
         content.append("-- Trigger some simp usage to generate diagnostics")
         content.append("example : 1 + 1 = 2 := by simp")
-        content.append("example : [1, 2].length = 2 := by simp")
+        content.append("example (n : Nat) : n + 0 = n := by simp")
+        content.append("example (l : List α) : l ++ [] = l := by simp")
         
         return '\n'.join(content)
 
