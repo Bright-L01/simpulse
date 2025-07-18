@@ -87,7 +87,7 @@ class AdvancedOptimizationResult:
 class AdvancedSimpOptimizer:
     """
     Advanced simp optimizer using real Lean 4.8.0+ diagnostic data.
-    
+
     Replaces theoretical estimates with evidence-based optimization
     and performance validation.
     """
@@ -116,11 +116,11 @@ class AdvancedSimpOptimizer:
                max_files: int | None = None) -> AdvancedOptimizationResult:
         """
         Analyze project using real diagnostic data.
-        
+
         Args:
             files: Specific files to analyze (None for all)
             max_files: Maximum number of files to analyze
-            
+
         Returns:
             Complete analysis results with optimization recommendations
         """
@@ -162,7 +162,7 @@ class AdvancedSimpOptimizer:
 
         except Exception as e:
             logger.error(f"Analysis failed: {e}")
-            raise OptimizationError(f"Advanced analysis failed: {e}")
+            raise OptimizationError(f"Advanced analysis failed: {e}") from e
 
     def optimize(self,
                 confidence_threshold: float = 70.0,
@@ -170,12 +170,12 @@ class AdvancedSimpOptimizer:
                 min_improvement_percent: float = 5.0) -> AdvancedOptimizationResult:
         """
         Perform complete optimization with performance validation.
-        
+
         Args:
             confidence_threshold: Minimum confidence for applying recommendations
             validate_performance: Whether to measure actual performance improvement
             min_improvement_percent: Minimum improvement required for validation
-            
+
         Returns:
             Complete optimization results with performance validation
         """
@@ -277,11 +277,11 @@ class AdvancedSimpOptimizer:
                  runs_per_file: int = 3) -> dict[str, float]:
         """
         Benchmark current project performance.
-        
+
         Args:
             files: Specific files to benchmark (None for all)
             runs_per_file: Number of runs per file for accuracy
-            
+
         Returns:
             Performance metrics dictionary
         """
@@ -302,10 +302,10 @@ class AdvancedSimpOptimizer:
                                confidence_threshold: float = 50.0) -> dict:
         """
         Get preview of optimizations without applying them.
-        
+
         Args:
             confidence_threshold: Minimum confidence for including recommendations
-            
+
         Returns:
             Preview information dictionary
         """
@@ -379,7 +379,7 @@ theorem another_test : [1, 2].length = 2 := by simp [test_theorem]
             if preview['total_recommendations'] > 0:
                 print("✓ Advanced optimizer working correctly")
             else:
-                print("ℹ No optimizations recommended (expected for simple test)")
+                print("i No optimizations recommended (expected for simple test)")
 
         except Exception as e:
             print(f"✗ Advanced optimizer test failed: {e}")

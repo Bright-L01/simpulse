@@ -46,11 +46,11 @@ class LakeIntegration:
                                      clean_build: bool = False) -> DiagnosticAnalysis:
         """
         Collect diagnostic data by running Lake build with diagnostics enabled.
-        
+
         Args:
             targets: Specific targets to build (None for all)
             clean_build: Whether to clean before building
-            
+
         Returns:
             DiagnosticAnalysis with real usage data
         """
@@ -75,7 +75,7 @@ class LakeIntegration:
 
         except Exception as e:
             logger.error(f"Failed to collect diagnostics from Lake build: {e}")
-            raise OptimizationError(f"Lake diagnostic collection failed: {e}")
+            raise OptimizationError(f"Lake diagnostic collection failed: {e}") from e
 
         finally:
             # Clean up any configuration changes
@@ -203,7 +203,7 @@ script run_with_diagnostics do
     def collect_diagnostics_from_specific_file(self, file_path: Path) -> DiagnosticAnalysis:
         """
         Collect diagnostic data from a specific file by building it individually.
-        
+
         This is a fallback approach for when full project builds don't work.
         """
         logger.info(f"Collecting diagnostics from specific file: {file_path}")
@@ -249,7 +249,7 @@ lean_lib «TempProject» where
 class HybridDiagnosticCollector:
     """
     Combines Lake-based diagnostic collection with pattern-based fallback analysis.
-    
+
     This provides the best of both worlds: real diagnostic data when available,
     and useful pattern analysis when diagnostic data isn't available.
     """
@@ -268,7 +268,7 @@ class HybridDiagnosticCollector:
     def collect_comprehensive_analysis(self) -> DiagnosticAnalysis:
         """
         Collect comprehensive analysis using both Lake diagnostics and pattern analysis.
-        
+
         Returns:
             DiagnosticAnalysis with the best available data
         """
@@ -294,7 +294,7 @@ class HybridDiagnosticCollector:
     def _pattern_based_analysis(self) -> DiagnosticAnalysis:
         """
         Fallback pattern-based analysis when Lake integration isn't available.
-        
+
         This provides useful insights even without real diagnostic data.
         """
         from .unified_optimizer import UnifiedOptimizer

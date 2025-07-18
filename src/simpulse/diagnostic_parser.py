@@ -318,7 +318,7 @@ class DiagnosticCollector:
         content.append("-- Trigger some simp usage to generate diagnostics")
         content.append("example : 1 + 1 = 2 := by simp")
         content.append("example (n : Nat) : n + 0 = n := by simp")
-        content.append("example (l : List α) : l ++ [] = l := by simp")
+        content.append("example (l : List Nat) : l ++ [] = l := by simp")
 
         return '\n'.join(content)
 
