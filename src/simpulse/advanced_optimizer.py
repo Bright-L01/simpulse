@@ -371,12 +371,14 @@ if __name__ == "__main__":
 
         # Create a test file
         test_file = project_path / "test.lean"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 @[simp]
 theorem test_theorem : 1 + 1 = 2 := by simp
 
 theorem another_test : [1, 2].length = 2 := by simp [test_theorem]
-""")
+"""
+        )
 
         try:
             optimizer = AdvancedSimpOptimizer(str(project_path))

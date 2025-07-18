@@ -338,26 +338,30 @@ if __name__ == "__main__":
         project_path.mkdir()
 
         # Create minimal Lake project
-        (project_path / "lakefile.lean").write_text("""
+        (project_path / "lakefile.lean").write_text(
+            """
 import Lake
 open Lake DSL
 
 package «test» where
 
 lean_lib «Test» where
-""")
+"""
+        )
 
         (project_path / "lean-toolchain").write_text("4.8.0")
 
         # Create source file
         test_dir = project_path / "Test"
         test_dir.mkdir()
-        (test_dir / "Main.lean").write_text("""
+        (test_dir / "Main.lean").write_text(
+            """
 @[simp]
 theorem test_theorem : 1 + 1 = 2 := by norm_num
 
 theorem test_proof : 2 = 1 + 1 := by simp [test_theorem]
-""")
+"""
+        )
 
         try:
             # Test Lake integration

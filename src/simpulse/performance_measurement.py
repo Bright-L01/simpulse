@@ -352,10 +352,12 @@ if __name__ == "__main__":
 
         # Create a simple test file
         test_file = project_path / "test.lean"
-        test_file.write_text("""
+        test_file.write_text(
+            """
 theorem simple_test : 1 + 1 = 2 := by simp
 theorem another_test : [1, 2].length = 2 := by simp
-""")
+"""
+        )
 
         measurer = PerformanceMeasurer(project_path)
         measurement = measurer.measure_file(test_file)

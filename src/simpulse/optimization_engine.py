@@ -81,9 +81,9 @@ class OptimizationEngine:
 
     def __init__(self, project_path: Path):
         self.project_path = Path(project_path)
-        self.simp_rules_cache: dict[
-            str, tuple[Path, int, int]
-        ] = {}  # name -> (path, line, priority)
+        self.simp_rules_cache: dict[str, tuple[Path, int, int]] = (
+            {}
+        )  # name -> (path, line, priority)
 
     def analyze_and_recommend(self, diagnostic_analysis: DiagnosticAnalysis) -> OptimizationPlan:
         """Generate optimization recommendations based on diagnostic analysis."""
