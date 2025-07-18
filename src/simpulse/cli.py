@@ -6,10 +6,10 @@ with real diagnostic data from Lean 4.8.0+.
 """
 
 import sys
-from .advanced_cli import main
+from .advanced_cli import main, cli
 
-# Re-export main function for backward compatibility
-__all__ = ["main"]
+# Re-export for backward compatibility
+__all__ = ["main", "cli"]
 
 if __name__ == "__main__":
     sys.exit(main())

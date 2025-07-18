@@ -14,6 +14,7 @@ from enum import Enum
 
 from .diagnostic_parser import DiagnosticAnalysis, SimpTheoremUsage
 from .performance_measurement import PerformanceMeasurer, PerformanceComparison
+from .error import OptimizationError
 
 logger = logging.getLogger(__name__)
 

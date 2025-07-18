@@ -7,11 +7,19 @@ to provide evidence-based optimization recommendations.
 
 import re
 import logging
+import subprocess
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
+from .error import SimpulseError
+
 logger = logging.getLogger(__name__)
+
+
+class DiagnosticError(SimpulseError):
+    """Error raised during diagnostic parsing."""
+    pass
 
 
 @dataclass
