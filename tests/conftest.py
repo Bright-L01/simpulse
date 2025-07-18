@@ -145,7 +145,7 @@ def optimization_suggestions_sample():
             reason="High frequency rule (847 uses)",
             confidence=85.4,
             usage_count=847,
-            success_rate=0.924
+            success_rate=0.924,
         ),
         OptimizationRecommendation(
             theorem_name="zero_add",
@@ -156,7 +156,7 @@ def optimization_suggestions_sample():
             reason="Medium frequency rule (421 uses)",
             confidence=72.3,
             usage_count=421,
-            success_rate=0.886
+            success_rate=0.886,
         ),
     ]
 

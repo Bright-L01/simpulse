@@ -16,8 +16,7 @@ from .error import OptimizationError
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -41,24 +40,16 @@ Examples:
   simpulse optimize --no-validation my-project/ # Optimize without validation
   simpulse benchmark my-lean-project/            # Benchmark performance
   simpulse preview my-lean-project/              # Preview optimizations
-            """
+            """,
         )
 
         # Global options
+        parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
         parser.add_argument(
-            "--verbose", "-v",
-            action="store_true",
-            help="Enable verbose logging"
+            "--quiet", "-q", action="store_true", help="Suppress non-essential output"
         )
         parser.add_argument(
-            "--quiet", "-q",
-            action="store_true",
-            help="Suppress non-essential output"
-        )
-        parser.add_argument(
-            "--output", "-o",
-            type=str,
-            help="Output file for results (JSON format)"
+            "--output", "-o", type=str, help="Output file for results (JSON format)"
         )
 
         # Subcommands
@@ -66,81 +57,60 @@ Examples:
 
         # Analyze command
         analyze_parser = subparsers.add_parser(
-            "analyze",
-            help="Analyze simp usage patterns without making changes"
+            "analyze", help="Analyze simp usage patterns without making changes"
         )
+        analyze_parser.add_argument("project_path", help="Path to Lean 4 project directory")
         analyze_parser.add_argument(
-            "project_path",
-            help="Path to Lean 4 project directory"
-        )
-        analyze_parser.add_argument(
-            "--max-files",
-            type=int,
-            help="Maximum number of files to analyze"
+            "--max-files", type=int, help="Maximum number of files to analyze"
         )
 
         # Optimize command
         optimize_parser = subparsers.add_parser(
-            "optimize",
-            help="Optimize simp rules with performance validation"
+            "optimize", help="Optimize simp rules with performance validation"
         )
-        optimize_parser.add_argument(
-            "project_path",
-            help="Path to Lean 4 project directory"
-        )
+        optimize_parser.add_argument("project_path", help="Path to Lean 4 project directory")
         optimize_parser.add_argument(
             "--confidence-threshold",
             type=float,
             default=70.0,
-            help="Minimum confidence threshold for applying optimizations (0-100, default: 70)"
+            help="Minimum confidence threshold for applying optimizations (0-100, default: 70)",
         )
         optimize_parser.add_argument(
             "--no-validation",
             action="store_true",
-            help="Skip performance validation (faster but less safe)"
+            help="Skip performance validation (faster but less safe)",
         )
         optimize_parser.add_argument(
             "--min-improvement",
             type=float,
             default=5.0,
-            help="Minimum improvement percentage required for validation (default: 5.0)"
+            help="Minimum improvement percentage required for validation (default: 5.0)",
         )
 
         # Preview command
         preview_parser = subparsers.add_parser(
-            "preview",
-            help="Preview optimization recommendations without applying them"
+            "preview", help="Preview optimization recommendations without applying them"
         )
-        preview_parser.add_argument(
-            "project_path",
-            help="Path to Lean 4 project directory"
-        )
+        preview_parser.add_argument("project_path", help="Path to Lean 4 project directory")
         preview_parser.add_argument(
             "--confidence-threshold",
             type=float,
             default=50.0,
-            help="Minimum confidence threshold for showing recommendations (default: 50)"
+            help="Minimum confidence threshold for showing recommendations (default: 50)",
         )
         preview_parser.add_argument(
             "--detailed",
             action="store_true",
-            help="Show detailed information for each recommendation"
+            help="Show detailed information for each recommendation",
         )
 
         # Benchmark command
         benchmark_parser = subparsers.add_parser(
-            "benchmark",
-            help="Benchmark current project performance"
+            "benchmark", help="Benchmark current project performance"
         )
+        benchmark_parser.add_argument("project_path", help="Path to Lean 4 project directory")
         benchmark_parser.add_argument(
-            "project_path",
-            help="Path to Lean 4 project directory"
-        )
-        benchmark_parser.add_argument(
-            "--runs",
-            type=int,
-            default=3,
-            help="Number of runs per file for accuracy (default: 3)"
+            "--runs", type=int, default=3, help="Number of runs per file for accuracy (default: 3)"
         )
 
         return parser
@@ -184,6 +154,7 @@ Examples:
             logger.error(f"Unexpected error: {e}")
             if parsed_args and parsed_args.verbose:
                 import traceback
+
                 traceback.print_exc()
             return 1
 
@@ -205,14 +176,17 @@ Examples:
                 print(f"    {rec.reason}")
                 print(f"    Expected: {rec.expected_impact}")
 
-        self._save_output(args, {
-            'command': 'analyze',
-            'project_path': args.project_path,
-            'analysis_time': result.total_analysis_time,
-            'simp_theorems_count': len(result.analysis.simp_theorems),
-            'recommendations_count': result.optimization_plan.total_recommendations,
-            'high_confidence_count': len(result.optimization_plan.high_confidence)
-        })
+        self._save_output(
+            args,
+            {
+                "command": "analyze",
+                "project_path": args.project_path,
+                "analysis_time": result.total_analysis_time,
+                "simp_theorems_count": len(result.analysis.simp_theorems),
+                "recommendations_count": result.optimization_plan.total_recommendations,
+                "high_confidence_count": len(result.optimization_plan.high_confidence),
+            },
+        )
 
         return 0
 
@@ -230,7 +204,7 @@ Examples:
         result = optimizer.optimize(
             confidence_threshold=args.confidence_threshold,
             validate_performance=not args.no_validation,
-            min_improvement_percent=args.min_improvement
+            min_improvement_percent=args.min_improvement,
         )
 
         print("\n" + result.summary())
@@ -241,9 +215,13 @@ Examples:
 
             if result.performance_comparison:
                 if result.validation_passed:
-                    print(f"✓ Performance validation PASSED: {result.actual_improvement_percent:+.1f}% improvement")
+                    print(
+                        f"✓ Performance validation PASSED: {result.actual_improvement_percent:+.1f}% improvement"
+                    )
                 else:
-                    print(f"✗ Performance validation FAILED: {result.actual_improvement_percent:+.1f}% change")
+                    print(
+                        f"✗ Performance validation FAILED: {result.actual_improvement_percent:+.1f}% change"
+                    )
                     print("  Changes have been automatically reverted")
 
         elif result.optimization_plan.total_recommendations > 0:
@@ -253,17 +231,20 @@ Examples:
         else:
             print("\n✓ Project already optimized - no improvements found")
 
-        self._save_output(args, {
-            'command': 'optimize',
-            'project_path': args.project_path,
-            'confidence_threshold': args.confidence_threshold,
-            'validation_enabled': not args.no_validation,
-            'applied_recommendations': result.applied_recommendations,
-            'failed_recommendations': result.failed_recommendations,
-            'validation_passed': result.validation_passed,
-            'actual_improvement_percent': result.actual_improvement_percent,
-            'optimization_time': result.total_optimization_time
-        })
+        self._save_output(
+            args,
+            {
+                "command": "optimize",
+                "project_path": args.project_path,
+                "confidence_threshold": args.confidence_threshold,
+                "validation_enabled": not args.no_validation,
+                "applied_recommendations": result.applied_recommendations,
+                "failed_recommendations": result.failed_recommendations,
+                "validation_passed": result.validation_passed,
+                "actual_improvement_percent": result.actual_improvement_percent,
+                "optimization_time": result.total_optimization_time,
+            },
+        )
 
         return 0 if result.validation_passed or args.no_validation else 1
 
@@ -280,9 +261,9 @@ Examples:
         print(f"  Simp theorems analyzed: {preview['analysis_summary']['simp_theorems_analyzed']}")
 
         # Show by optimization type
-        if preview['optimization_types']:
+        if preview["optimization_types"]:
             print("\nRecommendations by type:")
-            for opt_type, recommendations in preview['optimization_types'].items():
+            for opt_type, recommendations in preview["optimization_types"].items():
                 print(f"  {opt_type}: {len(recommendations)} recommendations")
 
                 if args.detailed:
@@ -292,21 +273,25 @@ Examples:
                         print(f"      Reason: {rec['reason']}")
 
         # Show analysis insights
-        analysis = preview['analysis_summary']
-        if analysis['most_used_theorems']:
+        analysis = preview["analysis_summary"]
+        if analysis["most_used_theorems"]:
             print("\nMost used theorems:")
-            for theorem in analysis['most_used_theorems']:
-                print(f"  • {theorem['name']}: {theorem['used_count']} uses, "
-                     f"{theorem['success_rate']:.1%} success rate")
+            for theorem in analysis["most_used_theorems"]:
+                print(
+                    f"  • {theorem['name']}: {theorem['used_count']} uses, "
+                    f"{theorem['success_rate']:.1%} success rate"
+                )
 
-        if analysis['potential_loops']:
+        if analysis["potential_loops"]:
             print("\n⚠️  Potential looping theorems detected:")
-            for theorem_name in analysis['potential_loops'][:5]:
+            for theorem_name in analysis["potential_loops"][:5]:
                 print(f"  • {theorem_name}")
 
-        if preview['total_recommendations'] > 0:
+        if preview["total_recommendations"] > 0:
             print("\nTo apply these optimizations, run:")
-            print(f"  simpulse optimize {args.project_path} --confidence-threshold {args.confidence_threshold}")
+            print(
+                f"  simpulse optimize {args.project_path} --confidence-threshold {args.confidence_threshold}"
+            )
         else:
             print("\n✓ No optimizations recommended at current confidence threshold")
 
@@ -329,12 +314,15 @@ Examples:
         print(f"  Average per file: {metrics['average_time']:.2f}s")
         print(f"  Median per file: {metrics['median_time']:.2f}s")
 
-        self._save_output(args, {
-            'command': 'benchmark',
-            'project_path': args.project_path,
-            'runs_per_file': args.runs,
-            **metrics
-        })
+        self._save_output(
+            args,
+            {
+                "command": "benchmark",
+                "project_path": args.project_path,
+                "runs_per_file": args.runs,
+                **metrics,
+            },
+        )
 
         return 0
 
@@ -342,7 +330,7 @@ Examples:
         """Save output to file if requested."""
         if args.output:
             output_path = Path(args.output)
-            with open(output_path, 'w') as f:
+            with open(output_path, "w") as f:
                 json.dump(data, f, indent=2, default=str)
             print(f"\nResults saved to: {output_path}")
 

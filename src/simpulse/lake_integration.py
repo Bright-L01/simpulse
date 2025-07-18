@@ -34,16 +34,18 @@ class LakeIntegration:
 
         lakefile = self.project_path / "lakefile.lean"
         if not lakefile.exists():
-            raise OptimizationError(f"No lakefile.lean found. Not a Lake project: {self.project_path}")
+            raise OptimizationError(
+                f"No lakefile.lean found. Not a Lake project: {self.project_path}"
+            )
 
         # Check for lean-toolchain
         toolchain = self.project_path / "lean-toolchain"
         if not toolchain.exists():
             logger.warning(f"No lean-toolchain found in {self.project_path}")
 
-    def collect_diagnostics_from_build(self,
-                                     targets: list[str] | None = None,
-                                     clean_build: bool = False) -> DiagnosticAnalysis:
+    def collect_diagnostics_from_build(
+        self, targets: list[str] | None = None, clean_build: bool = False
+    ) -> DiagnosticAnalysis:
         """
         Collect diagnostic data by running Lake build with diagnostics enabled.
 
@@ -86,11 +88,7 @@ class LakeIntegration:
         logger.info("Cleaning Lake project...")
 
         result = subprocess.run(
-            ['lake', 'clean'],
-            cwd=self.project_path,
-            capture_output=True,
-            text=True,
-            timeout=60
+            ["lake", "clean"], cwd=self.project_path, capture_output=True, text=True, timeout=60
         )
 
         if result.returncode != 0:
@@ -129,17 +127,14 @@ script run_with_diagnostics do
         logger.info("Running Lake build with diagnostics...")
 
         # Build command with diagnostic options
-        cmd = ['lake', 'build']
+        cmd = ["lake", "build"]
 
         # Add targets if specified
         if targets:
             cmd.extend(targets)
 
         # Set environment variables for diagnostic collection
-        env = {
-            'LEAN_DIAGNOSTICS': 'true',
-            'LEAN_DIAGNOSTICS_THRESHOLD': '1'
-        }
+        env = {"LEAN_DIAGNOSTICS": "true", "LEAN_DIAGNOSTICS_THRESHOLD": "1"}
 
         # Run build with diagnostic capture
         result = subprocess.run(
@@ -148,7 +143,7 @@ script run_with_diagnostics do
             capture_output=True,
             text=True,
             timeout=600,  # 10 minute timeout
-            env={**subprocess.os.environ, **env}
+            env={**subprocess.os.environ, **env},
         )
 
         # Combine stdout and stderr for diagnostic parsing
@@ -177,28 +172,28 @@ script run_with_diagnostics do
         try:
             # Run lake info to get project details
             result = subprocess.run(
-                ['lake', 'print-paths'],
+                ["lake", "print-paths"],
                 cwd=self.project_path,
                 capture_output=True,
                 text=True,
-                timeout=30
+                timeout=30,
             )
 
             info = {
-                'project_path': str(self.project_path),
-                'has_lakefile': (self.project_path / "lakefile.lean").exists(),
-                'has_toolchain': (self.project_path / "lean-toolchain").exists(),
-                'lake_available': result.returncode == 0
+                "project_path": str(self.project_path),
+                "has_lakefile": (self.project_path / "lakefile.lean").exists(),
+                "has_toolchain": (self.project_path / "lean-toolchain").exists(),
+                "lake_available": result.returncode == 0,
             }
 
             if result.returncode == 0:
-                info['lake_output'] = result.stdout
+                info["lake_output"] = result.stdout
 
             return info
 
         except Exception as e:
             logger.error(f"Failed to get project info: {e}")
-            return {'project_path': str(self.project_path), 'error': str(e)}
+            return {"project_path": str(self.project_path), "error": str(e)}
 
     def collect_diagnostics_from_specific_file(self, file_path: Path) -> DiagnosticAnalysis:
         """
@@ -279,7 +274,9 @@ class HybridDiagnosticCollector:
                 lake_analysis = self.lake_integration.collect_diagnostics_from_build()
 
                 if lake_analysis.simp_theorems:
-                    logger.info(f"Lake collection successful: {len(lake_analysis.simp_theorems)} theorems")
+                    logger.info(
+                        f"Lake collection successful: {len(lake_analysis.simp_theorems)} theorems"
+                    )
                     return lake_analysis
                 else:
                     logger.info("Lake collection returned no data, trying fallback...")
@@ -312,14 +309,14 @@ class HybridDiagnosticCollector:
             # Create synthetic simp theorem usage based on pattern analysis
             from .diagnostic_parser import SimpTheoremUsage
 
-            for change in results.get('changes', []):
-                theorem_name = change['rule_name']
+            for change in results.get("changes", []):
+                theorem_name = change["rule_name"]
                 # Create synthetic usage data based on pattern analysis
                 usage = SimpTheoremUsage(
                     name=theorem_name,
                     used_count=10,  # Synthetic data
                     tried_count=12,  # Synthetic data
-                    succeeded_count=10
+                    succeeded_count=10,
                 )
                 analysis.simp_theorems[theorem_name] = usage
 
@@ -376,4 +373,5 @@ theorem test_proof : 2 = 1 + 1 := by simp [test_theorem]
         except Exception as e:
             print(f"Test failed: {e}")
             import traceback
+
             traceback.print_exc()

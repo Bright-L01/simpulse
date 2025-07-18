@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PerformanceMeasurement:
     """Single performance measurement result."""
+
     file_path: str
     compilation_time: float  # seconds
     success: bool
@@ -34,6 +35,7 @@ class PerformanceMeasurement:
 @dataclass
 class PerformanceReport:
     """Complete performance analysis report."""
+
     measurements: list[PerformanceMeasurement] = field(default_factory=list)
     total_time: float = 0.0
     average_time: float = 0.0
@@ -51,7 +53,7 @@ class PerformanceReport:
             self.median_time = statistics.median(times) if times else 0.0
             self.success_rate = len(successful) / len(self.measurements)
 
-    def compare_with(self, other: 'PerformanceReport') -> 'PerformanceComparison':
+    def compare_with(self, other: "PerformanceReport") -> "PerformanceComparison":
         """Compare this report with another to show improvement/regression."""
         return PerformanceComparison(baseline=other, optimized=self)
 
@@ -59,6 +61,7 @@ class PerformanceReport:
 @dataclass
 class PerformanceComparison:
     """Comparison between baseline and optimized performance."""
+
     baseline: PerformanceReport
     optimized: PerformanceReport
 
@@ -67,7 +70,9 @@ class PerformanceComparison:
         """Calculate percentage improvement in compilation time."""
         if self.baseline.total_time == 0:
             return 0.0
-        improvement = (self.baseline.total_time - self.optimized.total_time) / self.baseline.total_time
+        improvement = (
+            self.baseline.total_time - self.optimized.total_time
+        ) / self.baseline.total_time
         return improvement * 100
 
     @property
@@ -75,21 +80,28 @@ class PerformanceComparison:
         """Calculate percentage improvement in average compilation time."""
         if self.baseline.average_time == 0:
             return 0.0
-        improvement = (self.baseline.average_time - self.optimized.average_time) / self.baseline.average_time
+        improvement = (
+            self.baseline.average_time - self.optimized.average_time
+        ) / self.baseline.average_time
         return improvement * 100
 
     @property
     def is_improvement(self) -> bool:
         """Check if optimization resulted in actual improvement."""
-        return self.time_improvement_percent > 0 and self.optimized.success_rate >= self.baseline.success_rate
+        return (
+            self.time_improvement_percent > 0
+            and self.optimized.success_rate >= self.baseline.success_rate
+        )
 
     def summary(self) -> str:
         """Generate human-readable summary of comparison."""
         if not self.is_improvement:
             return f"No improvement detected. Time change: {self.time_improvement_percent:+.1f}%"
 
-        return (f"Performance improved by {self.time_improvement_percent:.1f}% "
-                f"(avg: {self.average_time_improvement_percent:.1f}%)")
+        return (
+            f"Performance improved by {self.time_improvement_percent:.1f}% "
+            f"(avg: {self.average_time_improvement_percent:.1f}%)"
+        )
 
 
 class PerformanceMeasurer:
@@ -114,7 +126,7 @@ class PerformanceMeasurer:
                     cwd=self.project_path,
                     capture_output=True,
                     text=True,
-                    timeout=300  # 5 minute timeout per file
+                    timeout=300,  # 5 minute timeout per file
                 )
 
                 end_time = time.perf_counter()
@@ -137,33 +149,34 @@ class PerformanceMeasurer:
             # Use median time to reduce impact of outliers
             best_time = statistics.median(times)
             return PerformanceMeasurement(
-                file_path=str(file_path),
-                compilation_time=best_time,
-                success=True
+                file_path=str(file_path), compilation_time=best_time, success=True
             )
         else:
             return PerformanceMeasurement(
                 file_path=str(file_path),
                 compilation_time=0.0,
                 success=False,
-                error_message=last_error
+                error_message=last_error,
             )
 
-    def measure_project(self,
-                       files: list[Path] | None = None,
-                       runs_per_file: int = 3,
-                       max_files: int | None = None) -> PerformanceReport:
+    def measure_project(
+        self, files: list[Path] | None = None, runs_per_file: int = 3, max_files: int | None = None
+    ) -> PerformanceReport:
         """Measure compilation performance for entire project or file subset."""
         if files is None:
             files = list(self.project_path.glob("**/*.lean"))
 
         # Filter out test files and examples that might not be representative
-        files = [f for f in files if not any(excluded in str(f).lower()
-                                           for excluded in ['test', 'example', 'benchmark'])]
+        files = [
+            f
+            for f in files
+            if not any(excluded in str(f).lower() for excluded in ["test", "example", "benchmark"])
+        ]
 
         if max_files and len(files) > max_files:
             # Sample representative files if too many
             import random
+
             files = random.sample(files, max_files)
             logger.info(f"Sampling {max_files} files from {len(files)} total")
 
@@ -185,15 +198,16 @@ class PerformanceMeasurer:
                 logger.debug(f"  ✗ Failed: {measurement.error_message}")
 
         report = PerformanceReport(measurements=measurements)
-        logger.info(f"Performance measurement complete: {report.success_rate:.1%} success rate, "
-                   f"{report.total_time:.1f}s total, {report.average_time:.2f}s average")
+        logger.info(
+            f"Performance measurement complete: {report.success_rate:.1%} success rate, "
+            f"{report.total_time:.1f}s total, {report.average_time:.2f}s average"
+        )
 
         return report
 
-    def benchmark_optimization(self,
-                              baseline_files: list[Path],
-                              optimized_files: list[Path],
-                              runs_per_file: int = 3) -> PerformanceComparison:
+    def benchmark_optimization(
+        self, baseline_files: list[Path], optimized_files: list[Path], runs_per_file: int = 3
+    ) -> PerformanceComparison:
         """Benchmark performance before and after optimization."""
         logger.info("Measuring baseline performance...")
         baseline_report = self.measure_project(baseline_files, runs_per_file)
@@ -209,23 +223,23 @@ class PerformanceMeasurer:
     def save_report(self, report: PerformanceReport, output_path: Path) -> None:
         """Save performance report to JSON file."""
         data = {
-            'timestamp': report.timestamp,
-            'total_time': report.total_time,
-            'average_time': report.average_time,
-            'median_time': report.median_time,
-            'success_rate': report.success_rate,
-            'measurements': [
+            "timestamp": report.timestamp,
+            "total_time": report.total_time,
+            "average_time": report.average_time,
+            "median_time": report.median_time,
+            "success_rate": report.success_rate,
+            "measurements": [
                 {
-                    'file_path': m.file_path,
-                    'compilation_time': m.compilation_time,
-                    'success': m.success,
-                    'error_message': m.error_message
+                    "file_path": m.file_path,
+                    "compilation_time": m.compilation_time,
+                    "success": m.success,
+                    "error_message": m.error_message,
                 }
                 for m in report.measurements
-            ]
+            ],
         }
 
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(data, f, indent=2)
 
         logger.info(f"Performance report saved to {output_path}")
@@ -237,12 +251,12 @@ class PerformanceMeasurer:
 
         measurements = [
             PerformanceMeasurement(
-                file_path=m['file_path'],
-                compilation_time=m['compilation_time'],
-                success=m['success'],
-                error_message=m.get('error_message')
+                file_path=m["file_path"],
+                compilation_time=m["compilation_time"],
+                success=m["success"],
+                error_message=m.get("error_message"),
             )
-            for m in data['measurements']
+            for m in data["measurements"]
         ]
 
         return PerformanceReport(measurements=measurements)
@@ -255,15 +269,19 @@ class OptimizationValidator:
         self.project_path = Path(project_path)
         self.measurer = PerformanceMeasurer(project_path)
 
-    def validate_optimization(self,
-                            original_files: list[Path],
-                            optimized_files: list[Path],
-                            min_improvement_percent: float = 5.0) -> tuple[bool, PerformanceComparison]:
+    def validate_optimization(
+        self,
+        original_files: list[Path],
+        optimized_files: list[Path],
+        min_improvement_percent: float = 5.0,
+    ) -> tuple[bool, PerformanceComparison]:
         """Validate that optimization provides measurable improvement."""
         comparison = self.measurer.benchmark_optimization(original_files, optimized_files)
 
-        is_valid = (comparison.is_improvement and
-                   comparison.time_improvement_percent >= min_improvement_percent)
+        is_valid = (
+            comparison.is_improvement
+            and comparison.time_improvement_percent >= min_improvement_percent
+        )
 
         if is_valid:
             logger.info(f"✓ Optimization validated: {comparison.summary()}")
@@ -272,10 +290,9 @@ class OptimizationValidator:
 
         return is_valid, comparison
 
-    def create_backup_and_validate(self,
-                                  files_to_optimize: list[Path],
-                                  optimization_func,
-                                  min_improvement_percent: float = 5.0) -> tuple[bool, PerformanceComparison]:
+    def create_backup_and_validate(
+        self, files_to_optimize: list[Path], optimization_func, min_improvement_percent: float = 5.0
+    ) -> tuple[bool, PerformanceComparison]:
         """Create backups, apply optimization, and validate improvement."""
         # Create backups
         backup_dir = self.project_path / ".simpulse_backup"
@@ -302,13 +319,17 @@ class OptimizationValidator:
 
             # Compare and validate
             comparison = baseline_report.compare_with(optimized_report)
-            is_valid = (comparison.is_improvement and
-                       comparison.time_improvement_percent >= min_improvement_percent)
+            is_valid = (
+                comparison.is_improvement
+                and comparison.time_improvement_percent >= min_improvement_percent
+            )
 
             if not is_valid:
                 # Restore backups if optimization didn't help
                 logger.warning("Optimization not effective, restoring backups...")
-                for original_file, backup_file in zip(files_to_optimize, backup_files, strict=False):
+                for original_file, backup_file in zip(
+                    files_to_optimize, backup_files, strict=False
+                ):
                     original_file.write_text(backup_file.read_text())
 
             return is_valid, comparison
@@ -339,7 +360,9 @@ theorem another_test : [1, 2].length = 2 := by simp
         measurer = PerformanceMeasurer(project_path)
         measurement = measurer.measure_file(test_file)
 
-        print(f"Test measurement: {measurement.compilation_time:.3f}s, success: {measurement.success}")
+        print(
+            f"Test measurement: {measurement.compilation_time:.3f}s, success: {measurement.success}"
+        )
 
         if measurement.success:
             print("✓ Performance measurement framework working correctly")

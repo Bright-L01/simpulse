@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class AdvancedOptimizationResult:
     """Results from advanced optimization with real performance validation."""
+
     project_path: str
     analysis: DiagnosticAnalysis
     optimization_plan: OptimizationPlan
@@ -64,24 +65,30 @@ class AdvancedOptimizationResult:
         ]
 
         if self.applied_recommendations > 0 or self.failed_recommendations > 0:
-            lines.extend([
-                f"  Applied recommendations: {self.applied_recommendations}",
-                f"  Failed recommendations: {self.failed_recommendations}",
-                f"  Success rate: {self.success_rate:.1%}",
-            ])
+            lines.extend(
+                [
+                    f"  Applied recommendations: {self.applied_recommendations}",
+                    f"  Failed recommendations: {self.failed_recommendations}",
+                    f"  Success rate: {self.success_rate:.1%}",
+                ]
+            )
 
         if self.performance_comparison:
-            lines.extend([
-                f"  Performance validation: {'✓ PASSED' if self.validation_passed else '✗ FAILED'}",
-                f"  Actual improvement: {self.actual_improvement_percent:+.1f}%",
-            ])
+            lines.extend(
+                [
+                    f"  Performance validation: {'✓ PASSED' if self.validation_passed else '✗ FAILED'}",
+                    f"  Actual improvement: {self.actual_improvement_percent:+.1f}%",
+                ]
+            )
 
-        lines.extend([
-            f"  Analysis time: {self.total_analysis_time:.1f}s",
-            f"  Optimization time: {self.total_optimization_time:.1f}s",
-        ])
+        lines.extend(
+            [
+                f"  Analysis time: {self.total_analysis_time:.1f}s",
+                f"  Optimization time: {self.total_optimization_time:.1f}s",
+            ]
+        )
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
 
 class AdvancedSimpOptimizer:
@@ -111,9 +118,9 @@ class AdvancedSimpOptimizer:
 
         logger.info(f"Initialized advanced optimizer for {len(lean_files)} Lean files")
 
-    def analyze(self,
-               files: list[Path] | None = None,
-               max_files: int | None = None) -> AdvancedOptimizationResult:
+    def analyze(
+        self, files: list[Path] | None = None, max_files: int | None = None
+    ) -> AdvancedOptimizationResult:
         """
         Analyze project using real diagnostic data.
 
@@ -139,7 +146,7 @@ class AdvancedSimpOptimizer:
                     project_path=str(self.project_path),
                     analysis=analysis,
                     optimization_plan=OptimizationPlan(),
-                    total_analysis_time=time.time() - start_time
+                    total_analysis_time=time.time() - start_time,
                 )
 
             logger.info(f"Collected data for {len(analysis.simp_theorems)} simp theorems")
@@ -154,7 +161,7 @@ class AdvancedSimpOptimizer:
                 project_path=str(self.project_path),
                 analysis=analysis,
                 optimization_plan=optimization_plan,
-                total_analysis_time=analysis_time
+                total_analysis_time=analysis_time,
             )
 
             logger.info(f"Analysis complete in {analysis_time:.1f}s")
@@ -164,10 +171,12 @@ class AdvancedSimpOptimizer:
             logger.error(f"Analysis failed: {e}")
             raise OptimizationError(f"Advanced analysis failed: {e}") from e
 
-    def optimize(self,
-                confidence_threshold: float = 70.0,
-                validate_performance: bool = True,
-                min_improvement_percent: float = 5.0) -> AdvancedOptimizationResult:
+    def optimize(
+        self,
+        confidence_threshold: float = 70.0,
+        validate_performance: bool = True,
+        min_improvement_percent: float = 5.0,
+    ) -> AdvancedOptimizationResult:
         """
         Perform complete optimization with performance validation.
 
@@ -196,20 +205,27 @@ class AdvancedSimpOptimizer:
 
         return result
 
-    def _optimize_with_validation(self,
-                                result: AdvancedOptimizationResult,
-                                confidence_threshold: float,
-                                min_improvement_percent: float) -> AdvancedOptimizationResult:
+    def _optimize_with_validation(
+        self,
+        result: AdvancedOptimizationResult,
+        confidence_threshold: float,
+        min_improvement_percent: float,
+    ) -> AdvancedOptimizationResult:
         """Apply optimizations with performance validation."""
         start_time = time.time()
 
         logger.info("Applying optimizations with performance validation...")
 
         # Get files that will be modified
-        files_to_optimize = list(set([
-            rec.file_path for rec in result.optimization_plan.recommendations
-            if rec.evidence_score >= confidence_threshold
-        ]))
+        files_to_optimize = list(
+            set(
+                [
+                    rec.file_path
+                    for rec in result.optimization_plan.recommendations
+                    if rec.evidence_score >= confidence_threshold
+                ]
+            )
+        )
 
         if not files_to_optimize:
             logger.info("No files to optimize with current confidence threshold")
@@ -220,19 +236,14 @@ class AdvancedSimpOptimizer:
 
         def apply_optimizations():
             """Apply optimization function for validator."""
-            applied, failed = self.engine.apply_plan(
-                result.optimization_plan,
-                confidence_threshold
-            )
+            applied, failed = self.engine.apply_plan(result.optimization_plan, confidence_threshold)
             result.applied_recommendations = applied
             result.failed_recommendations = failed
 
         try:
             # Use validator to apply optimizations and measure performance
             validation_passed, comparison = self.validator.create_backup_and_validate(
-                files_to_optimize,
-                apply_optimizations,
-                min_improvement_percent
+                files_to_optimize, apply_optimizations, min_improvement_percent
             )
 
             result.validation_passed = validation_passed
@@ -252,18 +263,15 @@ class AdvancedSimpOptimizer:
             result.total_optimization_time = time.time() - start_time
             return result
 
-    def _optimize_without_validation(self,
-                                   result: AdvancedOptimizationResult,
-                                   confidence_threshold: float) -> AdvancedOptimizationResult:
+    def _optimize_without_validation(
+        self, result: AdvancedOptimizationResult, confidence_threshold: float
+    ) -> AdvancedOptimizationResult:
         """Apply optimizations without performance validation."""
         start_time = time.time()
 
         logger.info("Applying optimizations without validation...")
 
-        applied, failed = self.engine.apply_plan(
-            result.optimization_plan,
-            confidence_threshold
-        )
+        applied, failed = self.engine.apply_plan(result.optimization_plan, confidence_threshold)
 
         result.applied_recommendations = applied
         result.failed_recommendations = failed
@@ -272,9 +280,9 @@ class AdvancedSimpOptimizer:
         logger.info(f"Applied {applied} recommendations, {failed} failed")
         return result
 
-    def benchmark(self,
-                 files: list[Path] | None = None,
-                 runs_per_file: int = 3) -> dict[str, float]:
+    def benchmark(
+        self, files: list[Path] | None = None, runs_per_file: int = 3
+    ) -> dict[str, float]:
         """
         Benchmark current project performance.
 
@@ -291,15 +299,14 @@ class AdvancedSimpOptimizer:
         report = measurer.measure_project(files, runs_per_file)
 
         return {
-            'total_time': report.total_time,
-            'average_time': report.average_time,
-            'median_time': report.median_time,
-            'success_rate': report.success_rate,
-            'files_measured': len(report.measurements)
+            "total_time": report.total_time,
+            "average_time": report.average_time,
+            "median_time": report.median_time,
+            "success_rate": report.success_rate,
+            "files_measured": len(report.measurements),
         }
 
-    def get_optimization_preview(self,
-                               confidence_threshold: float = 50.0) -> dict:
+    def get_optimization_preview(self, confidence_threshold: float = 50.0) -> dict:
         """
         Get preview of optimizations without applying them.
 
@@ -312,7 +319,8 @@ class AdvancedSimpOptimizer:
         result = self.analyze()
 
         recommendations = [
-            rec for rec in result.optimization_plan.recommendations
+            rec
+            for rec in result.optimization_plan.recommendations
             if rec.evidence_score >= confidence_threshold
         ]
 
@@ -322,32 +330,34 @@ class AdvancedSimpOptimizer:
             opt_type = rec.optimization_type.value
             if opt_type not in by_type:
                 by_type[opt_type] = []
-            by_type[opt_type].append({
-                'theorem_name': rec.theorem_name,
-                'file_path': str(rec.file_path),
-                'current_priority': rec.current_priority,
-                'recommended_priority': rec.recommended_priority,
-                'evidence_score': rec.evidence_score,
-                'reason': rec.reason,
-                'expected_impact': rec.expected_impact
-            })
+            by_type[opt_type].append(
+                {
+                    "theorem_name": rec.theorem_name,
+                    "file_path": str(rec.file_path),
+                    "current_priority": rec.current_priority,
+                    "recommended_priority": rec.recommended_priority,
+                    "evidence_score": rec.evidence_score,
+                    "reason": rec.reason,
+                    "expected_impact": rec.expected_impact,
+                }
+            )
 
         return {
-            'total_recommendations': len(recommendations),
-            'confidence_threshold': confidence_threshold,
-            'optimization_types': by_type,
-            'analysis_summary': {
-                'simp_theorems_analyzed': len(result.analysis.simp_theorems),
-                'most_used_theorems': [
-                    {'name': t.name, 'used_count': t.used_count, 'success_rate': t.success_rate}
+            "total_recommendations": len(recommendations),
+            "confidence_threshold": confidence_threshold,
+            "optimization_types": by_type,
+            "analysis_summary": {
+                "simp_theorems_analyzed": len(result.analysis.simp_theorems),
+                "most_used_theorems": [
+                    {"name": t.name, "used_count": t.used_count, "success_rate": t.success_rate}
                     for t in result.analysis.get_most_used_theorems(5)
                 ],
-                'least_efficient_theorems': [
-                    {'name': t.name, 'tried_count': t.tried_count, 'success_rate': t.success_rate}
+                "least_efficient_theorems": [
+                    {"name": t.name, "tried_count": t.tried_count, "success_rate": t.success_rate}
                     for t in result.analysis.get_least_efficient_theorems(5)
                 ],
-                'potential_loops': result.analysis.looping_theorems
-            }
+                "potential_loops": result.analysis.looping_theorems,
+            },
         }
 
 
@@ -374,9 +384,11 @@ theorem another_test : [1, 2].length = 2 := by simp [test_theorem]
 
             print("Optimization preview:")
             print(f"  Total recommendations: {preview['total_recommendations']}")
-            print(f"  Simp theorems analyzed: {preview['analysis_summary']['simp_theorems_analyzed']}")
+            print(
+                f"  Simp theorems analyzed: {preview['analysis_summary']['simp_theorems_analyzed']}"
+            )
 
-            if preview['total_recommendations'] > 0:
+            if preview["total_recommendations"] > 0:
                 print("✓ Advanced optimizer working correctly")
             else:
                 print("i No optimizations recommended (expected for simple test)")

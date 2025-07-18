@@ -30,10 +30,9 @@ __all__ = [
 ]
 
 
-def optimize_project(project_path,
-                    confidence_threshold=70.0,
-                    validate_performance=True,
-                    min_improvement_percent=5.0):
+def optimize_project(
+    project_path, confidence_threshold=70.0, validate_performance=True, min_improvement_percent=5.0
+):
     """Advanced optimization function using real diagnostic data.
 
     Args:
@@ -53,7 +52,7 @@ def optimize_project(project_path,
         return optimizer.optimize(
             confidence_threshold=confidence_threshold,
             validate_performance=validate_performance,
-            min_improvement_percent=min_improvement_percent
+            min_improvement_percent=min_improvement_percent,
         )
     except Exception as e:
         import logging
