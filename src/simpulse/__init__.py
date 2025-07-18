@@ -8,30 +8,30 @@ __author__ = "Bright Liu"
 __email__ = "bright.liu@example.com"
 
 # Advanced optimization engine
-from .advanced_optimizer import AdvancedSimpOptimizer, AdvancedOptimizationResult
+from .advanced_optimizer import AdvancedOptimizationResult, AdvancedSimpOptimizer
 from .diagnostic_parser import DiagnosticAnalysis, SimpTheoremUsage
+from .lake_integration import HybridDiagnosticCollector, LakeIntegration
 from .optimization_engine import OptimizationPlan, OptimizationRecommendation, OptimizationType
-from .performance_measurement import PerformanceReport, PerformanceComparison
-from .lake_integration import LakeIntegration, HybridDiagnosticCollector
+from .performance_measurement import PerformanceComparison, PerformanceReport
 
 __all__ = [
+    "AdvancedOptimizationResult",
     "AdvancedSimpOptimizer",
-    "AdvancedOptimizationResult", 
     "DiagnosticAnalysis",
-    "SimpTheoremUsage",
+    "HybridDiagnosticCollector",
+    "LakeIntegration",
     "OptimizationPlan",
     "OptimizationRecommendation",
     "OptimizationType",
-    "PerformanceReport",
     "PerformanceComparison",
-    "LakeIntegration",
-    "HybridDiagnosticCollector",
+    "PerformanceReport",
+    "SimpTheoremUsage",
     "optimize_project",
 ]
 
 
-def optimize_project(project_path, 
-                    confidence_threshold=70.0, 
+def optimize_project(project_path,
+                    confidence_threshold=70.0,
                     validate_performance=True,
                     min_improvement_percent=5.0):
     """Advanced optimization function using real diagnostic data.
@@ -57,6 +57,7 @@ def optimize_project(project_path,
         )
     except Exception as e:
         import logging
+
         from .error import handle_error
 
         error_msg = handle_error(e, debug=False)
