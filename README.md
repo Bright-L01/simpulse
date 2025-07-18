@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status: Evidence-Based](https://img.shields.io/badge/Status-Evidence--Based-green.svg)](https://github.com/Bright-L01/simpulse)
+[![Status: Evidence-Based](https://img.shields.io/badge/Status-Evidence--Based-green.svg)](https://github.com/brightlikethelight/simpulse)
 
 **Advanced Lean 4 simp optimization using real diagnostic data from Lean 4.8.0+**
 
@@ -57,40 +57,21 @@ Using real diagnostic data from Lean 4.8.0+...
 
 Advanced Simp Optimization Results:
   Project: lean4-project
-  Simp theorems analyzed: 8
-  Recommendations generated: 8
+  Simp theorems analyzed: 0
+  Recommendations generated: 0
     High confidence: 0
-    Medium confidence: 8
+    Medium confidence: 0
     Low confidence: 0
-  Analysis time: 45.4s
+  Analysis time: 12.3s
+  Optimization time: 0.0s
 
-# Shows Lake integration attempt + fallback
+# Shows Lake integration attempt + fallback (verbose mode)
 2025-07-16 04:05:58,297 - Lake integration available
 2025-07-16 04:06:43,002 - Lake collection returned no data, trying fallback...
-2025-07-16 04:06:43,711 - Found 24725 simp rules in codebase
+2025-07-16 04:06:43,711 - Found 3 simp rules in codebase
 ```
 
-```bash
-$ simpulse preview lean4-project/ --detailed
-
-Optimization Preview:
-  Total recommendations: 8
-  Simp theorems analyzed: 8
-
-Recommendations by type:
-  priority_increase: 8 recommendations
-    • list_append_nil
-      Confidence: 51.7%
-      Reason: Used 10 times with 83.3% success rate
-
-Most used theorems:
-  • list_append_nil: 10 uses, 83.3% success rate
-  • nat_add_zero: 10 uses, 83.3% success rate
-  • list_nil_append: 10 uses, 83.3% success rate
-
-To apply these optimizations, run:
-  simpulse optimize lean4-project/ --confidence-threshold 50.0
-```
+**Note**: The tool is designed for projects with substantial simp usage. Simple test projects may not show dramatic results. For best results, use with complex Lean 4 projects that make extensive use of simp tactics.
 
 ## 🔬 Evidence-Based Analysis
 
@@ -158,9 +139,10 @@ simpulse analyze my-project/ --verbose
 
 ## 📋 Requirements
 
-- **Lean 4.8.0+** (required for diagnostic infrastructure)
+- **Lean 4.7.0+** (4.8.0+ recommended for enhanced diagnostic features)
 - **Python 3.10+** 
 - **Access to `lean` executable** in PATH
+- **Lake build system** (included with Lean 4.7.0+)
 
 ## 🔍 How Diagnostic Analysis Works
 
@@ -204,10 +186,12 @@ Built on extensive research of Lean 4 simp optimization:
 
 ## ⚠️ Important Notes
 
-- **Requires Lean 4.8.0+** for diagnostic infrastructure
+- **Lean 4.7.0+ required** (4.8.0+ recommended for enhanced diagnostics)
+- **Lake integration** may fail with complex dependencies - falls back to pattern analysis
 - **Performance validation recommended** for production use
 - **Backup files automatically** before applying changes
 - **Results are project-specific** - patterns vary by codebase
+- **Best results on projects with substantial simp usage** - simple projects may show minimal optimization opportunities
 
 ## 🤝 Contributing
 

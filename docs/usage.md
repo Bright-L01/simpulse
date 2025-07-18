@@ -49,23 +49,20 @@ Analyzes a Lean project for simp optimization opportunities using real diagnosti
 
 **Options**:
 - `--max-files INTEGER`: Maximum number of files to analyze (default: 50)
-- `--output PATH`: Save analysis results to JSON file
-- `--timeout INTEGER`: Timeout in seconds for Lean compilation (default: 300)
-- `--verbose`: Enable verbose logging
 
 **Examples**:
 ```bash
 # Basic analysis
 simpulse analyze my-project/
 
-# Analyze with custom limits
-simpulse analyze --max-files 100 --timeout 600 my-project/
-
-# Save results to file
-simpulse analyze --output analysis.json my-project/
+# Analyze with custom file limit
+simpulse analyze --max-files 100 my-project/
 
 # Verbose analysis with detailed logging
-simpulse analyze --verbose my-project/
+simpulse --verbose analyze my-project/
+
+# Save results to file
+simpulse --output analysis.json analyze my-project/
 ```
 
 **Output**:
